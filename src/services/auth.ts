@@ -39,3 +39,24 @@ export const verifyEmail = ({
     }
   );
 };
+
+export const login = ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  return axiosInstance.post("/auth/login", {
+    email,
+    password,
+  });
+};
+
+export const sessionLogin = ({ token }: { token: string }) => {
+  return axiosInstance.get("/auth/session", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
