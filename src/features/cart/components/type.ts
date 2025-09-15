@@ -1,5 +1,7 @@
 export interface ICartItems {
   id: string
+  cartId : string
+  productId : string
   quantity: number
   price: number
   subTotal: number
@@ -8,4 +10,5 @@ export interface ICartItems {
     price: number
   }
 }
+
 
