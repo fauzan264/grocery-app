@@ -98,14 +98,14 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-15">
-      <div className="card card-border card-md bg-teal-100 shadow-sm p-5 rounded-xl">
+      <div className="card card-border card-md bg-slate-50 shadow-sm p-5 rounded-xl">
         <div className="card-body">
-          <div className="card-title justify-center text-gray-800">Login</div>
+          <div className="card-title justify-center text-slate-800">Login</div>
           <form onSubmit={formik.handleSubmit}>
             <div className="flex flex-wrap">
               <div className="w-full">
                 <fieldset className="fieldset">
-                  <legend className="fieldset-legend text-gray-800">
+                  <legend className="fieldset-legend text-slate-800">
                     Email
                   </legend>
                   <label className="input input-accent validator w-full">
@@ -145,15 +145,15 @@ export default function LoginForm() {
               </div>
               <button
                 type="submit"
-                className="btn border-0 bg-teal-500 hover:bg-teal-600 active:bg-teal-600 transition ease-in-out duration-300 text-gray-100 w-full mt-5 focus:outline-none"
+                className="btn border-0 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-700 transition ease-in-out duration-300 text-slate-100 w-full mt-5 focus:outline-none"
               >
                 Login
               </button>
             </div>
           </form>
-          <p className="mt-3 text-gray-800 mb-5">
+          <p className="mt-3 text-slate-800 mb-5">
             You have an account?{" "}
-            <Link href="/register" className="text-teal-500">
+            <Link href="/register" className="text-emerald-600">
               Register
             </Link>
           </p>
