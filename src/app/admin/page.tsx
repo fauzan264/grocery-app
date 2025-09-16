@@ -35,11 +35,11 @@ export default function AdminPage() {
 
   // react-query v5 usage
   const { data, isLoading, isFetching } = useQuery<PaginatedUsers, Error>({
-  queryKey: ["users", page, q],
-  queryFn: () => fetchUsers(page, q),
-  placeholderData: (prev) => prev, // pengganti keepPreviousData
-  staleTime: 1000 * 60,
-});
+    queryKey: ["users", page, q],
+    queryFn: () => fetchUsers(page, q),
+    placeholderData: (prev) => prev, // pengganti keepPreviousData
+    staleTime: 1000 * 60,
+  });
 
   const deleteMut = useDeleteUser();
 
@@ -59,13 +59,20 @@ export default function AdminPage() {
         <div className="flex items-center gap-4">
           <div className="rounded-full p-3 bg-emerald-900 text-white inline-flex items-center justify-center shadow">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z" fill="currentColor"/>
-              <path d="M4 22c0-4 4-7 8-7s8 3 8 7" fill="currentColor"/>
+              <path
+                d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5z"
+                fill="currentColor"
+              />
+              <path d="M4 22c0-4 4-7 8-7s8 3 8 7" fill="currentColor" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-slate-700">Manajemen Akun</h1>
-            <p className="text-sm text-slate-700/70">Kelola akun pengguna — buat, edit, dan hapus.</p>
+            <h1 className="text-2xl font-semibold text-slate-700">
+              Manajemen Akun
+            </h1>
+            <p className="text-sm text-slate-700/70">
+              Kelola akun pengguna — buat, edit, dan hapus.
+            </p>
           </div>
         </div>
 
@@ -74,7 +81,9 @@ export default function AdminPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") onSearch(); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onSearch();
+              }}
               placeholder="Cari nama atau email..."
               className="outline-none w-56 sm:w-80 text-sm"
             />
@@ -89,7 +98,9 @@ export default function AdminPage() {
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
               <div className="text-xs text-slate-700/70">Total Pengguna</div>
-              <div className="text-lg font-semibold text-emerald-900">{totalUsers}</div>
+              <div className="text-lg font-semibold text-emerald-900">
+                {totalUsers}
+              </div>
             </div>
 
             <button
@@ -108,22 +119,36 @@ export default function AdminPage() {
           <div className="flex items-center justify-between px-4 py-3 border-b">
             <div className="flex items-center gap-3">
               <div className="text-sm text-slate-700">Daftar pengguna</div>
-              {isFetching && <div className="text-xs text-slate-700/60">Memuat...</div>}
+              {isFetching && (
+                <div className="text-xs text-slate-700/60">Memuat...</div>
+              )}
             </div>
-            <div className="text-sm text-slate-700/70">Hal {pageNum} / {totalPages}</div>
+            <div className="text-sm text-slate-700/70">
+              Hal {pageNum} / {totalPages}
+            </div>
           </div>
 
           {isLoading ? (
             <div className="p-6 space-y-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-10 bg-slate-700/10 rounded animate-pulse" />
+                <div
+                  key={i}
+                  className="h-10 bg-slate-700/10 rounded animate-pulse"
+                />
               ))}
             </div>
           ) : (data?.data?.length ?? 0) === 0 ? (
             <div className="p-8 text-center text-slate-700">
-              <div className="text-lg font-semibold mb-2">Belum ada pengguna</div>
-              <div className="text-sm mb-4">Tambahkan pengguna baru dengan tombol "Tambah User".</div>
-              <button onClick={() => setOpenCreate(true)} className="px-4 py-2 rounded bg-emerald-200">Buat User</button>
+              <div className="text-lg font-semibold mb-2">
+                Belum ada pengguna
+              </div>
+              <div className="text-sm mb-4">{`Tambahkan pengguna baru dengan tombol "Tambah User".`}</div>
+              <button
+                onClick={() => setOpenCreate(true)}
+                className="px-4 py-2 rounded bg-emerald-200"
+              >
+                Buat User
+              </button>
             </div>
           ) : (
             <>
@@ -136,7 +161,10 @@ export default function AdminPage() {
               </div>
 
               <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="text-sm text-slate-700">Menampilkan {data?.data?.length ?? 0} dari {totalUsers} pengguna</div>
+                <div className="text-sm text-slate-700">
+                  Menampilkan {data?.data?.length ?? 0} dari {totalUsers}{" "}
+                  pengguna
+                </div>
                 <div className="flex items-center gap-2">
                   <button
                     disabled={!data || pageNum === 1}
@@ -145,7 +173,9 @@ export default function AdminPage() {
                   >
                     Prev
                   </button>
-                  <div className="text-sm px-3">Hal {pageNum} dari {totalPages}</div>
+                  <div className="text-sm px-3">
+                    Hal {pageNum} dari {totalPages}
+                  </div>
                   <button
                     disabled={!data || pageNum >= totalPages}
                     onClick={() => setPage((p) => p + 1)}
@@ -175,10 +205,21 @@ export default function AdminPage() {
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded shadow p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-slate-700 mb-3">Konfirmasi Hapus</h3>
-            <p className="text-sm text-slate-700/80 mb-4">Yakin ingin menghapus user <span className="font-medium">{confirmDelete.full_name}</span>? Tindakan ini bisa dikembalikan (soft delete).</p>
+            <h3 className="text-lg font-semibold text-slate-700 mb-3">
+              Konfirmasi Hapus
+            </h3>
+            <p className="text-sm text-slate-700/80 mb-4">
+              Yakin ingin menghapus user{" "}
+              <span className="font-medium">{confirmDelete.full_name}</span>?
+              Tindakan ini bisa dikembalikan (soft delete).
+            </p>
             <div className="flex justify-end gap-2">
-              <button onClick={() => setConfirmDelete(null)} className="px-3 py-1 border rounded">Batal</button>
+              <button
+                onClick={() => setConfirmDelete(null)}
+                className="px-3 py-1 border rounded"
+              >
+                Batal
+              </button>
               <button
                 onClick={async () => {
                   try {
