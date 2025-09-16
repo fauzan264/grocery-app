@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <div className="min-h-screen flex items-center justify-center mt-15">
-        <div className="card w-1/2 md:w-2/5 card-border card-md bg-slate-50 shadow-sm p-5 rounded-xl">
+        <div className="card w-4/5 md:w-2/5 card-border card-md bg-slate-50 shadow-sm p-5 rounded-xl">
           <div className="card-body">
             <div className="card-title justify-center text-slate-800">
               Reset Password
