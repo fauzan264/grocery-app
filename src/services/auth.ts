@@ -1,6 +1,8 @@
 import { axiosInstance } from "@/lib/axiosInstances";
 import snakecaseKeys from "snakecase-keys";
 
+const AUTH_URL = "/auth";
+
 export const register = ({
   fullName,
   email,
@@ -11,7 +13,7 @@ export const register = ({
   phoneNumber: string;
 }) => {
   return axiosInstance.post(
-    "/auth/register",
+    `${AUTH_URL}/register`,
     snakecaseKeys({
       fullName,
       email,
@@ -28,7 +30,7 @@ export const verifyEmail = ({
   token: string;
 }) => {
   return axiosInstance.post(
-    "/auth/verify-email",
+    `${AUTH_URL}/verify-email`,
     {
       password,
     },
@@ -47,16 +49,42 @@ export const login = ({
   email: string;
   password: string;
 }) => {
-  return axiosInstance.post("/auth/login", {
+  return axiosInstance.post(`${AUTH_URL}/login`, {
     email,
     password,
   });
 };
 
 export const sessionLogin = ({ token }: { token: string }) => {
-  return axiosInstance.get("/auth/session", {
+  return axiosInstance.get(`${AUTH_URL}/session`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const requestResetPassword = ({ email }: { email: string }) => {
+  return axiosInstance.post(`${AUTH_URL}/request-reset-password`, {
+    email,
+  });
+};
+
+export const resetPassword = ({
+  token,
+  password,
+}: {
+  token: string;
+  password: string;
+}) => {
+  return axiosInstance.post(
+    `${AUTH_URL}/reset-password`,
+    {
+      password,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

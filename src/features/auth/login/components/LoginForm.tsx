@@ -98,7 +98,7 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-15">
-      <div className="card card-border card-md bg-slate-50 shadow-sm p-5 rounded-xl">
+      <div className="card w-4/5 md:w-2/5 card-border card-md bg-slate-50 shadow-sm p-5 rounded-xl">
         <div className="card-body">
           <div className="card-title justify-center text-slate-800">Login</div>
           <form onSubmit={formik.handleSubmit}>
@@ -143,6 +143,14 @@ export default function LoginForm() {
                   )}
                 </fieldset>
               </div>
+              <div className="ml-auto mt-2">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-emerald-600"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
               <button
                 type="submit"
                 className="btn border-0 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-700 transition ease-in-out duration-300 text-slate-100 w-full mt-5 focus:outline-none"
@@ -157,7 +165,10 @@ export default function LoginForm() {
               Register
             </Link>
           </p>
-          <Link href={`${process.env.NEXT_PUBLIC_LINK_AUTH_GOOGLE}`}>
+          <Link
+            href={`${process.env.NEXT_PUBLIC_LINK_AUTH_GOOGLE}`}
+            className="w-full"
+          >
             <figure className="w-full h-12 relative">
               <Image
                 src={"/images/sign-in-with-google.png"}
