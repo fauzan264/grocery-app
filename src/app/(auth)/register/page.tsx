@@ -124,12 +124,6 @@ export default function RegisterPage() {
                   )}
                 </fieldset>
               </div>
-              <button
-                type="submit"
-                className="btn border-0 bg-teal-500 hover:bg-teal-600 active:bg-teal-600 transition ease-in-out duration-300 text-gray-100 w-full mt-5 focus:outline-none"
-              >
-                Submit
-              </button>
             </div>
           </form>
           <p className="mt-3 text-gray-800">
