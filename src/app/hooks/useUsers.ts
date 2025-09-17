@@ -22,11 +22,9 @@ export interface IPagedUsers {
 // infer type langsung dari yup schema — single source of truth
 export type FormValues = InferType<typeof schema>;
 
-// Cast resolver supaya cocok dengan react-hook-form generic
-const resolver = (yupResolver(schema) as unknown) as Resolver<FormValues, any, any>;
 
 export const useUserForm = () => {
-  // default values: partial dulu, lalu cast ke FormValues saat pass ke useForm
+  // default values: partial dulu
   const defaultValues: Partial<FormValues> = {
     full_name: "",
     email: "",
@@ -37,8 +35,8 @@ export const useUserForm = () => {
   };
 
   return useForm<FormValues>({
-    resolver,
-    defaultValues: defaultValues as FormValues,
+    resolver: yupResolver(schema) as Resolver<FormValues>,
+    defaultValues,
   });
 };
 
@@ -109,7 +107,6 @@ export const useUpdateUser = () => {
   });
 };
 
-
 /**
  * Hook: delete user
  * - accepts user id (string)
@@ -126,4 +123,3 @@ export const useDeleteUser = () => {
     },
   });
 };
-

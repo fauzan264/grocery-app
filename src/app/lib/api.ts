@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
@@ -23,7 +23,7 @@ api.interceptors.request.use((config) => {
 // ------------------------------
 api.interceptors.response.use(
   // on fulfilled
-  async (response: any) => {
+  async (response: AxiosResponse): Promise<AxiosResponse> => {
     try {
       if (typeof window === "undefined") return response;
 
