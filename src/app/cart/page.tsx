@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import CartItems from "@/features/cart/components/CartItems";
 import { ICartItems } from "@/features/cart/components/type";
 import useAuthStore from "@/store/useAuthStore";
+import useCartStore from "@/store/useCartStore"; // ⬅️ pakai global store
 import { formatPrice } from "@/utils/format";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,19 +13,20 @@ import {
     updateCartItemQty,
 } from "@/services/cart";
 import { FaShoppingCart } from "react-icons/fa";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
     const { token } = useAuthStore();
     const router = useRouter();
-    const [cartItems, setCartItems] = useState<ICartItems[]>([]);
+
+    const { cartItems, setCartItems } = useCartStore(); 
     const [loadingIds, setLoadingIds] = useState<string[]>([]);
 
     // GET cart items
     const onGetCartItems = async () => {
         try {
             const items = await getCartItems(token);
-            setCartItems(items);
+            setCartItems(items); 
         } catch (err) {
             console.error(err);
         }
@@ -41,20 +43,22 @@ export default function Cart() {
     ) => {
         const oldItems = [...cartItems];
 
-        // Optimistic UI update langsung
-        setCartItems((prev) =>
-            prev.map((item) => {
-                if (item.id !== id) return item;
-                const newQty =
-                    action === "increment"
-                        ? item.quantity + 1
-                        : item.quantity - 1;
-                return {
-                    ...item,
-                    quantity: newQty,
-                    subTotal: newQty * item.price,
-                };
-            })
+        setCartItems(
+            cartItems.map((item) =>
+                item.id === id
+                    ? {
+                          ...item,
+                          quantity:
+                              action === "increment"
+                                  ? item.quantity + 1
+                                  : item.quantity - 1,
+                          subTotal:
+                              (action === "increment"
+                                  ? item.quantity + 1
+                                  : item.quantity - 1) * item.price,
+                      }
+                    : item
+            )
         );
 
         setLoadingIds((prev) => [...prev, id]);
@@ -63,13 +67,13 @@ export default function Cart() {
             const updatedItem = await updateCartItemQty(id, action, token, 200);
 
             if (updatedItem.message === "Item removed from cart") {
-                setCartItems((prev) => prev.filter((item) => item.id !== id));
+                setCartItems(cartItems.filter((item) => item.id !== id));
                 toast.success("Item removed from cart", {
                     containerId: "cart",
                 });
             } else {
-                setCartItems((prev) =>
-                    prev.map((item) =>
+                setCartItems(
+                    cartItems.map((item) =>
                         item.id === id ? { ...item, ...updatedItem } : item
                     )
                 );
@@ -82,10 +86,10 @@ export default function Cart() {
         }
     };
 
-    // DELETE
+    
     const onRemoveItem = async (id: string) => {
         const oldItems = [...cartItems];
-        setCartItems((prev) => prev.filter((item) => item.id !== id));
+        setCartItems(cartItems.filter((item) => item.id !== id));
         try {
             await deleteCartItem(id, token);
             toast.success("Item removed from cart", { containerId: "cart" });
@@ -100,8 +104,9 @@ export default function Cart() {
         0
     );
     const goToShopping = () => {
-        router.push("/"); // ganti dengan route yang diinginkan
+        router.push("/");
     };
+
     return (
         <div className="min-h-screen bg-gray-50 py-10 mt-15">
             <div className="container mx-auto">
