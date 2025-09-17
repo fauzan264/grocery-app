@@ -1,20 +1,31 @@
-import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
+import axios from "axios";
+import type { AxiosResponse, InternalAxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import { getStoredToken } from "./auth";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export const api = axios.create({
   baseURL: BASE,
   headers: { "Content-Type": "application/json" },
-  withCredentials: false // kalau pakai httpOnly cookie, ubah ini dan backend harus support cookie
+  withCredentials: false, // kalau pakai httpOnly cookie, ubah ini dan backend harus support cookie
 });
 
-// attach Authorization header automatically (request interceptor)
-api.interceptors.request.use((config) => {
+// request interceptor dengan typing yang sesuai
+api.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+  // hanya jalankan di browser
   if (typeof window === "undefined") return config;
-  const token = localStorage.getItem("auth_token");
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+
+  const token = getStoredToken();
+  if (token) {
+    // pastikan headers ada dan bertipe AxiosRequestHeaders
+    if (!config.headers) {
+      config.headers = {} as AxiosRequestHeaders;
+    }
+    const headers = config.headers as AxiosRequestHeaders;
+    headers.Authorization = `Bearer ${token}`;
+    config.headers = headers;
   }
+
   return config;
 });
 
@@ -49,7 +60,6 @@ api.interceptors.response.use(
         // simpan token jika ditemukan
         if (token) {
           try {
-            // jika sudah sama token di localStorage, tidak perlu overwrite — tapi overwrite juga aman
             localStorage.setItem("auth_token", token);
           } catch (e) {
             console.warn("Failed to store auth token:", e);
@@ -81,16 +91,13 @@ api.interceptors.response.use(
         // 5) redirect berdasarkan role (hanya di browser)
         if (typeof window !== "undefined") {
           if (role === "SUPER_ADMIN" || role === "ADMIN_STORE") {
-            // redirect ke halaman admin (sesuaikan path kalau perlu)
             window.location.href = "/admin/users";
           } else {
-            // bukan admin -> redirect ke dashboard user (atau home)
             window.location.href = "/";
           }
         }
       }
     } catch (err) {
-      // jangan crash aplikasi kalau interceptor error
       console.error("post-login interceptor error:", err);
     }
 
