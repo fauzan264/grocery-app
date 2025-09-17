@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import * as yup from "yup";
-import UploadField from "./UploadField";
 import { uploadFileToServer } from "../../app/lib/upload";
 import { useCreateUser, useUpdateUser, useUserForm } from "../../app/hooks/useUsers";
 import { InferType } from "yup";
+import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
 
 export const schema = yup.object({
   id: yup.string().optional(),
@@ -99,104 +100,183 @@ export default function UserFormModal({
     }
   };
 
+  const [showPassword, setShowPassword] = useState(false);
   return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white rounded p-6 w-[720px] max-w-full"
-      >
-        <h3 className="text-lg font-semibold text-slate-700 mb-4">
-          {mode === "create" ? "Buat User" : "Edit User"}
-        </h3>
+  <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="bg-white rounded-lg shadow-lg p-6 w-[720px] max-w-full"
+    >
+      <h3 className="text-xl font-semibold text-gray-800 mb-6">
+        {mode === "create" ? "Buat User" : "Edit User"}
+      </h3>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm">Nama Lengkap</label>
+      {/* Grid 2 kolom */}
+      <div className="grid grid-cols-2 gap-5">
+        {/* Nama Lengkap */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nama Lengkap
+          </label>
+          <input
+            {...register("full_name")}
+            className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+            placeholder="Masukkan nama lengkap"
+          />
+          {errors.full_name?.message && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.full_name.message}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            {...register("email")}
+            className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+            placeholder="Masukkan email"
+          />
+          {errors.email?.message && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Phone
+          </label>
+          <input
+            {...register("phone_number")}
+            className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+            placeholder="Nomor telepon"
+          />
+        </div>
+
+        {/* Tanggal Lahir */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Tanggal Lahir
+          </label>
+          <input
+            type="date"
+            {...register("date_of_birth")}
+            className="w-full p-2.5 rounded-md mt-1 
+                      text-gray-900 
+                      bg-gray-50 border border-gray-400 
+                      focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 
+                      placeholder-gray-500
+                      [color-scheme:light]" 
+          />
+        </div>
+
+        {/* Role */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Role
+          </label>
+          <select
+            {...register("user_role")}
+            className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+          >
+            <option value="ADMIN_STORE">Store Admin</option>
+            <option value="SUPER_ADMIN">Super Admin</option>
+            <option value="CUSTOMER">Customer</option>
+          </select>
+        </div>
+
+        {/* Password */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <div className="relative">
             <input
-              {...register("full_name")}
-              className="w-full p-2 border rounded mt-1"
-            />
-            {errors.full_name?.message && (
-              <div className="text-red-500 text-xs">
-                {errors.full_name.message}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm">Email</label>
-            <input
-              {...register("email")}
-              className="w-full p-2 border rounded mt-1"
-            />
-            {errors.email?.message && (
-              <div className="text-red-500 text-xs">
-                {errors.email.message}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm">Phone</label>
-            <input
-              {...register("phone_number")}
-              className="w-full p-2 border rounded mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm">Tanggal Lahir</label>
-            <input
-              type="date"
-              {...register("date_of_birth")}
-              className="w-full p-2 border rounded mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm">Role</label>
-            <select
-              {...register("user_role")}
-              className="w-full p-2 border rounded mt-1"
-            >
-              <option value="ADMIN_STORE">ADMIN_STORE</option>
-              <option value="SUPER_ADMIN">SUPER_ADMIN</option>
-              <option value="CUSTOMER">CUSTOMER</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm">Password</label>
-            <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2.5 border border-gray-300 rounded-md mt-1 
+                        text-gray-900 placeholder-gray-400 
+                        focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+              placeholder="Minimal 6 karakter"
             />
-          </div>
-
-          <div className="col-span-2">
-            <label className="block text-sm">Foto Profil</label>
-            <UploadField onChange={(f) => setFile(f)} />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 mt-6">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-3 py-2 border rounded"
-          >
-            Batal
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-4 py-2 rounded bg-emerald-200"
-          >
-            Simpan
-          </button>
+        {/* Foto Profil full width */}
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Foto Profil
+          </label>
+
+          <div className="flex items-center gap-4">
+            {/* Preview photo */}
+            <div className="w-20 h-20 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center overflow-hidden">
+              {file ? (
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt="Preview"
+                  width={80}
+                  height={80}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-gray-400 text-xs">No Image</span>
+              )}
+            </div>
+
+            {/* Upload button dengan feedback */}
+            <div className="flex flex-col gap-2">
+              <label className="inline-flex items-center px-4 py-2 bg-emerald-500 text-white text-sm font-medium rounded-md shadow cursor-pointer hover:bg-emerald-600 active:scale-95 transition-transform duration-150">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      setFile(e.target.files[0]);
+                    }
+                  }}
+                />
+                Pilih Foto
+              </label>
+              <p className="text-xs text-gray-500">PNG, JPG maksimal 1MB</p>
+            </div>
+          </div>
         </div>
-      </form>
-    </div>
-  );
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end gap-3 mt-6">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-100"
+        >
+          Batal
+        </button>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-5 py-2 rounded-md bg-emerald-500 text-white font-medium hover:bg-emerald-600 disabled:bg-emerald-300"
+        >
+          Simpan
+        </button>
+      </div>
+    </form>
+  </div>
+);
+
 }

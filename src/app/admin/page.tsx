@@ -22,9 +22,16 @@ type PaginatedUsers = {
 async function fetchUsers(page: number, q?: string): Promise<PaginatedUsers> {
   const params: Record<string, string | number> = { page };
   if (q) params.q = q;
-  const res = await api.get("/api/users", { params });
-  return res.data;
+
+  const res = await api.get<{
+    success: boolean;
+    message?: string;
+    data: PaginatedUsers;
+  }>("/api/users", { params });
+
+  return res.data.data; // ⬅️ ambil bagian dalamnya
 }
+
 
 export default function AdminPage() {
   const [page, setPage] = useState(1);
@@ -43,9 +50,10 @@ export default function AdminPage() {
 
   const deleteMut = useDeleteUser();
 
-  const totalUsers = data?.meta.total ?? 0;
-  const pageNum = data?.meta.page ?? 1;
-  const totalPages = data?.meta.pages ?? 1;
+  const meta = data?.meta ?? { total: 0, page: 1, pages: 1 };
+  const totalUsers = meta.total;
+  const pageNum = meta.page;
+  const totalPages = meta.pages;
 
   const onSearch = () => {
     setPage(1);
@@ -67,10 +75,10 @@ export default function AdminPage() {
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-semibold text-slate-700">
+            <h1 className="text-2xl font-semibold text-slate-300">
               Manajemen Akun
             </h1>
-            <p className="text-sm text-slate-700/70">
+            <p className="text-sm text-slate-200/70">
               Kelola akun pengguna — buat, edit, dan hapus.
             </p>
           </div>
@@ -85,7 +93,7 @@ export default function AdminPage() {
                 if (e.key === "Enter") onSearch();
               }}
               placeholder="Cari nama atau email..."
-              className="outline-none w-56 sm:w-80 text-sm"
+              className="outline-none w-56 sm:w-80 text-sm text-zinc-500"
             />
             <button
               onClick={onSearch}
@@ -97,15 +105,15 @@ export default function AdminPage() {
 
           <div className="flex items-center gap-2">
             <div className="text-right text-sm">
-              <div className="text-xs text-slate-700/70">Total Pengguna</div>
-              <div className="text-lg font-semibold text-emerald-900">
+              <div className="text-s text-emerald-400">Total Pengguna</div>
+              <div className="text-lg font-semibold text-emerald-400">
                 {totalUsers}
               </div>
             </div>
 
             <button
               onClick={() => setOpenCreate(true)}
-              className="px-4 py-2 rounded bg-emerald-200 hover:opacity-95 transition font-medium"
+              className="px-4 py-2 rounded bg-emerald-200 hover:opacity-95 transition font-medium text-zinc-800"
             >
               Tambah User
             </button>
