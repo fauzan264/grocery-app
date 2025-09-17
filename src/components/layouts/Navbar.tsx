@@ -1,4 +1,5 @@
 "use client";
+import CartIcon from "@/features/cart/components/CartIcon";
 import useAuthStore from "@/store/useAuthStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,9 +18,10 @@ export default function Navbar() {
   return (
     <div className="navbar fixed font-bold shadow-sm transition duration-300 left-0 top-0 z-99 px-10 bg-emerald-900 text-gray-200">
       <div className="navbar-start gap-5"></div>
-      <div className="navbar-end hidden lg:flex">
+      <div className="navbar-end hidden lg:flex items-center gap-6">
+        <CartIcon />
         {auth.fullName && (
-          <div className="dropdown dropdown-end ml-auto">
+          <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
               role="button"
