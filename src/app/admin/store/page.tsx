@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function StorePage() {
   return (
-    <div className="mx-auto w-11/12 my-10">
+    <div className="mx-auto my-10 w-11/12 h-full">
       <div className="flex">
         <h1 className="text-2xl text-gray-700">Store Management</h1>
         <Link
@@ -13,7 +13,7 @@ export default function StorePage() {
           Create Store
         </Link>
       </div>
-      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
+      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl h-10/12">
         <div className="card-body">
           <StoreListComponent />
         </div>
