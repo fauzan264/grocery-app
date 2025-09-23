@@ -10,10 +10,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex flex-1 pt-16 h-screen overflow-hidden">
+    <div className="flex flex-1 pt-16 min-h-screen">
       <div className="drawer lg:drawer-open">
         <input type="checkbox" id="my-drawer" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col items-center ">
+        <div className="drawer-content flex flex-col items-center">
           {children}
         </div>
         <div className="drawer-side">

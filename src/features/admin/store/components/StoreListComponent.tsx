@@ -76,19 +76,19 @@ export default function StoreListComponent() {
                 <td>{store.city}</td>
                 <td className="flex space-x-2">
                   <Link
-                    href={`admin/store/detail/${store.id}`}
+                    href={`/admin/store/detail/${store.id}`}
                     className="btn btn-sm bg-emerald-500 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
                   >
                     Detail
                   </Link>
                   <Link
-                    href={`admin/store/edit/${store.id}`}
+                    href={`/admin/store/edit/${store.id}`}
                     className="btn btn-sm bg-amber-400 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
                   >
                     Edit
                   </Link>
                   <Link
-                    href={`admin/store/delete/${store.id}`}
+                    href={`/admin/store/delete/${store.id}`}
                     className="btn btn-sm bg-red-500 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
                   >
                     Delete
@@ -109,7 +109,7 @@ export default function StoreListComponent() {
 
       {/* pagination */}
       {pagination && (
-        <div className="flex gap-2 mt-4 mx-auto">
+        <div className="flex gap-2 mx-auto mt-auto mb-5">
           <button
             disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}

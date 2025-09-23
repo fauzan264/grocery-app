@@ -8,13 +8,13 @@ import {
   getProvinces,
   getSubdistricts,
 } from "@/services/shipping";
-import { createStoreSchema } from "@/features/admin/store/schemas/createStoreSchema";
+import { updateStoreSchema } from "@/features/admin/store/schemas/updateStoreSchema";
 
 const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
   ssr: false,
 });
 
-export default function CreateStorePage() {
+export default function EditStorePage() {
   const [provinces, setProvinces] = useState<
     { id: string; name: string }[] | null
   >(null);
@@ -44,7 +44,7 @@ export default function CreateStorePage() {
       longitude: "",
       logo: "",
     },
-    validationSchema: createStoreSchema,
+    validationSchema: updateStoreSchema,
     onSubmit: ({
       name,
       description,
@@ -93,6 +93,23 @@ export default function CreateStorePage() {
     setSubdistricts(response.data.data);
     formik.setFieldValue("subdistrict", "");
   };
+
+  // useEffect(() => {
+  // if (store) {
+  // formik.setValues({
+  //   name: store.name || "",
+  //   description: store.description || "",
+  //   province: store.province || "",
+  //   city: store.city || "",
+  //   district: store.district || "",
+  //   subdistrict: store.subdistrict || "",
+  //   address: store.addresss || "",
+  //   latitude: store.latitude || "",
+  //   longitude: store.longitude || "",
+  //   logo: "",
+  // })
+  // }
+  // }, []);
 
   useEffect(() => {
     onGetProvinces();
