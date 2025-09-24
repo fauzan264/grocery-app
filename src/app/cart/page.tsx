@@ -19,14 +19,14 @@ export default function Cart() {
     const { token } = useAuthStore();
     const router = useRouter();
 
-    const { cartItems, setCartItems } = useCartStore(); 
+    const { cartItems, setCartItems } = useCartStore();
     const [loadingIds, setLoadingIds] = useState<string[]>([]);
 
     // GET cart items
     const onGetCartItems = async () => {
         try {
             const items = await getCartItems(token);
-            setCartItems(items); 
+            setCartItems(items);
         } catch (err) {
             console.error(err);
         }
@@ -86,7 +86,6 @@ export default function Cart() {
         }
     };
 
-    
     const onRemoveItem = async (id: string) => {
         const oldItems = [...cartItems];
         setCartItems(cartItems.filter((item) => item.id !== id));
@@ -153,7 +152,10 @@ export default function Cart() {
                                 {formatPrice(total)}
                             </span>
                         </div>
-                        <button className="w-full bg-amber-400 text-white py-2 rounded-lg font-semibold hover:bg-green-600">
+                        <button
+                            onClick={() => router.push("/orders")}
+                            className="w-full bg-amber-400 text-white py-2 rounded-lg font-semibold hover:bg-green-600"
+                        >
                             Checkout
                         </button>
                     </div>
