@@ -39,7 +39,7 @@ export default function Navbar() {
               className="menu menu-sm dropdown-content bg-emerald-700 rounded-box z-1 mt-3 w-52 p-2 shadow text-slate-200"
             >
               <li>
-                <Link href={"admin/profile"}>Profile</Link>
+                <Link href={"/admin/profile"}>Profile</Link>
               </li>
               <li>
                 <button onClick={() => onLogout()}>Logout</button>
