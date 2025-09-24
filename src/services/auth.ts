@@ -88,3 +88,23 @@ export const resetPassword = ({
     }
   );
 };
+
+export const changePassword = ({
+  oldPassword,
+  newPassword,
+  token,
+}: {
+  oldPassword: string;
+  newPassword: string;
+  token: string;
+}) => {
+  return axiosInstance.post(
+    `/auth/change-password`,
+    snakecaseKeys({ oldPassword, newPassword }),
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
