@@ -17,7 +17,7 @@ export default function Navbar() {
 
   return (
     <div className="navbar fixed font-bold shadow-sm transition duration-300 left-0 top-0 z-99 px-10 bg-emerald-900 text-gray-200">
-      <div className="navbar-start gap-5"></div>
+      <div className="navbar-start gap-5">My Grocery</div>
       <div className="navbar-end hidden lg:flex items-center gap-6">
         <CartIcon />
         {auth.fullName && (
