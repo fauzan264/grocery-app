@@ -1,23 +1,40 @@
+// lib/api.ts
 import axios from "axios";
 import type { AxiosResponse, InternalAxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import { getStoredToken } from "./auth";
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+const BASE = process.env.NEXT_PUBLIC_API_URL
 
 export const api = axios.create({
   baseURL: BASE,
-  headers: { "Content-Type": "application/json" },
-  withCredentials: false, // kalau pakai httpOnly cookie, ubah ini dan backend harus support cookie
+  // NOTE: jangan set Content-Type default di sini karena ada request yang memakai FormData
+  // headers: { "Content-Type": "application/json" }, <-- removed on purpose
+  withCredentials: false,
 });
 
-// request interceptor dengan typing yang sesuai
+// Request interceptor
 api.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   // hanya jalankan di browser
   if (typeof window === "undefined") return config;
 
+  // jika body adalah FormData, pastikan kita tidak memaksakan Content-Type
+  // supaya browser bisa menambahkan boundary untuk multipart/form-data
+  try {
+    if (config.data instanceof FormData) {
+      if (config.headers) {
+        // delete Content-Type if present
+        // use both lowercase and standard names to be safe
+        delete (config.headers as any)["Content-Type"];
+        delete (config.headers as any)["content-type"];
+      }
+    }
+  } catch (e) {
+    // ignore - just a safety guard
+    // console.warn("request interceptor FormData check failed", e);
+  }
+
   const token = getStoredToken();
   if (token) {
-    // pastikan headers ada dan bertipe AxiosRequestHeaders
     if (!config.headers) {
       config.headers = {} as AxiosRequestHeaders;
     }
@@ -29,20 +46,15 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig): InternalAxios
   return config;
 });
 
-// ------------------------------
-// response interceptor: handle login responses (store token + redirect)
-// ------------------------------
+// Response interceptor (keep your existing logic)
 api.interceptors.response.use(
-  // on fulfilled
   async (response: AxiosResponse): Promise<AxiosResponse> => {
     try {
       if (typeof window === "undefined") return response;
 
       const url = response.config?.url ?? "";
 
-      // Hanya jalankan logic ini untuk response dari endpoint login (sesuaikan jika perlu)
       if (typeof url === "string" && (url.includes("/api/auth/login") || url.includes("/api/auth/google"))) {
-        // 1) coba ambil token dari header Authorization
         const authHeader = (response.headers && (response.headers["authorization"] || response.headers["Authorization"])) as string | undefined;
 
         let token: string | undefined;
@@ -52,12 +64,10 @@ api.interceptors.response.use(
           else token = authHeader;
         }
 
-        // 2) jika belum ada, coba ambil dari body (beberapa API return token di body)
         if (!token) {
           token = response.data?.token ?? response.data?.data?.token ?? response.data?.data?.accessToken ?? undefined;
         }
 
-        // simpan token jika ditemukan
         if (token) {
           try {
             localStorage.setItem("auth_token", token);
@@ -66,7 +76,6 @@ api.interceptors.response.use(
           }
         }
 
-        // 3) coba deteksi role dari response (beberapa shape)
         let role: string | undefined;
         role =
           response.data?.data?.user?.user_role ??
@@ -75,7 +84,6 @@ api.interceptors.response.use(
           response.data?.role ??
           response.data?.data?.role;
 
-        // 4) jika role belum ketemu, dan token ada, fetch profil singkat
         if (!role && token) {
           try {
             const tmp = axios.create({ baseURL: BASE });
@@ -84,11 +92,10 @@ api.interceptors.response.use(
             });
             role = profileRes?.data?.data?.user_role ?? profileRes?.data?.data?.role ?? profileRes?.data?.user?.user_role;
           } catch (e) {
-            // gagal fetch profile -> ignore
+            // ignore
           }
         }
 
-        // 5) redirect berdasarkan role (hanya di browser)
         if (typeof window !== "undefined") {
           if (role === "SUPER_ADMIN" || role === "ADMIN_STORE") {
             window.location.href = "/admin/users";
@@ -104,9 +111,7 @@ api.interceptors.response.use(
     return response;
   },
 
-  // on rejected
   (error) => {
-    // optional: handle global 401 / token expired here
     return Promise.reject(error);
   }
 );

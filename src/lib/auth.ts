@@ -1,4 +1,3 @@
-// lib/auth.ts
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
 
