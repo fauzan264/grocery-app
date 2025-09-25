@@ -38,10 +38,6 @@ export const getDistricts = ({
   });
 };
 
-export const getSubdistricts = ({ districtId }: { districtId: number }) => {
-  return axiosInstance.get(`${SHIPPING_URL}/subdistricts/${districtId}`);
-};
-
 export const getDomesticDestination = ({ search }: { search: string }) => {
   return axiosInstance.get(`${SHIPPING_URL}/destination/domestic-destination`, {
     params: { search, limit: 10, offset: 0 },

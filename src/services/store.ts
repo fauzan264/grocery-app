@@ -33,9 +33,9 @@ export const getStoreById = ({ id, token }: { id: string; token: string }) => {
 export const createStore = ({
   name,
   description,
-  city,
-  province,
-  subdistrict,
+  province_id,
+  city_id,
+  district_id,
   address,
   latitude,
   longitude,
@@ -47,9 +47,9 @@ export const createStore = ({
   const formData = new FormData();
   formData.append("name", String(name));
   formData.append("description", String(description));
-  formData.append("city", String(city));
-  formData.append("province", String(province));
-  formData.append("subdistrict", String(subdistrict));
+  formData.append("city", String(province_id));
+  formData.append("province", String(city_id));
+  formData.append("subdistrict", String(district_id));
   formData.append("address", String(address));
   formData.append("latitude", String(latitude));
   formData.append("longitude", String(longitude));
@@ -66,9 +66,9 @@ export const updateStore = ({
   id,
   name,
   description,
-  city,
-  province,
-  subdistrict,
+  province_id,
+  city_id,
+  district_id,
   address,
   latitude,
   longitude,
@@ -79,9 +79,9 @@ export const updateStore = ({
   const formData = new FormData();
   formData.append("name", String(name));
   formData.append("description", String(description));
-  formData.append("city", String(city));
-  formData.append("province", String(province));
-  formData.append("subdistrict", String(subdistrict));
+  formData.append("city", String(province_id));
+  formData.append("province", String(city_id));
+  formData.append("subdistrict", String(district_id));
   formData.append("address", String(address));
   formData.append("latitude", String(latitude));
   formData.append("longitude", String(longitude));

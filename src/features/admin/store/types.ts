@@ -2,9 +2,9 @@ export interface IStore {
   id?: string;
   name?: string;
   description?: string;
-  city?: string;
-  province?: string;
-  subdistrict?: string;
+  province_id?: number;
+  city_id?: number;
+  district_id?: number;
   address?: string;
   latitude?: string;
   longitude?: string;
