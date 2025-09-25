@@ -1,103 +1,160 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className="bg-slate-200 min-h-screen">
+      <div className="flex justify-center mb-15">
+        <div className="carousel w-full max-w-11/12 rounded-box mt-20">
+          <div id="slide1" className="carousel-item relative w-full">
+            <img
+              src="https://images.unsplash.com/photo-1721219178064-7758ebc5580d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              className="w-full h-92 object-cover"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className="absolute left-5 right-5 top-50 flex -translate-y-1/2 transform justify-between">
+              <a href="#slide2" className="btn btn-circle">
+                ❮
+              </a>
+              <a href="#slide2" className="btn btn-circle">
+                ❯
+              </a>
+            </div>
+          </div>
+          <div id="slide2" className="carousel-item relative w-full">
+            <img
+              src="https://images.unsplash.com/photo-1672363547647-8fad02572412?q=80&w=2344&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              className="w-full h-92 object-cover"
+            />
+            <div className="absolute left-5 right-5 top-50 flex -translate-y-1/2 transform justify-between">
+              <a href="#slide1" className="btn btn-circle">
+                ❮
+              </a>
+              <a href="#slide3" className="btn btn-circle">
+                ❯
+              </a>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      <div className="w-11/12 mx-auto py-10">
+        <h1 className="py-5 text-lg font-semibold text-center">Product</h1>
+        <div className="grid grid-cols-1 md:grid-cols-6 justify-items-center">
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://images.unsplash.com/photo-1572898170625-b4344fa56d22?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Orange"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Orange</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://images.unsplash.com/photo-1623780494339-f7ed013ebbc4?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Apple"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Apple</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1724255862358-b58750ad31a8?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Mango"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Mango</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1724250081102-cab0e5cb314c?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Banana"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Banana</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://images.unsplash.com/photo-1588710929895-6ee7a0a4d155?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Milk"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Milk</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="card bg-base-100 w-52 shadow-sm gap-3 mb-10">
+            <Link href={"#"}>
+              <figure className="rounded-t-md">
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1675237625862-d982e7f44696?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Coffee"
+                />
+              </figure>
+              <div className="card-body">
+                <h2 className="card-title text-md">Coffee</h2>
+                <p>Rp. 20.000</p>
+                <div className="card-actions justify-end">
+                  <button className="btn btn-sm bg-amber-400 text-white hover:shadow-md text-sm rounded-md w-full">
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
