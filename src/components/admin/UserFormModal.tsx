@@ -1,11 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import * as yup from "yup";
-import { uploadFileToServer } from "../../app/lib/upload";
+import { uploadFileToServer } from "../../lib/upload";
 import { useCreateUser, useUpdateUser, useUserForm } from "../../app/hooks/useUsers";
 import { InferType } from "yup";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import useAuthStore from "@/store/useAuthStore";
+
+
 
 export const schema = yup.object({
   id: yup.string().optional(),
@@ -65,8 +68,15 @@ export default function UserFormModal({
     }
   }, [defaultValues, reset]);
 
+  const { role: currentRole } = useAuthStore(); 
+  const isSuperAdmin = currentRole === "SUPER_ADMIN";
+
   const onSubmit = async (vals: FormValues) => {
     try {
+      let finalRole = vals.user_role;
+      if (!isSuperAdmin) {
+      finalRole = "CUSTOMER";
+      }
       // upload file if exists
       let photoUrl: string | null = null;
       if (file) {
@@ -78,7 +88,7 @@ export default function UserFormModal({
         email: vals.email,
         dateOfBirth: vals.date_of_birth || null,
         phoneNumber: vals.phone_number || null,
-        userRole: vals.user_role,
+        userRole: finalRole,
         password: vals.password || null,
         photoProfile: photoUrl,
       };
@@ -181,16 +191,23 @@ export default function UserFormModal({
           <label className="block text-sm font-medium text-gray-700">
             Role
           </label>
-          <select
-            {...register("user_role")}
-            className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
-          >
-            <option value="ADMIN_STORE">Store Admin</option>
-            <option value="SUPER_ADMIN">Super Admin</option>
-            <option value="CUSTOMER">Customer</option>
-          </select>
+          {isSuperAdmin ? (
+            <select
+              {...register("user_role")}
+              className="w-full p-2.5 border border-gray-300 rounded-md mt-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400"
+            >
+              <option value="ADMIN_STORE">Store Admin</option>
+              <option value="SUPER_ADMIN">Super Admin</option>
+              <option value="CUSTOMER">Customer</option>
+            </select>
+          ) : (
+            <input
+              value="CUSTOMER"
+              disabled
+              className="w-full p-2.5 border border-gray-200 rounded-md mt-1 bg-gray-100 text-gray-600"
+            />
+          )}
         </div>
-
         {/* Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700">

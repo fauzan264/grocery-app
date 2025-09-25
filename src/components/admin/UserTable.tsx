@@ -21,13 +21,13 @@ export function ConfirmDialog({
             onClick={onCancel}
             className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
           >
-            Batal
+            Cancel
           </button>
           <button
             onClick={onConfirm}
             className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
           >
-            Hapus
+            Delete
           </button>
         </div>
       </div>
@@ -39,23 +39,25 @@ export default function UserTable({
   users,
   onEdit,
   onDelete,
+  canManage = true,
 }: {
   users: IUser[];
-  onEdit: (u: IUser) => void;
-  onDelete: (u: IUser) => void;
+  onEdit?: (u: IUser) => void;
+  onDelete?: (u: IUser) => void;
+  canManage?: boolean;
 }) {
   return (
     <div className="overflow-x-auto bg-white rounded-xl shadow">
       <table className="w-full table-auto text-sm">
         <thead className="bg-gray-800 text-white">
           <tr className="text-left">
-            <th className="p-3">User</th>
-            <th className="p-3">Email</th>
-            <th className="p-3">Phone</th>
-            <th className="p-3">Role</th>
-            <th className="p-3">Status</th>
-            <th className="p-3">Dibuat</th>
-            <th className="p-3 text-right">Aksi</th>
+            <th className="p-3 text-center">User</th>
+            <th className="p-3 text-center">Email</th>
+            <th className="p-3 text-center">Phone</th>
+            <th className="p-3 text-center">Role</th>
+            <th className="p-3 text-center">Status</th>
+            <th className="p-3 text-center"> Made</th>
+            <th className="p-3 text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -108,18 +110,24 @@ export default function UserTable({
               </td>
               <td className="p-3 text-right">
                 <div className="flex gap-2 justify-end">
-                  <button
-                    onClick={() => onEdit(u)}
-                    className="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs transition"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => onDelete(u)}
-                    className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-xs transition"
-                  >
-                    Hapus
-                  </button>
+                  {canManage ? (
+                    <>
+                      <button
+                        onClick={() => onEdit?.(u)}
+                        className="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 text-xs transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => onDelete?.(u)}
+                        className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-xs transition"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <span className="text-xs text-gray-500">No actions</span>
+                  )}
                 </div>
               </td>
             </tr>
