@@ -2,12 +2,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useFormik } from "formik";
-import {
-  getCities,
-  getDistricts,
-  getProvinces,
-  getSubdistricts,
-} from "@/services/shipping";
+import { getCities, getDistricts, getProvinces } from "@/services/shipping";
 import { updateStoreSchema } from "@/features/admin/store/schemas/updateStoreSchema";
 
 const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
@@ -24,9 +19,6 @@ export default function EditStorePage() {
   const [districts, setDistricts] = useState<
     { id: string; name: string }[] | null
   >(null);
-  const [subdistricts, setSubdistricts] = useState<
-    { id: string; name: string }[] | null
-  >(null);
   const [position, setPosition] = useState<[number, number]>([
     -6.186486, 106.834091,
   ]);
@@ -35,10 +27,9 @@ export default function EditStorePage() {
     initialValues: {
       name: "",
       description: "",
-      province: "",
-      city: "",
-      district: "",
-      subdistrict: "",
+      province_id: "",
+      city_id: "",
+      district_id: "",
       address: "",
       latitude: "",
       longitude: "",
@@ -48,10 +39,9 @@ export default function EditStorePage() {
     onSubmit: ({
       name,
       description,
-      province,
-      city,
-      district,
-      subdistrict,
+      province_id,
+      city_id,
+      district_id,
       address,
       latitude,
       longitude,
@@ -74,24 +64,14 @@ export default function EditStorePage() {
     const response = await getCities({ provinceId });
     setCities(response.data.data);
     setDistricts([]);
-    setSubdistricts([]);
     formik.setFieldValue("city", "");
     formik.setFieldValue("district", "");
-    formik.setFieldValue("subdistrict", "");
   };
 
   const onGetDistrict = async ({ cityId }: { cityId: number }) => {
     const response = await getDistricts({ cityId });
     setDistricts(response.data.data);
-    setSubdistricts([]);
     formik.setFieldValue("district", "");
-    formik.setFieldValue("subdistrict", "");
-  };
-
-  const onGetSubdistrict = async ({ districtId }: { districtId: number }) => {
-    const response = await getSubdistricts({ districtId });
-    setSubdistricts(response.data.data);
-    formik.setFieldValue("subdistrict", "");
   };
 
   // useEffect(() => {
@@ -102,7 +82,6 @@ export default function EditStorePage() {
   //   province: store.province || "",
   //   city: store.city || "",
   //   district: store.district || "",
-  //   subdistrict: store.subdistrict || "",
   //   address: store.addresss || "",
   //   latitude: store.latitude || "",
   //   longitude: store.longitude || "",
@@ -116,19 +95,14 @@ export default function EditStorePage() {
   }, []);
 
   useEffect(() => {
-    if (formik.values.province)
-      onGetCities({ provinceId: Number(formik.values.province) });
-  }, [formik.values.province]);
+    if (formik.values.province_id)
+      onGetCities({ provinceId: Number(formik.values.province_id) });
+  }, [formik.values.province_id]);
 
   useEffect(() => {
-    if (formik.values.city)
-      onGetDistrict({ cityId: Number(formik.values.city) });
-  }, [formik.values.city]);
-
-  useEffect(() => {
-    if (formik.values.district)
-      onGetSubdistrict({ districtId: Number(formik.values.district) });
-  }, [formik.values.district]);
+    if (formik.values.city_id)
+      onGetDistrict({ cityId: Number(formik.values.city_id) });
+  }, [formik.values.city_id]);
 
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
@@ -176,10 +150,10 @@ export default function EditStorePage() {
                   Province
                 </legend>
                 <select
-                  name="province"
-                  id="province"
+                  name="province_id"
+                  id="province_id"
                   className="select select-accent validator w-full"
-                  value={formik.values.province}
+                  value={formik.values.province_id}
                   onChange={formik.handleChange}
                 >
                   <option value={""} disabled={true}>
@@ -195,10 +169,10 @@ export default function EditStorePage() {
               <fieldset className="fieldset w-full">
                 <legend className="fieldset-legend text-slate-800">City</legend>
                 <select
-                  name="city"
-                  id="city"
+                  name="city_id"
+                  id="city_id"
                   className="select select-accent validator w-full"
-                  value={formik.values.city}
+                  value={formik.values.city_id}
                   onChange={formik.handleChange}
                 >
                   <option value={""} disabled={true}>
@@ -216,10 +190,10 @@ export default function EditStorePage() {
                   District
                 </legend>
                 <select
-                  name="district"
-                  id="district"
+                  name="district_id"
+                  id="district_id"
                   className="select select-accent validator w-full"
-                  value={formik.values.district}
+                  value={formik.values.district_id}
                   onChange={formik.handleChange}
                 >
                   <option value={""} disabled={true}>
@@ -228,27 +202,6 @@ export default function EditStorePage() {
                   {districts?.map((district) => (
                     <option key={district.id} value={district.id}>
                       {district.name}
-                    </option>
-                  ))}
-                </select>
-              </fieldset>
-              <fieldset className="fieldset w-full">
-                <legend className="fieldset-legend text-slate-800">
-                  Subdistrict
-                </legend>
-                <select
-                  name="subdistrict"
-                  id="subdistrict"
-                  className="select select-accent validator w-full"
-                  value={formik.values.subdistrict}
-                  onChange={formik.handleChange}
-                >
-                  <option value={""} disabled={true}>
-                    Select a subdistrict
-                  </option>
-                  {subdistricts?.map((subdistrict) => (
-                    <option key={subdistrict.id} value={subdistrict.id}>
-                      {subdistrict.name}
                     </option>
                   ))}
                 </select>
