@@ -15,11 +15,13 @@ import {
 } from "@/services/profile";
 import { createOrders } from "@/services/order";
 import { createGatewayPayment } from "@/services/payment";
+import { useOrderStore } from "@/store/userOrderStore";
 
 export default function OrderCard() {
     const router = useRouter();
     const { token } = useAuthStore();
     const { cartItems } = useCartStore();
+     const setCurrentOrder = useOrderStore((state) => state.setCurrentOrder);
 
     const [selected, setSelected] = useState<PaymentMethod>(
         PaymentMethod.BANK_TRANSFER
@@ -76,6 +78,7 @@ export default function OrderCard() {
 
             // 1. Create order
             const order = await createOrders(payload, token);
+            setCurrentOrder(order);
 
             if (selected === PaymentMethod.SNAP) {
                 // 2. Generate Snap transaction

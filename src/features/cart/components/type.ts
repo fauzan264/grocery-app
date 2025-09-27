@@ -8,6 +8,7 @@ export interface ICartItems {
   product: {
     name: string
     price: number
+    stock : number
   }
 }
 

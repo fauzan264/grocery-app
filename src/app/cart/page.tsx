@@ -4,7 +4,7 @@ import CartItems from "@/features/cart/components/CartItems";
 import { ICartItems } from "@/features/cart/components/type";
 import useAuthStore from "@/store/useAuthStore";
 import useCartStore from "@/store/useCartStore"; // ⬅️ pakai global store
-import { formatPrice } from "@/utils/format";
+import { formatPrice } from "@/utils/formatPrice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {

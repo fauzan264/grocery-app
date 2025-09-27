@@ -3,13 +3,13 @@ import OrderCard from "@/features/orders/CheckOutOrderCard";
 import { PaymentMethod } from "@/features/orders/type";
 import useAuthStore from "@/store/useAuthStore";
 import useCartStore from "@/store/useCartStore";
-import { formatPrice } from "@/utils/format";
+import { formatPrice } from "@/utils/formatPrice";
 import { useState } from "react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdDiscount } from "react-icons/md";
 
 export default function Order() {
-    const {cartItems} = useCartStore();
+    const { cartItems } = useCartStore();
     const [couponCodes, setCouponCodes] = useState<string[]>([]);
 
     return (
@@ -39,7 +39,6 @@ export default function Order() {
                                     </div>
                                     <span className="font-bold">
                                         {formatPrice(item.subTotal)}
-                                        
                                     </span>
                                 </div>
                             ))}
