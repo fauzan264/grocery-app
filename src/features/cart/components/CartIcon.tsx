@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import useCartStore from "@/store/useCartStore";
-import { formatPrice } from "@/utils/format";
+import { formatPrice } from "@/utils/formatPrice";
 import { useRouter } from "next/navigation";
 
 export default function CartIcon() {
@@ -11,8 +11,8 @@ export default function CartIcon() {
     const router = useRouter();
 
     const goToCart = () => {
-        setShowDropdown(false); 
-        router.push("/cart"); 
+        setShowDropdown(false);
+        router.push("/cart");
     };
 
     return (

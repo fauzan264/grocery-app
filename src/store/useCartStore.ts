@@ -44,8 +44,7 @@ const useCartStore = create<ICartStore>()(
       clearCart: () => set({ cartItems: [] }),
     }),
     {
-      name: "cart-storage", // key di localStorage
-      // kalau mau selective persist
+      name: "cart-storage", 
       partialize: (state) => ({ cartItems: state.cartItems }),
     }
   )
