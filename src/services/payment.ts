@@ -11,7 +11,7 @@ export const createGatewayPayment = async (orderId: string, token: string) => {
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-  return res.data.data; 
+  return res?.data?.data; 
 };
 
 // Upload manual transfer proof
@@ -21,9 +21,9 @@ export const uploadPaymentProof = async (
   token: string
 ) => {
   const formData = new FormData();
-  formData.append("imageFile", file);
+  formData.append("paymentProof", file);
 
-  const res = await axiosInstance.post(
+  const res = await axiosInstance.patch(
     `${PAYMENT_URL}/upload/${orderId}`,
     formData,
     {
@@ -34,5 +34,5 @@ export const uploadPaymentProof = async (
     }
   );
 
-  return res.data.data; 
+  return res?.data; 
 };

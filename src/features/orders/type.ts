@@ -19,6 +19,7 @@ export interface IOrderResponse {
   finalPrice: number 
   paymentMethod: string; 
   createdAt: string; 
+  expiredAt : string;
   user: {
     receiverName: string;
     receiverNumber: string;
@@ -35,3 +36,4 @@ export enum OrderStatus {
   ORDER_CONFIRMATION,
   CANCELLED
 }
+
