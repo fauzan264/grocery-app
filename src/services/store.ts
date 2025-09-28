@@ -33,9 +33,9 @@ export const getStoreById = ({ id, token }: { id: string; token: string }) => {
 export const createStore = ({
   name,
   description,
-  province_id,
-  city_id,
-  district_id,
+  provinceId,
+  cityId,
+  districtId,
   address,
   latitude,
   longitude,
@@ -45,18 +45,22 @@ export const createStore = ({
   token: string;
 }) => {
   const formData = new FormData();
+  if (logo) {
+    formData.append("logo", logo);
+  }
+
   formData.append("name", String(name));
   formData.append("description", String(description));
-  formData.append("city", String(province_id));
-  formData.append("province", String(city_id));
-  formData.append("subdistrict", String(district_id));
+  formData.append("province_id", String(provinceId));
+  formData.append("city_id", String(cityId));
+  formData.append("district_id", String(districtId));
   formData.append("address", String(address));
   formData.append("latitude", String(latitude));
   formData.append("longitude", String(longitude));
-  formData.append("logo", String(logo));
 
   return axiosInstance.post(STORES_URL, formData, {
     headers: {
+      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -66,9 +70,9 @@ export const updateStore = ({
   id,
   name,
   description,
-  province_id,
-  city_id,
-  district_id,
+  provinceId,
+  cityId,
+  districtId,
   address,
   latitude,
   longitude,
@@ -77,19 +81,23 @@ export const updateStore = ({
   token,
 }: IStore & { token: string }) => {
   const formData = new FormData();
+  if (logo) {
+    formData.append("logo", logo);
+  }
+
   formData.append("name", String(name));
   formData.append("description", String(description));
-  formData.append("city", String(province_id));
-  formData.append("province", String(city_id));
-  formData.append("subdistrict", String(district_id));
+  formData.append("province_id", String(provinceId));
+  formData.append("city_id", String(cityId));
+  formData.append("district_id", String(districtId));
   formData.append("address", String(address));
   formData.append("latitude", String(latitude));
   formData.append("longitude", String(longitude));
-  formData.append("logo", String(logo));
   formData.append("status", String(status));
 
   return axiosInstance.put(`${STORES_URL}/${id}`, formData, {
     headers: {
+      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
   });

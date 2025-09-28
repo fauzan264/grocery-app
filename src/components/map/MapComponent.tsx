@@ -6,8 +6,10 @@ import {
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 // delete L.Icon.Default.prototype._getIconUrl;
 
@@ -17,6 +19,18 @@ L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
+
+const Recenter = ({ position }: { position: [number, number] }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (position) {
+      map.setView(position, 13);
+    }
+  }, [position, map]);
+
+  return null;
+};
 
 interface MapComponentProps {
   position: [number, number];
@@ -53,6 +67,7 @@ const MapComponent = ({ position, onMarkerChange }: MapComponentProps) => {
         <Popup>Lokasi Toko</Popup>
       </Marker>
       <MapEvents onMarkerChange={onMarkerChange} />
+      <Recenter position={position} />
     </MapContainer>
   );
 };
