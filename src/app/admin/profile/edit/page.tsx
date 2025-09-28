@@ -1,5 +1,7 @@
 "use client";
+import FormInput from "@/app/form/FormInput";
 import { updateUserSchema } from "@/features/user/schemas/userSchema";
+import { IUser } from "@/features/user/type";
 import { myProfile, updateProfile } from "@/services/user";
 import useAuthStore from "@/store/useAuthStore";
 import { AxiosError } from "axios";
@@ -8,24 +10,21 @@ import { useFormik } from "formik";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FaRegUser, FaPhone } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
-import { MdDateRange } from "react-icons/md";
 import { toast } from "react-toastify";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const { token } = useAuthStore();
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<IUser | null>(null);
 
-  const onGetProfile = async () => {
+  const onGetProfile = async ({ token }: { token: string }) => {
     const res = await myProfile({ token });
 
     setProfile(camelcaseKeys(res.data.data));
   };
 
   useEffect(() => {
-    if (token) onGetProfile();
+    if (token) onGetProfile({ token });
   }, [token]);
 
   const onEditProfile = async ({
@@ -35,12 +34,7 @@ export default function EditProfilePage() {
     phoneNumber,
     photoProfile,
     token,
-  }: {
-    fullName: string;
-    dateOfBirth: string;
-    email: string;
-    phoneNumber: string;
-    photoProfile: File;
+  }: IUser & {
     token: string;
   }) => {
     try {
@@ -73,7 +67,7 @@ export default function EditProfilePage() {
       dateOfBirth: "",
       email: "",
       phoneNumber: "",
-      photoProfile: File | null,
+      photoProfile: null as File | null,
     },
     validationSchema: updateUserSchema,
     onSubmit: ({ fullName, dateOfBirth, email, phoneNumber, photoProfile }) => {
@@ -93,7 +87,8 @@ export default function EditProfilePage() {
       formik.setValues({
         photoProfile: null,
         fullName: profile.fullName || "",
-        dateOfBirth: profile.dateOfBirth || "",
+        dateOfBirth:
+          new Date(profile.dateOfBirth).toISOString().split("T")[0] || "",
         email: profile.email || "",
         phoneNumber: profile.phoneNumber || "",
       });
@@ -110,7 +105,7 @@ export default function EditProfilePage() {
               {profile?.photoProfile && (
                 <figure className="w-40 h-40 block relative rounded">
                   <Image
-                    src={profile?.photoProfile}
+                    src={String(profile?.photoProfile)}
                     alt={`${profile?.fullName} image`}
                     fill
                     className="object-cover"
@@ -125,7 +120,7 @@ export default function EditProfilePage() {
                   id="photoProfile"
                   name="photoProfile"
                   type="file"
-                  className="file-input file-input-success w-full md:w-1/3"
+                  className="file-input file-input-success w-full"
                   onChange={(event) => {
                     const files = Array.from(event?.currentTarget.files || []);
                     formik.setFieldValue("photoProfile", files);
@@ -142,42 +137,13 @@ export default function EditProfilePage() {
                 )}
               </fieldset>
             </div>
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend text-slate-800">
-                FullName
-              </legend>
-              <label className="input input-accent validator w-full">
-                <input
-                  type="text"
-                  name="fullName"
-                  id="fullName"
-                  onChange={formik.handleChange}
-                  value={formik.values.fullName}
-                />
-              </label>
-              {formik.errors.fullName && formik.touched.fullName && (
-                <div className="feedback text-red-600">
-                  {formik.errors.fullName}
-                </div>
-              )}
-            </fieldset>
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend text-slate-800">Email</legend>
-              <label className="input input-accent validator w-full">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                />
-              </label>
-              {formik.errors.email && formik.touched.email && (
-                <div className="feedback text-red-600">
-                  {formik.errors.email}
-                </div>
-              )}
-            </fieldset>
+            <FormInput formik={formik} name="fullName" label="Full Name" />
+            <FormInput
+              formik={formik}
+              name="email"
+              label="Email"
+              type="email"
+            />
             <fieldset className="fieldset w-full">
               <legend className="fieldset-legend text-slate-800">
                 Date Of Birth
@@ -197,25 +163,12 @@ export default function EditProfilePage() {
                 </div>
               )}
             </fieldset>
-            <fieldset className="fieldset w-full">
-              <legend className="fieldset-legend text-slate-800">
-                Phone Number
-              </legend>
-              <label className="input input-accent validator w-full">
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  id="phoneNumber"
-                  onChange={formik.handleChange}
-                  value={formik.values.phoneNumber}
-                />
-              </label>
-              {formik.errors.phoneNumber && formik.touched.phoneNumber && (
-                <div className="feedback text-red-600">
-                  {formik.errors.phoneNumber}
-                </div>
-              )}
-            </fieldset>
+            <FormInput
+              formik={formik}
+              name="phoneNumber"
+              label="Phone Number"
+              type="tel"
+            />
             <button
               type="submit"
               className="btn border-0 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-700 transition ease-in-out duration-300 text-slate-100 w-full my-5 focus:outline-none"
