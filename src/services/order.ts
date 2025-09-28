@@ -2,6 +2,7 @@ import { ICreateOrderPayload, IOrderResponse } from "@/features/orders/type";
 import { axiosInstance } from "@/lib/axiosInstances";
 
 const ORDER_URL = "/orders";
+const PAYMENT_URL = "/payment"
 
 export const createOrders = async (
   payload: ICreateOrderPayload,
@@ -29,4 +30,6 @@ export const getOrderDetail = async (
   );
   return res.data.data;
 }
+
+
 

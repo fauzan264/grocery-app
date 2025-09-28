@@ -5,7 +5,9 @@ import { IOrderResponse } from "@/features/orders/type";
 interface IOrderStore {
     currentOrder: IOrderResponse | null;
     setCurrentOrder: (order: IOrderResponse) => void;
-    orders : IOrderResponse[]
+    clearCurrentOrder: () => void;
+    orders: IOrderResponse[];
+    setOrders: (orders: IOrderResponse[]) => void;
 }
 
 export const useOrderStore = create<IOrderStore>()(
@@ -13,11 +15,10 @@ export const useOrderStore = create<IOrderStore>()(
         (set) => ({
             currentOrder: null,
             orders: [],
-            
             setCurrentOrder: (order) => set({ currentOrder: order }),
+            clearCurrentOrder: () => set({ currentOrder: null }),
+            setOrders: (orders) => set({ orders }),
         }),
-        {
-            name: "order-store",
-        }
+        { name: "order-store" }
     )
 );

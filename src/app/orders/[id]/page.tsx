@@ -6,25 +6,49 @@ import useAuthStore from "@/store/useAuthStore";
 import { useOrderStore } from "@/store/userOrderStore";
 import { formatDateWithTime } from "@/utils/formatDate";
 import { formatPrice } from "@/utils/formatPrice";
+import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
 export default function OrderDetail() {
     const { id } = useParams();
+
     const { currentOrder, setCurrentOrder } = useOrderStore();
     const { token } = useAuthStore();
-    console.log("Token from store:", token);
+
+    const normalizedStatus = normalizeOrderStatus(currentOrder?.status ?? "");
+
+    // Fetch order & polling tiap 30 detik
     useEffect(() => {
-        if (!currentOrder && token) {
-            (async () => {
-                const order = await getOrderDetail(id as string, token);
-                setCurrentOrder(order);
-            })();
-        }
-        console.log("Fetching order ID:", id);
-    }, [id, currentOrder, setCurrentOrder, token]);
+        if (!id || !token) return;
+
+        const fetchOrder = async () => {
+            const order = await getOrderDetail(id as string, token);
+            setCurrentOrder(order);
+            console.log(order);
+        };
+
+        fetchOrder();
+        const interval = setInterval(fetchOrder, 30000);
+        return () => clearInterval(interval);
+    }, [id, token, setCurrentOrder]);
 
     if (!currentOrder) return <div>Loading...</div>;
+
+    const isWaitingForPayment =
+        normalizedStatus === OrderStatus.WAITING_FOR_PAYMENT;
+    const isCancelled = normalizedStatus === OrderStatus.CANCELLED;
+    const isWaitingConfirmation =
+        normalizedStatus === OrderStatus.WAITING_CONFIRMATION_PAYMENT;
+    const isInProcess = normalizedStatus === OrderStatus.IN_PROCESS;
+
+    const refreshOrder = async () => {
+        if (token) {
+            const updatedOrder = await getOrderDetail(id as string, token);
+            setCurrentOrder(updatedOrder);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 mx-auto mt-15 p-6 max-w-lg">
             <h1 className="font-bold text-xl mb-4">Order Detail</h1>
@@ -45,14 +69,8 @@ export default function OrderDetail() {
                         </span>
                     </div>
                 </Section>
-
                 <Section>
-                    <span className="font-semibold">Detail Produk</span>
-                    {/* ... */}
-                </Section>
-
-                <Section>
-                    <span className="font-semibold">Info Pengiriman</span>
+                    <span className="font-semibold">Shipment</span>
 
                     <div className="grid grid-cols-[120px_20px_1fr] gap-y-2">
                         <span>Kurir</span>
@@ -72,6 +90,7 @@ export default function OrderDetail() {
                         </div>
                     </div>
                 </Section>
+
                 <Section>
                     <h1 className="font-bold">Payment Detail</h1>
                     <div className="flex justify-between border-b border-dashed pb-2 mb-2">
@@ -94,18 +113,31 @@ export default function OrderDetail() {
                         <span>Total Order</span>
                         <span>{formatPrice(currentOrder.finalPrice)}</span>
                     </div>
-                    <UploadPayment />
-                    <button
-                        className={`font-semibold py-2 px-4 rounded-md w-full transition
-                            ${
-                                OrderStatus.WAITING_FOR_PAYMENT 
-                                    ? "bg-red-600 text-white hover:bg-red-700"
-                                    : "bg-gray-400 text-white cursor-not-allowed"
-                            }`}
-                        disabled={currentOrder.status !== OrderStatus.WAITING_FOR_PAYMENT}
-                    >
-                        Cancel Order
-                    </button>
+
+                    {isWaitingForPayment ? (
+                        <>
+                            <UploadPayment onSuccess={refreshOrder} />
+
+                            <button
+                                className="font-semibold py-2 px-4 rounded-md w-full bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed mt-2"
+                                disabled={!isWaitingForPayment}
+                            >
+                                Cancel Order
+                            </button>
+                        </>
+                    ) : isCancelled ? (
+                        <div className="p-4 bg-red-100 text-red-700 rounded-md text-center font-medium">
+                            Order has been canceled due to unpaid after 1 hour.
+                        </div>
+                    ) : isWaitingConfirmation ? (
+                        <div className="p-4 bg-yellow-100 text-yellow-700 rounded-md text-center font-medium">
+                            Waiting for payment confirmation by admin.
+                        </div>
+                    ) : isInProcess ? (
+                        <div className="p-4 bg-blue-100 text-blue-700 rounded-md text-center font-medium">
+                            Payment confirmed. Your order is being processed.
+                        </div>
+                    ) : null}
                 </Section>
             </div>
         </div>
