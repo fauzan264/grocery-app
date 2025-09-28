@@ -1,3 +1,4 @@
+import { IUser } from "@/features/user/type";
 import { axiosInstance } from "@/lib/axiosInstances";
 
 export const myProfile = ({ token }: { token: string }) => {
@@ -15,12 +16,7 @@ export const updateProfile = ({
   phoneNumber,
   photoProfile,
   token,
-}: {
-  fullName: string;
-  dateOfBirth: string;
-  email: string;
-  phoneNumber: string;
-  photoProfile: File;
+}: IUser & {
   token: string;
 }) => {
   const formData = new FormData();
@@ -28,10 +24,13 @@ export const updateProfile = ({
   formData.append("date_of_birth", String(dateOfBirth));
   formData.append("email", String(email));
   formData.append("phone_number", String(phoneNumber));
-  formData.append("photo_profile", photoProfile);
+  if (photoProfile) {
+    formData.append("photo_profile", photoProfile);
+  }
 
   return axiosInstance.put(`/users/me`, formData, {
     headers: {
+      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
   });
