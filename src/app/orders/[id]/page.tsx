@@ -1,4 +1,5 @@
 "use client";
+import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { OrderStatus } from "@/features/orders/type";
 import UploadPayment from "@/features/orders/UploadPayment";
 import { getOrderDetail } from "@/services/order";
@@ -55,9 +56,10 @@ export default function OrderDetail() {
 
             <div className="grid grid-cols-1 gap-4">
                 <Section>
-                    <span className="font-bold">
-                        Order Status: {currentOrder.status}
-                    </span>
+                    <div className="flex justify-between">
+                        <span className="font-bold">Order Status:</span>
+                        <OrderStatusBadge status={normalizedStatus} />
+                    </div>
                     <div className="flex justify-between">
                         <span>Order ID</span>
                         <span>{currentOrder.id}</span>
