@@ -10,6 +10,16 @@ export enum PaymentMethod {
   SNAP = "SNAP",
 }
 
+export interface IOrderItem {
+  quantity: number;
+  price: string;       
+  subTotal: string;
+  product: {
+    name: string;
+    imageUrl: string;
+  };
+}
+
 export interface IOrderResponse {
   id: string;
   storeId: string;
@@ -20,6 +30,8 @@ export interface IOrderResponse {
   paymentMethod: string; 
   createdAt: string; 
   expiredAt : string;
+  items: IOrderItem[];
+  totalItems : number
   user: {
     receiverName: string;
     receiverNumber: string;
@@ -28,7 +40,6 @@ export interface IOrderResponse {
 }
 
 export enum OrderStatus {
-  INITIAL,
   WAITING_FOR_PAYMENT,
   WAITING_CONFIRMATION_PAYMENT,
   IN_PROCESS,
