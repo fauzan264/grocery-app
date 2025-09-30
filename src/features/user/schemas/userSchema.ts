@@ -11,7 +11,7 @@ export const updateUserSchema = yup.object().shape({
   photoProfile: yup
     .mixed<File>()
     .nullable()
-    .test("fileSize", "Maximum file size is 1 MB", (file) => {
+    .test("fileSize", "Maximum file is 1 MB", (file) => {
       if (!file) return true;
       return file.size <= maximumFileSize;
     })

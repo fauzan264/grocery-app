@@ -122,11 +122,10 @@ export default function EditProfilePage() {
                   name="photoProfile"
                   type="file"
                   className="file-input file-input-success w-full"
-                  onChange={(event) => {
-                    const files = Array.from(event?.currentTarget.files || []);
-                    formik.setFieldValue("photoProfile", files);
+                  onChange={(e) => {
+                    const file = e.currentTarget.files?.[0];
+                    formik.setFieldValue("photoProfile", file);
                   }}
-                  multiple
                 />
                 {formik.errors.photoProfile && formik.touched.photoProfile && (
                   <div className="feedback text-red-600">
