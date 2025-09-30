@@ -22,7 +22,7 @@ export default function ProfileAdminPage() {
     }
   }, [token]);
   return (
-    <div className="mx-auto my-10 w-11/12 h-full">
+    <div className="mx-auto my-10 w-11/12 min-h-full">
       <h1 className="text-2xl text-gray-700">Profile Management</h1>
       <UserProfileComponent profile={profile} />
     </div>
