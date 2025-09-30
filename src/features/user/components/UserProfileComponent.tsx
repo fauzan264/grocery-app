@@ -1,12 +1,20 @@
 import { formatDateWithTime } from "@/utils/formatDate";
-import AddressComponent from "../address/AddressComponent";
+import AddressComponent from "../address/components/AddressComponent";
 import { IUser } from "../type";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaTimesCircle } from "react-icons/fa";
 
-export default function UserProfileComponent({ profile }: { profile?: IUser }) {
+export default function UserProfileComponent({
+  profile,
+  token,
+  userId,
+}: {
+  profile?: IUser;
+  token: string;
+  userId: string;
+}) {
   if (!profile) {
     return <div>No profile data available.</div>;
   }
@@ -121,7 +129,7 @@ export default function UserProfileComponent({ profile }: { profile?: IUser }) {
         aria-label="Address"
       />
       <div className="tab-content bg-slate-100 p-6">
-        {/* <AddressComponent /> */}
+        <AddressComponent token={token} userId={userId} />
       </div>
     </div>
   );

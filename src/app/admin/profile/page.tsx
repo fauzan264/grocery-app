@@ -7,7 +7,7 @@ import camelcaseKeys from "camelcase-keys";
 import { useEffect, useState } from "react";
 
 export default function ProfileAdminPage() {
-  const { token } = useAuthStore();
+  const { token, id } = useAuthStore();
   const [profile, setProfile] = useState<IUser | undefined>(undefined);
 
   const onGetProfile = async ({ token }: { token: string }) => {
@@ -24,7 +24,7 @@ export default function ProfileAdminPage() {
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
       <h1 className="text-2xl text-gray-700">Profile Management</h1>
-      <UserProfileComponent profile={profile} />
+      <UserProfileComponent profile={profile} token={token} userId={id} />
     </div>
   );
 }
