@@ -35,3 +35,17 @@ export const updateProfile = ({
     },
   });
 };
+
+export const getAddresses = ({
+  token,
+  userId,
+}: {
+  token: string;
+  userId: string;
+}) => {
+  return axiosInstance.get(`/users/${userId}/addresses`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
