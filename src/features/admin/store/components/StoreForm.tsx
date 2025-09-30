@@ -1,6 +1,7 @@
-import FormInput from "@/app/form/FormInput";
-import FormSelect from "@/app/form/FormSelect";
-import FormInputTextArea from "@/app/form/FormTextArea";
+import FormInput from "@/components/form/FormInput";
+import FormSelect from "@/components/form/FormSelect";
+import FormInputTextArea from "@/components/form/FormTextArea";
+import Button from "@/components/ui/button";
 import { getCities, getDistricts, getProvinces } from "@/services/shipping";
 import { FormikProps } from "formik";
 import dynamic from "next/dynamic";
@@ -174,12 +175,7 @@ export default function StoreForm({
         label="Longitude"
         readOnly={true}
       />
-      <button
-        type="submit"
-        className="btn border-0 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-700 transition ease-in-out duration-300 text-slate-100 w-full my-5 focus:outline-none"
-      >
-        Submit
-      </button>
+      <Button type="submit" name="Submit" />
     </>
   );
 }

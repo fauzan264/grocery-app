@@ -1,5 +1,6 @@
 "use client";
-import FormInput from "@/app/form/FormInput";
+import FormInput from "@/components/form/FormInput";
+import Button from "@/components/ui/button";
 import { updateUserSchema } from "@/features/user/schemas/userSchema";
 import { IUser } from "@/features/user/type";
 import { myProfile, updateProfile } from "@/services/user";
@@ -169,12 +170,7 @@ export default function EditProfilePage() {
               label="Phone Number"
               type="tel"
             />
-            <button
-              type="submit"
-              className="btn border-0 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-700 transition ease-in-out duration-300 text-slate-100 w-full my-5 focus:outline-none"
-            >
-              Submit
-            </button>
+            <Button type="submit" name="Submit" />
           </form>
         </div>
       </div>
