@@ -4,4 +4,7 @@ export interface IUser {
   email: string;
   phoneNumber: string;
   photoProfile: File | null;
+  verified?: boolean;
+  status?: string;
+  userRole?: string;
 }
