@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useDebounce from "@/app/hooks/useDebounce";
 
 export interface FilterValues {
@@ -19,13 +19,19 @@ export default function OrderFilterBar({ onApply }: Props) {
 
     const debouncedOrderId = useDebounce(orderId, 400);
 
-    // Tombol Apply untuk memicu filter
     const handleApply = () => {
         onApply({
             orderId: debouncedOrderId || undefined,
             startDate: startDate || undefined,
             endDate: endDate || undefined,
         });
+    };
+
+    const handleReset = () => {
+        setOrderId("");
+        setStartDate("");
+        setEndDate("");
+        onApply({}); 
     };
 
     return (
@@ -51,8 +57,12 @@ export default function OrderFilterBar({ onApply }: Props) {
                     onChange={(e) => setEndDate(e.target.value)}
                 />
             </div>
-            <button className="btn btn-primary w-32" onClick={handleApply}>
+
+            <button className="bg-green-600 text-sm text-white py-2 rounded-lg font-semibold w-32" onClick={handleApply}>
                 Apply Filter
+            </button>
+            <button className="bg-gray-200 text-sm text-gray-600 py-2 rounded-lg font-semibold w-32" onClick={handleReset}>
+                Reset
             </button>
         </div>
     );

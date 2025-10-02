@@ -12,18 +12,13 @@ export default function OrderListPage() {
     const [loading, setLoading] = useState(true);
 
     // Filter state diterapkan ke API
-    const [appliedFilters, setAppliedFilters] = useState<FilterValues>({
-        orderId: "",
-        startDate: "",
-        endDate: "",
-    });
+    const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
 
     // Tangani filter dari child
     const handleApplyFilter = useCallback((filters: FilterValues) => {
         setAppliedFilters(filters);
     }, []);
 
-    // Fetch orders saat token atau appliedFilters berubah
     useEffect(() => {
         if (!token) return;
 
@@ -48,7 +43,7 @@ export default function OrderListPage() {
     if (loading) return <div className="p-4">Loading orders...</div>;
 
     return (
-        <div className="flex flex-col gap-4 mt-15 max-w-3xl mx-auto p-4">
+        <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Order List</h1>
             <OrderFilterBar onApply={handleApplyFilter} />
             {orders.length === 0 ? (
