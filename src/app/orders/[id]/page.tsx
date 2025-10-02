@@ -1,4 +1,5 @@
 "use client";
+import LoadingThreeDotsPulse from "@/components/ui/loading";
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { OrderStatus } from "@/features/orders/type";
 import UploadPayment from "@/features/orders/UploadPayment";
@@ -19,13 +20,16 @@ export default function OrderDetail() {
     const { currentOrder, setCurrentOrder } = useOrderStore();
     const { token } = useAuthStore();
     const normalizedStatus = normalizeOrderStatus(currentOrder?.status ?? "");
+    const [loading, setLoading] = useState(true);
 
     // Fetch order & polling tiap 30 detik
     useEffect(() => {
         if (!id || !token) return;
         const fetchOrder = async () => {
+            setLoading(true);
             const order = await getOrderDetail(id as string, token);
             setCurrentOrder(order);
+            setLoading(false);
             console.log(order);
         };
 
@@ -34,7 +38,12 @@ export default function OrderDetail() {
         return () => clearInterval(interval);
     }, [id, token, setCurrentOrder]);
 
-    if (!currentOrder) return <div>Loading...</div>;
+    if (loading)
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <LoadingThreeDotsPulse />
+            </div>
+        );
 
     const isWaitingForPayment =
         normalizedStatus === OrderStatus.WAITING_FOR_PAYMENT;
@@ -100,12 +109,12 @@ export default function OrderDetail() {
                     </div>
                     <div className="flex justify-between">
                         <span>Order ID</span>
-                        <span>{currentOrder.id}</span>
+                        <span>{currentOrder?.id}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Order Date</span>
                         <span>
-                            {formatDateWithTime(currentOrder?.createdAt)}
+                            {formatDateWithTime(currentOrder?.createdAt ?? "")}
                         </span>
                     </div>
                 </Section>
@@ -124,9 +133,9 @@ export default function OrderDetail() {
                         <span>Address</span>
                         <span>:</span>
                         <div className="flex flex-col">
-                            <span>{currentOrder.user?.receiverName}</span>
-                            <span>{currentOrder.user?.receiverNumber}</span>
-                            <span>{currentOrder.user?.shippingAddress}</span>
+                            <span>{currentOrder?.user?.receiverName}</span>
+                            <span>{currentOrder?.user?.receiverNumber}</span>
+                            <span>{currentOrder?.user?.shippingAddress}</span>
                         </div>
                     </div>
                 </Section>
@@ -135,11 +144,11 @@ export default function OrderDetail() {
                     <h1 className="font-bold">Payment Detail</h1>
                     <div className="flex justify-between border-b border-dashed pb-2 mb-2">
                         <span>Payment Method</span>
-                        <span>{currentOrder.paymentMethod}</span>
+                        <span>{currentOrder?.paymentMethod}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Items Subtotal</span>
-                        <span>{formatPrice(currentOrder.sub_total)}</span>
+                        <span>{formatPrice(currentOrder?.sub_total?? 0)}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Shipment Cost</span>
@@ -147,11 +156,11 @@ export default function OrderDetail() {
                     </div>
                     <div className="flex justify-between border-b border-dashed pb-2 mb-2">
                         <span>Discount</span>
-                        <span>- ({formatPrice(currentOrder.discount)})</span>
+                        <span>- ({formatPrice(currentOrder?.discount?? 0)})</span>
                     </div>
                     <div className="flex justify-between font-bold">
                         <span>Total Order</span>
-                        <span>{formatPrice(currentOrder.finalPrice)}</span>
+                        <span>{formatPrice(currentOrder?.finalPrice?? 0)}</span>
                     </div>
 
                     {isWaitingForPayment ? (
