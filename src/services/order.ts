@@ -55,6 +55,17 @@ export const cancelOrder = async (orderId: string, token: string) => {
   return res.data; 
 };
 
+export const confirmOrder = async (orderId: string, token: string) => {
+  const res = await axiosInstance.patch(
+    `${ORDER_URL}/${orderId}/confirm`,
+    {}, 
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  )
+  return res.data;
+}
+
 
 
 
