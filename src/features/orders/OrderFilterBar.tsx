@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import useDebounce from "@/app/hooks/useDebounce";
+import Button from "@/components/ui/button";
 
 export interface FilterValues {
     orderId?: string;
@@ -31,7 +32,7 @@ export default function OrderFilterBar({ onApply }: Props) {
         setOrderId("");
         setStartDate("");
         setEndDate("");
-        onApply({}); 
+        onApply({});
     };
 
     return (
@@ -58,10 +59,17 @@ export default function OrderFilterBar({ onApply }: Props) {
                 />
             </div>
 
-            <button className="bg-green-600 text-sm text-white py-2 rounded-lg font-semibold w-32" onClick={handleApply}>
+            <button
+                className="bg-emerald-600 hover:bg-emerald-700 text-sm text-white py-2 rounded-lg font-semibold w-32"
+                onClick={handleApply}
+            >
                 Apply Filter
             </button>
-            <button className="bg-gray-200 text-sm text-gray-600 py-2 rounded-lg font-semibold w-32" onClick={handleReset}>
+            <button
+                className="bg-gray-200 text-sm text-gray-600 py-2 rounded-lg font-semibold w-32 
+             hover:bg-gray-300 hover:text-gray-700"
+                onClick={handleReset}
+            >
                 Reset
             </button>
         </div>
