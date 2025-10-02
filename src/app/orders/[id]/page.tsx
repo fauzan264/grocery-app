@@ -2,27 +2,25 @@
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { OrderStatus } from "@/features/orders/type";
 import UploadPayment from "@/features/orders/UploadPayment";
-import { getOrderDetail } from "@/services/order";
+import { cancelOrder, getOrderDetail } from "@/services/order";
 import useAuthStore from "@/store/useAuthStore";
 import { useOrderStore } from "@/store/userOrderStore";
 import { formatDateWithTime } from "@/utils/formatDate";
 import { formatPrice } from "@/utils/formatPrice";
 import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function OrderDetail() {
     const { id } = useParams();
-
     const { currentOrder, setCurrentOrder } = useOrderStore();
     const { token } = useAuthStore();
-
     const normalizedStatus = normalizeOrderStatus(currentOrder?.status ?? "");
 
     // Fetch order & polling tiap 30 detik
     useEffect(() => {
         if (!id || !token) return;
-
         const fetchOrder = async () => {
             const order = await getOrderDetail(id as string, token);
             setCurrentOrder(order);
@@ -47,6 +45,24 @@ export default function OrderDetail() {
         if (token) {
             const updatedOrder = await getOrderDetail(id as string, token);
             setCurrentOrder(updatedOrder);
+        }
+    };
+
+    const handleCancelOrder = async () => {
+        if (!token) return;
+
+        const confirmCancel = confirm(
+            "Are you sure you want to cancel this order?"
+        );
+        if (!confirmCancel) return;
+
+        try {
+            await cancelOrder(id as string, token);
+            toast.success("Order cancelled successfully!");
+            refreshOrder();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to cancel order");
         }
     };
 
@@ -121,6 +137,7 @@ export default function OrderDetail() {
                             <UploadPayment onSuccess={refreshOrder} />
 
                             <button
+                                onClick={handleCancelOrder}
                                 className="font-semibold py-2 px-4 rounded-md w-full bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed mt-2"
                                 disabled={!isWaitingForPayment}
                             >
