@@ -2,12 +2,14 @@
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { OrderStatus } from "@/features/orders/type";
 import UploadPayment from "@/features/orders/UploadPayment";
-import { cancelOrder, getOrderDetail } from "@/services/order";
+import { cancelOrder, confirmOrder, getOrderDetail } from "@/services/order";
 import useAuthStore from "@/store/useAuthStore";
 import { useOrderStore } from "@/store/userOrderStore";
 import { formatDateWithTime } from "@/utils/formatDate";
 import { formatPrice } from "@/utils/formatPrice";
 import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import { size } from "lodash";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -40,6 +42,8 @@ export default function OrderDetail() {
     const isWaitingConfirmation =
         normalizedStatus === OrderStatus.WAITING_CONFIRMATION_PAYMENT;
     const isInProcess = normalizedStatus === OrderStatus.IN_PROCESS;
+    const isDelivered = normalizedStatus === OrderStatus.DELIVERED;
+    const isFinished = normalizedStatus === OrderStatus.ORDER_CONFIRMATION;
 
     const refreshOrder = async () => {
         if (token) {
@@ -66,8 +70,26 @@ export default function OrderDetail() {
         }
     };
 
+    const handleConfirmOrder = async () => {
+        if (!token) return;
+
+        const confirmReceive = confirm(
+            "Are you sure you have received your order?"
+        );
+        if (!confirmReceive) return;
+
+        try {
+            await confirmOrder(id as string, token);
+            toast.success("Order confirmed! Thank you.");
+            refreshOrder();
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to confirm order");
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gray-50 mx-auto mt-15 p-6 max-w-lg">
+        <div className="min-h-screen bg-gray-50 mx-auto mt-15 p-6 max-w-3xl">
             <h1 className="font-bold text-xl mb-4">Order Detail</h1>
 
             <div className="grid grid-cols-1 gap-4">
@@ -155,6 +177,31 @@ export default function OrderDetail() {
                     ) : isInProcess ? (
                         <div className="p-4 bg-blue-100 text-blue-700 rounded-md text-center font-medium">
                             Payment confirmed. Your order is being processed.
+                        </div>
+                    ) : isDelivered ? (
+                        <div className="p-4 bg-green-100 text-green-700 rounded-md text-center font-medium">
+                            <p>
+                                Your order is being delivered to your location.{" "}
+                                <br />
+                                Please confirm your order after receiving the
+                                items.
+                            </p>
+
+                            <button
+                                onClick={handleConfirmOrder}
+                                className="mt-3 font-semibold py-2 px-4 rounded-md w-full bg-green-600 text-white hover:bg-green-700"
+                            >
+                                Confirm Received
+                            </button>
+                        </div>
+                    ) : isFinished ? (
+                        <div className="flex flex-col items-center p-4 bg-green-100 text-green-700 rounded-md text-center font-medium">
+                            <CheckBadgeIcon className="h-24 w-24" />
+                            <p>
+                                Order received — thank you! <br />
+                                Don’t forget to check out our latest products
+                                for your next order
+                            </p>
                         </div>
                     ) : null}
                 </Section>
