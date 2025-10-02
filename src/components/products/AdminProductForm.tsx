@@ -1,10 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useForm, FieldError } from "react-hook-form";
+import { useForm, Controller, FieldError } from "react-hook-form";
 import Image from "next/image";
+import axios, { AxiosError } from "axios";
 import { api } from "../../lib/api";
+import CategorySelect from "../categories/CategorySelect";
 
-type ProductImage = { id: string; url: string; isPrimary?: boolean; altText?: string | null };
+// --- Types ---
+type ProductImage = { 
+  id: string; 
+  url: string; 
+  isPrimary?: boolean; 
+  altText?: string | null; 
+};
+
 export type ProductDetail = {
   id: string;
   name: string;
@@ -29,6 +38,19 @@ type FormValues = {
   storeId?: string | null;
 };
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  items?: T[];
+}
+
+interface ApiErrorResponse {
+  message?: string;
+  [key: string]: unknown;
+}
+
+// --- Component ---
 export default function AdminProductForm({
   initialData,
   token,
@@ -40,6 +62,7 @@ export default function AdminProductForm({
 }) {
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setError,
@@ -71,39 +94,66 @@ export default function AdminProductForm({
     setPrimaryImageId(initialData?.images?.find((i) => i.isPrimary)?.id ?? null);
   }, [initialData]);
 
-  // watch nama untuk validasi unik (sama seperti sebelumnya)
+  // watch nama untuk validasi unik
   const watchName = watch("name");
-  useEffect(() => {
-    if (!watchName || watchName.trim().length < 2) {
-      clearErrors("name");
-      return;
-    }
-    let mounted = true;
-    const t = setTimeout(async () => {
-      try {
-        const res = await api.get("/api/products", { params: { search: watchName.trim(), limit: 10 } });
-        if (!mounted) return;
-        const items: ProductDetail[] = res.data?.items ?? res.data?.data ?? [];
-        const nameExists = items.some(
-          (p) => p.name?.toLowerCase() === watchName.trim().toLowerCase() && p.id !== initialData?.id
-        );
-        if (nameExists) setError("name", { type: "validate", message: "Nama produk sudah digunakan" });
-        else clearErrors("name");
-      } catch (err) {
-        console.warn("Name check failed", err);
-      }
-    }, 500);
 
-    return () => {
-      mounted = false;
-      clearTimeout(t);
-    };
-  }, [watchName, initialData?.id, setError, clearErrors]);
+useEffect(() => {
+  if (!watchName || watchName.trim().length < 2) {
+    clearErrors("name");
+    return;
+  }
+  let mounted = true;
+
+  const t = setTimeout(async () => {
+    try {
+      const res = await api.get<ApiResponse<ProductDetail[] | ProductDetail[][]>>(
+        "/api/products",
+        {
+          params: { search: watchName.trim(), limit: 10 },
+        }
+      );
+      if (!mounted) return;
+
+      // normalisasi ke array flat
+      let items: ProductDetail[] = [];
+
+      if (Array.isArray(res.data?.items)) {
+  items = (res.data.items as (ProductDetail | ProductDetail[])[]).flat() as ProductDetail[];
+} else if (Array.isArray(res.data?.data)) {
+  items = (res.data.data as (ProductDetail | ProductDetail[])[]).flat() as ProductDetail[];
+}
+
+
+
+      const nameExists = items.some(
+        (p) =>
+          p.name?.toLowerCase() === watchName.trim().toLowerCase() &&
+          p.id !== initialData?.id
+      );
+
+      if (nameExists) {
+        setError("name", {
+          type: "validate",
+          message: "Nama produk sudah digunakan",
+        });
+      } else {
+        clearErrors("name");
+      }
+    } catch (err) {
+      console.warn("Name check failed", err);
+    }
+  }, 500);
+
+  return () => {
+    mounted = false;
+    clearTimeout(t);
+  };
+}, [watchName, initialData?.id, setError, clearErrors]);
+
 
   const handleToggleRemove = (id: string) => {
     setRemoveImageIds((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      // jika kita menandai primary untuk di-remove, reset primary
       if (next.includes(id) && primaryImageId === id) setPrimaryImageId(null);
       return next;
     });
@@ -121,11 +171,10 @@ export default function AdminProductForm({
       if (values.sku) fd.append("sku", values.sku);
       if (values.description) fd.append("description", values.description);
       if (values.categoryId) fd.append("categoryId", values.categoryId);
-      if (values.weight_g) fd.append("weight_g", String(values.weight_g));
-      if (values.initialStock) fd.append("initialStock", String(values.initialStock));
-      if (values.storeId) fd.append("storeId", String(values.storeId));
+      if (values.weight_g != null) fd.append("weight_g", String(Number(values.weight_g)));
+      if (values.initialStock != null) fd.append("initialStock", String(Number(values.initialStock)));
+      if (values.storeId) fd.append("storeId", values.storeId);
 
-      // hanya kirimkan instruksi terkait gambar — upload actual dilakukan oleh komponennya sendiri
       if (primaryImageId) fd.append("primaryImageId", primaryImageId);
       if (removeImageIds.length) fd.append("removeImageIds", JSON.stringify(removeImageIds));
 
@@ -134,27 +183,30 @@ export default function AdminProductForm({
       else delete api.defaults.headers.common["Authorization"];
 
       let res;
-      if (initialData?.id) res = await api.patch(`/api/products/${initialData.id}`, fd);
-      else res = await api.post("/api/products", fd);
+      if (initialData?.id) {
+        res = await api.patch<ApiResponse<ProductDetail>>(`/api/products/${initialData.id}`, fd);
+      } else {
+        res = await api.post<ApiResponse<ProductDetail>>("/api/products", fd);
+      }
 
-      if (res.data?.success) {
-        // update state gambar kalau server mengembalikan data baru
-        const returned: ProductDetail | undefined = res.data?.data;
-        if (returned?.images) setExistingImages(returned.images);
-        // reset remove list
+      if (res.data?.success && res.data.data) {
+        const returned: ProductDetail = res.data.data;
+        setExistingImages(returned.images ?? []);
         setRemoveImageIds([]);
         setLocalError(null);
-        onSaved?.(res.data.data as ProductDetail);
+        onSaved?.(returned);
       } else {
-        const msg = res.data?.message ?? "Unknown error";
-        setLocalError(msg);
+        setLocalError(res.data?.message ?? "Unknown error");
       }
     } catch (err: unknown) {
-      if (err instanceof Error) setLocalError(err.message ?? "Submission failed");
-      else if (typeof err === "object" && err !== null && "response" in err) {
-        // @ts-expect-error safe best effort to extract axios response
-        setLocalError(err.response?.data?.message ?? "Submission failed");
-      } else setLocalError("Submission failed");
+      let msg = "Submission failed";
+      if (axios.isAxiosError(err)) {
+        const axiosErr = err as AxiosError<ApiErrorResponse>;
+        msg = axiosErr.response?.data?.message ?? axiosErr.message ?? msg;
+      } else if (err instanceof Error) {
+        msg = err.message;
+      }
+      setLocalError(msg);
       console.error(err);
     } finally {
       setIsSubmitting(false);
@@ -200,6 +252,17 @@ export default function AdminProductForm({
         {errors.price && <p className="text-red-600 text-sm mt-1">{(errors.price as FieldError).message}</p>}
       </div>
 
+      {/* Weight */}
+      <div>
+        <label className="block text-sm font-semibold mb-2 text-gray-800">Weight (gram)</label>
+        <input
+          type="number"
+          {...register("weight_g", { valueAsNumber: true })}
+          className="border border-gray-300 rounded-lg p-3 w-full text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+          placeholder="Berat produk dalam gram (mis. 500)"
+        />
+      </div>
+
       {/* Description */}
       <div>
         <label className="block text-sm font-semibold mb-2 text-gray-800">Description</label>
@@ -207,6 +270,22 @@ export default function AdminProductForm({
           {...register("description")}
           className="border border-gray-300 rounded-lg p-3 w-full h-28 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none"
           placeholder="Deskripsi produk"
+        />
+      </div>
+
+      {/* Kategori (Controller) */}
+      <div>
+        <Controller
+          control={control}
+          name="categoryId"
+          render={({ field }) => (
+            <CategorySelect
+              // CategorySelect harus menerima props: value, onChange, token
+              value={field.value ?? null}
+              onChange={(val: string | null) => field.onChange(val)}
+              token={token ?? undefined}
+            />
+          )}
         />
       </div>
 

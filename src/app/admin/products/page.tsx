@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "@/app/hooks/useProducts";
 import { api } from "@/lib/api";
 import ProductTable from "@/components/products/ProductTable";
-import { Product } from "@/app/types/product";
 
 const queryClient = new QueryClient();
 
@@ -43,7 +42,7 @@ function ProductsInner() {
     [filters.page, filters.search, filters.categoryId]
   );
 
-  const { data, isLoading, isError, refetch, isFetching } = useProducts(queryParams);
+  const { data, isLoading, refetch, isFetching } = useProducts(queryParams);
 
   // token handling (sama seperti sebelumnya)
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -62,9 +61,8 @@ function ProductsInner() {
         alert("Gagal menghapus produk: " + err.message);
         console.error(err);
       } else if (typeof err === "object" && err !== null && "response" in err) {
-        // @ts-ignore
+        // @ts-expect-error
         alert("Gagal menghapus produk: " + (err.response?.data?.message ?? "Unknown error"));
-        // @ts-ignore
         console.error(err.response ?? err);
       } else {
         alert("Gagal menghapus produk: Unknown error");
@@ -84,9 +82,8 @@ function ProductsInner() {
         alert("Gagal menghapus beberapa produk: " + err.message);
         console.error(err);
       } else if (typeof err === "object" && err !== null && "response" in err) {
-        // @ts-ignore
+        // @ts-expect-error
         alert("Gagal menghapus beberapa produk: " + (err.response?.data?.message ?? "Unknown error"));
-        // @ts-ignore
         console.error(err.response ?? err);
       } else {
         alert("Gagal menghapus beberapa produk: Unknown error");

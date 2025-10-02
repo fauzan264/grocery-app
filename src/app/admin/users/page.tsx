@@ -35,7 +35,7 @@ export default function UserListPage() {
           >
             <option value="">All Roles</option>
             <option value="SUPER_ADMIN">Super Admin</option>
-            <option value="ADMIN_STORE">Store Admin</option> {/* diperbaiki */}
+            <option value="ADMIN_STORE">Store Admin</option>
             <option value="CUSTOMER">Customer</option>
           </select>
         </div>
