@@ -14,6 +14,7 @@ import {
 } from "@/services/cart";
 import { FaShoppingCart } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import LoadingThreeDotsPulse from "@/components/ui/loading";
 
 export default function Cart() {
     const { token } = useAuthStore();
@@ -21,20 +22,32 @@ export default function Cart() {
 
     const { cartItems, setCartItems } = useCartStore();
     const [loadingIds, setLoadingIds] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
 
     // GET cart items
     const onGetCartItems = async () => {
         try {
+            setLoading(true);
             const items = await getCartItems(token);
             setCartItems(items);
         } catch (err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         if (token) onGetCartItems();
     }, [token]);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <LoadingThreeDotsPulse />
+            </div>
+        );
+    }
 
     // PATCH increment/decrement
     const onChangeItemQty = async (

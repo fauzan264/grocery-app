@@ -5,6 +5,7 @@ import { getUsersOrderList } from "@/services/order";
 import OrderListCard from "@/features/orders/OrderListCard";
 import useAuthStore from "@/store/useAuthStore";
 import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
+import LoadingThreeDotsPulse from "@/components/ui/loading";
 
 export default function OrderListPage() {
     const { token } = useAuthStore();
@@ -40,7 +41,12 @@ export default function OrderListPage() {
 
     if (!token)
         return <div className="p-4">Please login to view your orders.</div>;
-    if (loading) return <div className="p-4">Loading orders...</div>;
+    if (loading)
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <LoadingThreeDotsPulse />
+            </div>
+        );
 
     return (
         <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
