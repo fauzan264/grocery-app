@@ -22,3 +22,5 @@ export type ApiListResponse<T> = {
   success?: boolean;
   data?: { items?: T[] } | T[];
 };
+
+export type LocalStock = StockItem;

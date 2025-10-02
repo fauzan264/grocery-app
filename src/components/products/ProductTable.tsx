@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "../../app/types/product";
-import AdminProductForm, { ProductDetail } from "./AdminProductForm";
 
 interface ProductTableProps {
   products: Product[];
@@ -16,7 +15,6 @@ export default function ProductTable({ products = [], onDelete, onBulkDelete }: 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const allSelected = products.length > 0 && products.every((p) => selectedIds.includes(p.id));
 
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const toggleSelectAll = () => {
     if (allSelected) {

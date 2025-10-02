@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { IUser } from "../types/user";
 import RoleGuard from "@/components/auth/RoleGuard";
 import useAuthStore from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
 
 // ---- TYPINGS ----
 type PaginatedUsers = {
@@ -38,7 +37,6 @@ async function fetchUsers(page: number, q?: string, limit = 6): Promise<Paginate
 export default function AdminPage() {
   // ambil role untuk conditional UI (mis. hide Create untuk non-super)
   const { role } = useAuthStore();
-  const router = useRouter();
   const [page, setPage] = useState(1);
   const [q, setQ] = useState("");
   const [openCreate, setOpenCreate] = useState(false);

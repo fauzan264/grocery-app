@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import api from "@/lib/api";
-import type { AxiosProgressEvent } from "axios";
+import type { AxiosInstance, AxiosProgressEvent } from "axios";
+import Image from "next/image";
 
 // DEBUG: set to true while testing; set to false before committing to production
 const DEBUG = true;
@@ -118,7 +119,7 @@ export default function ImageUploader({
       // --- DEBUG: inspect axios defaults (temporary) ---
       if (DEBUG) {
         try {
-          console.log("axios defaults headers (post):", (api as any).defaults?.headers?.post);
+          console.log("axios defaults headers (post):", (api as AxiosInstance).defaults?.headers?.post);
         } catch (e) {
           console.log("could not read axios defaults", e);
         }
@@ -208,66 +209,77 @@ export default function ImageUploader({
     }
   }
 
-  return (
-    <div>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/gif,image/webp"
-        multiple
-        className="hidden"
-        onChange={(e) => onFilesSelected(e.target.files)}
-        aria-label="Pilih gambar"
-      />
+return (
+  <div>
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="image/jpeg,image/png,image/gif,image/webp"
+      multiple
+      className="hidden"
+      onChange={(e) => onFilesSelected(e.target.files)}
+      aria-label="Pilih gambar"
+    />
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className="px-3 py-2 rounded bg-blue-600 text-white text-sm"
-        >
-          Add images
-        </button>
+    <div className="flex gap-2">
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="px-3 py-2 rounded bg-blue-600 text-white text-sm"
+      >
+        Add images
+      </button>
 
-        <button
-          type="button"
-          onClick={uploadSelectedImages}
-          disabled={uploading || selectedFiles.length === 0}
-          className="px-3 py-2 rounded bg-green-600 text-white text-sm disabled:opacity-50"
-        >
-          {uploading ? `Uploading... ${uploadProgress}%` : "Upload images"}
-        </button>
+      <button
+        type="button"
+        onClick={uploadSelectedImages}
+        disabled={uploading || selectedFiles.length === 0}
+        className="px-3 py-2 rounded bg-green-600 text-white text-sm disabled:opacity-50"
+      >
+        {uploading ? `Uploading... ${uploadProgress}%` : "Upload images"}
+      </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            setSelectedFiles([]);
-            previewUrls.forEach((u) => URL.revokeObjectURL(u));
-            setPreviewUrls([]);
-            if (fileInputRef.current) fileInputRef.current.value = "";
-          }}
-          className="px-3 py-2 rounded border text-gray-500"
-        >
-          Clear
-        </button>
-      </div>
-
-      {uploading && (
-        <div className="w-full mt-2 bg-gray-100 rounded h-2 overflow-hidden">
-          <div className="h-full bg-green-500 transition-all" style={{ width: `${uploadProgress}%` }} />
-        </div>
-      )}
-
-      {previewUrls.length > 0 && (
-        <div className="mt-3 grid grid-cols-3 gap-3">
-          {previewUrls.map((u, i) => (
-            <div key={i} className="relative w-full h-24 rounded overflow-hidden border">
-              {/* Use a plain <img> for blob URLs (more reliable for previews) */}
-              <img src={u} alt={`preview-${i}`} className="object-cover w-full h-full" />
-            </div>
-          ))}
-        </div>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+          setSelectedFiles([]);
+          previewUrls.forEach((u) => URL.revokeObjectURL(u));
+          setPreviewUrls([]);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        }}
+        className="px-3 py-2 rounded border text-gray-500"
+      >
+        Clear
+      </button>
     </div>
-  );
+
+    {uploading && (
+      <div className="w-full mt-2 bg-gray-100 rounded h-2 overflow-hidden">
+        <div
+          className="h-full bg-green-500 transition-all"
+          style={{ width: `${uploadProgress}%` }}
+        />
+      </div>
+    )}
+
+    {previewUrls.length > 0 && (
+      <div className="mt-3 grid grid-cols-3 gap-3">
+        {previewUrls.map((u: string, i: number) => (
+          <div
+            key={i}
+            className="relative w-full h-24 rounded overflow-hidden border"
+          >
+            <Image
+              src={u}
+              alt={`preview-${i}`}
+              fill
+              className="object-cover"
+              unoptimized // karena ini URL blob lokal, Next.js tidak bisa optimasi
+            />
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
 }
