@@ -18,7 +18,7 @@ export default function OrderListCard({ order }: OrderListCardProps) {
     };
 
     return (
-        <div className="card w-full max-w-xl mx-auto bg-base-100 shadow-sm border mb-4">
+        <div className="card w-full mx-auto bg-base-100 shadow-md border-gray-200 mb-4">
             <div className="card-body p-4">
                 {/* Header */}
                 <div className="flex justify-between items-center">
