@@ -1,6 +1,6 @@
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import { IOrderResponse, OrderStatus } from "./type";
+import { IOrderResponse} from "./type";
 import { formatDateWithTime } from "@/utils/formatDate";
 import OrderStatusBadge from "./OrderStatusBedge";
 import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";

@@ -35,12 +35,14 @@ export const getUsersOrderList = async (token: string, filters?: {
   orderId?: string;
   startDate?: string;
   endDate?: string;
+  page?: number;     
+  limit?: number; 
 }) => {
   const res = await axiosInstance.get(`${ORDER_URL}/me`, {
     headers: { Authorization: `Bearer ${token}` },
     params: filters 
   });
-  return res?.data?.data;
+  return res?.data;
 };
 
 
