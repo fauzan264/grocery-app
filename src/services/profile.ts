@@ -1,17 +1,7 @@
+import { IAddress } from "@/features/user/address/types";
 import { axiosInstance } from "@/lib/axiosInstances";
 
 const USER_URL = "/users";
-
-export interface IUserAddress {
-  id: string;
-  city: string;
-  province: string;
-  district: string;
-  subdistrict: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-}
 
 export interface IUserProfile {
   id: string;
@@ -19,9 +9,8 @@ export interface IUserProfile {
   phone_number: string | null;
   email: string;
   photoProfile?: string;
-  UserAddress: IUserAddress[];
+  UserAddress: IAddress[];
 }
-
 
 export const getUserProfile = async (token: string): Promise<IUserProfile> => {
   const res = await axiosInstance.get(`${USER_URL}/me`, {
@@ -29,17 +18,19 @@ export const getUserProfile = async (token: string): Promise<IUserProfile> => {
       Authorization: `Bearer ${token}`,
     },
   });
-  return res.data.data; 
+  return res.data.data;
 };
 
-export const getUserAddresses = async (token: string): Promise<IUserAddress[]> => {
+export const getUserAddresses = async (token: string): Promise<IAddress[]> => {
   const res = await axiosInstance.get(`${USER_URL}/me/addresses`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.data.data; 
+  return res.data.data;
 };
 
-export const getUserProfileWithAddress = async (token: string): Promise<IUserProfile> => {
+export const getUserProfileWithAddress = async (
+  token: string
+): Promise<IUserProfile> => {
   const profileRes = await getUserProfile(token);
   const addresses = await getUserAddresses(token);
 
@@ -48,4 +39,3 @@ export const getUserProfileWithAddress = async (token: string): Promise<IUserPro
     UserAddress: addresses,
   };
 };
-
