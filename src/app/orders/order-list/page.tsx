@@ -6,11 +6,14 @@ import OrderListCard from "@/features/orders/OrderListCard";
 import useAuthStore from "@/store/useAuthStore";
 import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
+import Pagination from "@/features/orders/Pagination";
 
 export default function OrderListPage() {
     const { token } = useAuthStore();
     const { orders, setOrders } = useOrderStore();
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     // Filter state diterapkan ke API
     const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
@@ -18,6 +21,7 @@ export default function OrderListPage() {
     // Tangani filter dari child
     const handleApplyFilter = useCallback((filters: FilterValues) => {
         setAppliedFilters(filters);
+        setCurrentPage(1);
     }, []);
 
     useEffect(() => {
@@ -26,8 +30,12 @@ export default function OrderListPage() {
         const fetchOrders = async () => {
             setLoading(true);
             try {
-                const data = await getUsersOrderList(token, appliedFilters);
-                setOrders(data);
+                const data = await getUsersOrderList(token, {
+                    ...appliedFilters,
+                    page: currentPage,
+                });
+                setOrders(data.data);
+                setTotalPages(data.meta.totalPages);
             } catch (err) {
                 console.error("Failed to fetch orders:", err);
                 setOrders([]);
@@ -37,7 +45,7 @@ export default function OrderListPage() {
         };
 
         fetchOrders();
-    }, [token, appliedFilters, setOrders]);
+    }, [token, appliedFilters, currentPage, setOrders]);
 
     if (!token)
         return <div className="p-4">Please login to view your orders.</div>;
@@ -59,6 +67,11 @@ export default function OrderListPage() {
                     <OrderListCard key={order.id} order={order} />
                 ))
             )}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+            />
         </div>
     );
 }
