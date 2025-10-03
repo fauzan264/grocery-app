@@ -1,4 +1,5 @@
 import { axiosInstance } from "@/lib/axiosInstances";
+import axios from "axios";
 
 const SHIPPING_URL = "/shipping";
 
@@ -41,5 +42,24 @@ export const getDistricts = ({
 export const getDomesticDestination = ({ search }: { search: string }) => {
   return axiosInstance.get(`${SHIPPING_URL}/destination/domestic-destination`, {
     params: { search, limit: 10, offset: 0 },
+  });
+};
+
+export const getShippingCost = ({
+  origin,
+  destination,
+  weight,
+  courier,
+}: {
+  origin: string;
+  destination: string;
+  weight: string;
+  courier: string;
+}) => {
+  return axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/shipping-cost`, {
+    origin,
+    destination,
+    weight,
+    courier,
   });
 };
