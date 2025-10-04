@@ -40,4 +40,33 @@ body {
   border-radius: 0.5rem;
 }
 
+.toast-order-error {
+  position: fixed !important;
+  top: 3.75rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 9999 !important;
+  text-align: center;
+  background-color: #dc2626 !important; /* Merah */
+  color: white !important;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+
+.toast-order-success {
+  position: fixed !important;
+  top: 3.75rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 9999 !important;
+  text-align: center;
+  background-color: #16a34a !important; /* Hijau (Tailwind: green-600) */
+  color: white !important;
+  font-weight: bold;
+  border-radius: 0.5rem;
+}
+
+
+
+
 

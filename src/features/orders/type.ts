@@ -34,7 +34,7 @@ export interface IOrderResponse {
   totalItems : number
   user: {
     receiverName: string;
-    receiverNumber: string;
+    receiverPhone: string;
     shippingAddress: string;
   };
 }

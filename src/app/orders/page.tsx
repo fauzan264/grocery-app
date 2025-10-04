@@ -3,6 +3,7 @@ import OrderCard from "@/features/orders/CheckOutOrderCard";
 import { PaymentMethod } from "@/features/orders/type";
 import useAuthStore from "@/store/useAuthStore";
 import useCartStore from "@/store/useCartStore";
+import { useOrderStore } from "@/store/userOrderStore";
 import { formatPrice } from "@/utils/formatPrice";
 import { useState } from "react";
 import { IoChevronForward } from "react-icons/io5";
@@ -10,7 +11,13 @@ import { MdDiscount } from "react-icons/md";
 
 export default function Order() {
     const { cartItems } = useCartStore();
+    const { currentShipping } = useOrderStore();
     const [couponCodes, setCouponCodes] = useState<string[]>([]);
+
+    const subTotal = cartItems.reduce((acc, item) => acc + Number(item.subTotal), 0);
+    const delivery = currentShipping ? currentShipping.cost : 0;
+    const discount = 0;
+    const total = subTotal + delivery - discount;
 
     return (
         <>
@@ -45,16 +52,16 @@ export default function Order() {
                             <div className="flex flex-col text-gray-600">
                                 <div className="flex justify-between py-2">
                                     <span>Delivery</span>
-                                    <span>Rp 0</span>
+                                    <span>{formatPrice(delivery)}</span>
                                 </div>
                                 <div className="flex justify-between py-2 border-b">
                                     <span>Discount</span>
-                                    <span>Rp 0</span>
+                                    <span>{formatPrice(discount)}</span>
                                 </div>
                             </div>
                             <div className="flex justify-between font-bold py-2 mb-4 border-b">
                                 <span>Order Total</span>
-                                <span>Rp. 5000</span>
+                                <span>{formatPrice(total)}</span>
                             </div>
 
                             <button className="flex justify-between items-center w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold ">
