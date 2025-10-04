@@ -9,6 +9,9 @@ import { useParams, useRouter } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { IStore } from "@/features/admin/store/types";
 import StoreForm from "@/features/admin/store/components/StoreForm";
+import Image from "next/image";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/components/error/types";
 
 export default function EditStorePage() {
   const router = useRouter();
@@ -45,24 +48,28 @@ export default function EditStorePage() {
     status,
     token,
   }: IStore & { token: string }) => {
-    const response = await updateStore({
-      id,
-      name,
-      description,
-      provinceId,
-      cityId,
-      districtId,
-      address,
-      latitude,
-      longitude,
-      logo,
-      status,
-      token,
-    });
-
-    if (response.status == 200) {
+    try {
+      const response = await updateStore({
+        id,
+        name,
+        description,
+        provinceId,
+        cityId,
+        districtId,
+        address,
+        latitude,
+        longitude,
+        logo,
+        status,
+        token,
+      });
       router.push("/admin/store");
       toast.success(response.data.message);
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
     }
   };
 
@@ -127,11 +134,23 @@ export default function EditStorePage() {
   }, [store]);
 
   return (
-    <div className="mx-auto my-10 w-11/12 min-h-full">
+    <div className="mx-auto py-10 w-11/12 min-h-full">
       <h1 className="text-2xl text-gray-700">Edit Store</h1>
-      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl h-10/12">
+      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">
           <form onSubmit={formik.handleSubmit}>
+            <div className="w-full">
+              {store?.logo && (
+                <figure className="w-40 h-40 block relative rounded">
+                  <Image
+                    src={`${store.logo}`}
+                    alt={`${formik.values.name} image`}
+                    fill
+                    className="object-cover"
+                  />
+                </figure>
+              )}
+            </div>
             <StoreForm formik={formik} />
           </form>
         </div>
