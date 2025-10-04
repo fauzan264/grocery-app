@@ -13,11 +13,12 @@ import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import { size } from "lodash";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function OrderDetail() {
     const { id } = useParams();
     const { currentOrder, setCurrentOrder } = useOrderStore();
+    const { currentShipping, currentAddress } = useOrderStore();
     const { token } = useAuthStore();
     const normalizedStatus = normalizeOrderStatus(currentOrder?.status ?? "");
     const [loading, setLoading] = useState(true);
@@ -28,6 +29,7 @@ export default function OrderDetail() {
         const fetchOrder = async () => {
             setLoading(true);
             const order = await getOrderDetail(id as string, token);
+            console.log("🔍 Fetched Order:", order);
             setCurrentOrder(order);
             setLoading(false);
             console.log(order);
@@ -122,20 +124,20 @@ export default function OrderDetail() {
                     <span className="font-semibold">Shipment</span>
 
                     <div className="grid grid-cols-[120px_20px_1fr] gap-y-2">
-                        <span>Kurir</span>
+                        <span>Courier</span>
                         <span>:</span>
-                        <span>Kargo</span>
+                        <span>{currentShipping?.name}</span>
 
                         <span>Tracking Number</span>
                         <span>:</span>
-                        <span>123456789</span>
+                        <span>-</span>
 
                         <span>Address</span>
                         <span>:</span>
                         <div className="flex flex-col">
                             <span>{currentOrder?.user?.receiverName}</span>
-                            <span>{currentOrder?.user?.receiverNumber}</span>
-                            <span>{currentOrder?.user?.shippingAddress}</span>
+                            <span>{currentOrder?.user?.receiverPhone}</span>
+                            <span>{currentAddress?.address}</span>
                         </div>
                     </div>
                 </Section>
@@ -148,19 +150,23 @@ export default function OrderDetail() {
                     </div>
                     <div className="flex justify-between">
                         <span>Items Subtotal</span>
-                        <span>{formatPrice(currentOrder?.sub_total?? 0)}</span>
+                        <span>{formatPrice(currentOrder?.sub_total ?? 0)}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Shipment Cost</span>
-                        <span>Rp.xxx</span>
+                        <span>{formatPrice(currentShipping?.cost ?? 0)}</span>
                     </div>
                     <div className="flex justify-between border-b border-dashed pb-2 mb-2">
                         <span>Discount</span>
-                        <span>- ({formatPrice(currentOrder?.discount?? 0)})</span>
+                        <span>
+                            - ({formatPrice(currentOrder?.discount ?? 0)})
+                        </span>
                     </div>
                     <div className="flex justify-between font-bold">
                         <span>Total Order</span>
-                        <span>{formatPrice(currentOrder?.finalPrice?? 0)}</span>
+                        <span>
+                            {formatPrice(currentOrder?.finalPrice ?? 0)}
+                        </span>
                     </div>
 
                     {isWaitingForPayment ? (

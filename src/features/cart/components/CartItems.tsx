@@ -1,6 +1,7 @@
 "use client";
 import { ICartItems } from "./type";
 import { formatPrice } from "@/utils/formatPrice";
+import { formatWeight } from "@/utils/formatProducts";
 import Image from "next/image";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
@@ -11,6 +12,7 @@ interface CartItemsProps extends ICartItems {
 }
 
 export default function CartItems(props: CartItemsProps) {
+    console.log("CartItem stock:", props.product.stock);
     const handleIncrement = () => props.onChangeQuantity(props.id, "increment");
     const handleDecrement = () =>
         props.quantity > 0 && props.onChangeQuantity(props.id, "decrement");
@@ -21,13 +23,21 @@ export default function CartItems(props: CartItemsProps) {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <Image
-                        src="/grocery.jpg"
+                        src={
+                            props.product.images?.find((img) => img.isPrimary)
+                                ?.url || "/placeholder.jpg"
+                        }
                         alt={props.product.name}
                         width={80}
                         height={80}
                         className="rounded object-cover"
                     />
-                    <p>{props.product.name}</p>
+                    <div className="flex flex-col">
+                        <p>{props.product.name}</p>
+                        <p className="text-xs">
+                            {formatWeight(props.product.weight_g)}
+                        </p>
+                    </div>
                 </div>
                 <div className="flex flex-col items-center gap-2">
                     <p className="font-bold text-gray-800">

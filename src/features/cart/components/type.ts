@@ -9,6 +9,11 @@ export interface ICartItems {
     name: string
     price: number
     stock : number
+    weight_g : number
+    images?: {
+      url: string
+      isPrimary: boolean
+    }[]
   }
 }
 
