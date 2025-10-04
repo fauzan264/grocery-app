@@ -51,7 +51,7 @@ export default function AddressComponent({
                 <td>{address.isDefault && <FaCheck />}</td>
                 <td>
                   <Link
-                    href={`/admin/profile/edit/address/${address.id}}`}
+                    href={`/admin/profile/address/edit/${address.id}`}
                     className="btn btn-sm bg-amber-400 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
                   >
                     Edit

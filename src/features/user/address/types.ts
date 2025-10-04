@@ -15,8 +15,11 @@ export interface IAddressDistrict {
 
 export interface IAddress {
   id: string;
+  provinceId?: string;
   province: IAddresssProvince;
+  cityId?: string;
   city: IAddressCity;
+  districtId?: string;
   district: IAddressDistrict;
   address: string;
   latitude: number;

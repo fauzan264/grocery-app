@@ -13,7 +13,7 @@ export default function StorePage() {
           Create Store
         </Link>
       </div>
-      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl h-10/12">
+      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body">
           <StoreListComponent />
         </div>
