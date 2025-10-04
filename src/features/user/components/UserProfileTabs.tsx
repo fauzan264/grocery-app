@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaTimesCircle } from "react-icons/fa";
 
-export default function UserProfileComponent({
+export default function UserProfileTabs({
   profile,
   token,
   userId,
