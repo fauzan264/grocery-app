@@ -1,5 +1,5 @@
 "use client";
-import UserProfileComponent from "@/features/user/components/UserProfileComponent";
+import UserProfileTabs from "@/features/user/components/UserProfileTabs";
 import { IUser } from "@/features/user/type";
 import { myProfile } from "@/services/user";
 import useAuthStore from "@/store/useAuthStore";
@@ -24,7 +24,7 @@ export default function ProfileAdminPage() {
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
       <h1 className="text-2xl text-gray-700">Profile Management</h1>
-      <UserProfileComponent profile={profile} token={token} userId={id} />
+      <UserProfileTabs profile={profile} token={token} userId={id} />
     </div>
   );
 }
