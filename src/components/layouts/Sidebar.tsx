@@ -7,23 +7,21 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const menus = [
     { label: "Dashboard", href: "/admin" },
     { label: "Store", href: "/admin/store" },
-    { label: "Product", href: "/admin/products" }
+    { label: "Product", href: "/admin/products" },
   ];
 
   return (
     <div className="flex flex-1 pt-16 min-h-screen">
       <div className="drawer lg:drawer-open">
         <input type="checkbox" id="my-drawer" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col items-center">
-          {children}
-        </div>
+        <div className="drawer-content flex flex-col w-full">{children}</div>
         <div className="drawer-side">
           <label
             htmlFor="my-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu bg-slate-700 min-h-full w-80 p-4 pt-18 md:pt-3">
+          <ul className="menu bg-slate-700 min-h-full w-80 p-4 pt-18 md:pt-3 h-full">
             {menus.map((menu, i) => (
               <li
                 key={i}
