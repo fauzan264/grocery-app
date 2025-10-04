@@ -1,8 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { useFormik } from "formik";
-import { getCities, getDistricts, getProvinces } from "@/services/shipping";
 import { createStoreSchema } from "@/features/admin/store/schemas/createStoreSchema";
 import { createStore } from "@/services/store";
 import { IStore } from "@/features/admin/store/types";
@@ -10,6 +7,8 @@ import { toast } from "react-toastify";
 import useAuthStore from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import StoreForm from "@/features/admin/store/components/StoreForm";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/components/error/types";
 
 export default function CreateStorePage() {
   const router = useRouter();
@@ -27,22 +26,27 @@ export default function CreateStorePage() {
     logo,
     token,
   }: Omit<IStore, "id" | "status"> & { token: string }) => {
-    const response = await createStore({
-      name,
-      description,
-      provinceId,
-      cityId,
-      districtId,
-      address,
-      latitude,
-      longitude,
-      logo,
-      token,
-    });
+    try {
+      const response = await createStore({
+        name,
+        description,
+        provinceId,
+        cityId,
+        districtId,
+        address,
+        latitude,
+        longitude,
+        logo,
+        token,
+      });
 
-    if (response.status == 201) {
       router.push("/admin/store");
       toast.success(response.data.message);
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
     }
   };
 
@@ -86,9 +90,9 @@ export default function CreateStorePage() {
   });
 
   return (
-    <div className="mx-auto my-10 w-11/12 min-h-full">
+    <div className="mx-auto py-10 w-11/12 min-h-full">
       <h1 className="text-2xl text-gray-700">Create Store</h1>
-      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl h-10/12">
+      <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">
           <form onSubmit={formik.handleSubmit}>
             <StoreForm formik={formik} />
