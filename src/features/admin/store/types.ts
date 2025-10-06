@@ -29,3 +29,7 @@ export interface IStore {
   logo?: File | null;
   status?: string;
 }
+
+export interface IStoreLocation extends IStore {
+  distance?: number;
+}
