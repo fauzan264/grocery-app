@@ -31,6 +31,7 @@ export default function LocationProvider({
     longitude,
     setLocation,
     setSelectedStore,
+    setNearbyStores,
     setLoadingLocation,
     setLoadingStore,
     setLocationError,
@@ -56,6 +57,8 @@ export default function LocationProvider({
         setLoadingStore(false);
         return;
       }
+
+      setNearbyStores(nearbyStores);
 
       const nearestStore = nearbyStores[0];
 
