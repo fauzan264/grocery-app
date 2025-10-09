@@ -7,71 +7,72 @@ import useAuthStore from "@/store/useAuthStore";
 import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import Pagination from "@/features/orders/Pagination";
+import AuthGuard from "@/hoc/AuthGuard";
 
-export default function OrderListPage() {
-    const { token } = useAuthStore();
-    const { orders, setOrders } = useOrderStore();
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+function OrderListPage() {
+  const { token } = useAuthStore();
+  const { orders, setOrders } = useOrderStore();
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-    // Filter state diterapkan ke API
-    const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
+  // Filter state diterapkan ke API
+  const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
 
-    // Tangani filter dari child
-    const handleApplyFilter = useCallback((filters: FilterValues) => {
-        setAppliedFilters(filters);
-        setCurrentPage(1);
-    }, []);
+  // Tangani filter dari child
+  const handleApplyFilter = useCallback((filters: FilterValues) => {
+    setAppliedFilters(filters);
+    setCurrentPage(1);
+  }, []);
 
-    useEffect(() => {
-        if (!token) return;
+  useEffect(() => {
+    if (!token) return;
 
-        const fetchOrders = async () => {
-            setLoading(true);
-            try {
-                const data = await getUsersOrderList(token, {
-                    ...appliedFilters,
-                    page: currentPage,
-                });
-                setOrders(data.data);
-                setTotalPages(data.meta.totalPages);
-            } catch (err) {
-                console.error("Failed to fetch orders:", err);
-                setOrders([]);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const data = await getUsersOrderList(token, {
+          ...appliedFilters,
+          page: currentPage,
+        });
+        setOrders(data.data);
+        setTotalPages(data.meta.totalPages);
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchOrders();
-    }, [token, appliedFilters, currentPage, setOrders]);
+    fetchOrders();
+  }, [token, appliedFilters, currentPage, setOrders]);
 
-    if (!token)
-        return <div className="p-4">Please login to view your orders.</div>;
-    if (loading)
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <LoadingThreeDotsPulse />
-            </div>
-        );
-
+  if (!token)
+    return <div className="p-4">Please login to view your orders.</div>;
+  if (loading)
     return (
-        <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Order List</h1>
-            <OrderFilterBar onApply={handleApplyFilter} />
-            {orders.length === 0 ? (
-                <div>No orders found.</div>
-            ) : (
-                orders.map((order) => (
-                    <OrderListCard key={order.id} order={order} />
-                ))
-            )}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
-            />
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingThreeDotsPulse />
+      </div>
     );
+
+  return (
+    <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Order List</h1>
+      <OrderFilterBar onApply={handleApplyFilter} />
+      {orders.length === 0 ? (
+        <div>No orders found.</div>
+      ) : (
+        orders.map((order) => <OrderListCard key={order.id} order={order} />)
+      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
+    </div>
+  );
 }
+
+export default AuthGuard(OrderListPage, ["CUSTOMER"]);

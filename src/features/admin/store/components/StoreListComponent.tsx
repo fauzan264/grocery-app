@@ -72,8 +72,8 @@ export default function StoreListComponent() {
             {stores?.map((store) => (
               <tr key={store.id}>
                 <td>{store.name}</td>
-                <td>{store.province.name}</td>
-                <td>{store.city.name}</td>
+                <td>{store.province!.name}</td>
+                <td>{store.city!.name}</td>
                 <td className="flex space-x-2">
                   <Link
                     href={`/admin/store/detail/${store.id}`}

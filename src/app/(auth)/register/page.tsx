@@ -1,6 +1,7 @@
 "use client";
 import { ErrorResponse } from "@/components/error/types";
 import { registerSchema } from "@/features/auth/register/schemas/registerSchema";
+import PublicOnlyGuard from "@/hoc/PublicOnlyGuard";
 import { register } from "@/services/auth";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";
@@ -8,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function RegisterPage() {
+function RegisterPage() {
   const router = useRouter();
 
   const onRegister = async ({
@@ -143,3 +144,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export default PublicOnlyGuard(RegisterPage);

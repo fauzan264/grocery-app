@@ -3,9 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "@/providers/AuthProvider";
-import Navbar from "@/components/layouts/Navbar";
 import { Toaster } from "react-hot-toast";
 import LocationProvider from "@/providers/LocationProvider";
+import Navbar from "@/components/ui/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

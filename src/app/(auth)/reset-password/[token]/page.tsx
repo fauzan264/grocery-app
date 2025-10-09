@@ -1,13 +1,14 @@
 "use client";
 import { ErrorResponse } from "@/components/error/types";
 import { resetPasswordSchema } from "@/features/auth/reset-password/schemas/resetPasswordSchema";
+import PublicOnlyGuard from "@/hoc/PublicOnlyGuard";
 import { resetPassword } from "@/services/auth";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function ResetPasswordPage() {
+function ResetPasswordPage() {
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
 
@@ -103,3 +104,5 @@ export default function ResetPasswordPage() {
     </>
   );
 }
+
+export default PublicOnlyGuard(ResetPasswordPage);

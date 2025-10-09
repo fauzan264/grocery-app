@@ -1,7 +1,9 @@
+"use client";
 import StoreListComponent from "@/features/admin/store/components/StoreListComponent";
+import AuthGuard from "@/hoc/AuthGuard";
 import Link from "next/link";
 
-export default function StorePage() {
+function StorePage() {
   return (
     <div className="mx-auto my-10 w-11/12 h-full">
       <div className="flex">
@@ -21,3 +23,5 @@ export default function StorePage() {
     </div>
   );
 }
+
+export default AuthGuard(StorePage, ["SUPER_ADMIN"]);
