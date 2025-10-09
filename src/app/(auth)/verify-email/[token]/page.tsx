@@ -6,8 +6,9 @@ import { verifyEmailSchema } from "@/features/auth/verify-email/schemas/verifyEm
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/components/error/types";
+import PublicOnlyGuard from "@/hoc/PublicOnlyGuard";
 
-export default function VerifyEmailPage() {
+function VerifyEmailPage() {
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
 
@@ -107,3 +108,5 @@ export default function VerifyEmailPage() {
     </div>
   );
 }
+
+export default PublicOnlyGuard(VerifyEmailPage);

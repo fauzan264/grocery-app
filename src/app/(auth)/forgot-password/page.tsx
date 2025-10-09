@@ -1,12 +1,13 @@
 "use client";
 import { ErrorResponse } from "@/components/error/types";
 import { forgotPasswordSchema } from "@/features/auth/forgot-password/schemas/forgotPasswordSchema";
+import PublicOnlyGuard from "@/hoc/PublicOnlyGuard";
 import { requestResetPassword } from "@/services/auth";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordPage() {
   const onForgotPassword = async ({ email }: { email: string }) => {
     try {
       const response = await requestResetPassword({ email });
@@ -71,3 +72,5 @@ export default function ForgotPasswordPage() {
     </>
   );
 }
+
+export default PublicOnlyGuard(ForgotPasswordPage);
