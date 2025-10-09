@@ -9,6 +9,8 @@ interface IUseAuthStoreState {
 }
 
 interface IUseAuthStore extends IUseAuthStoreState {
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
   setAuth: ({ token, id, fullName, role }: IUseAuthStoreState) => void;
   logout: () => void;
 }
@@ -20,6 +22,10 @@ const useAuthStore = create<IUseAuthStore>()(
       id: "",
       fullName: "",
       role: "",
+      _hasHydrated: false,
+      setHasHydrated: (state) => {
+        set({ _hasHydrated: state });
+      },
       setAuth: ({
         token,
         id,
@@ -41,6 +47,9 @@ const useAuthStore = create<IUseAuthStore>()(
     {
       name: "authToken",
       partialize: (state) => ({ token: state.token }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
