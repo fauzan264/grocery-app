@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 export default function LoginForm() {
   const router = useRouter();
   const { setAuth } = useAuthStore();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const onLogin = async ({
     email,
@@ -24,23 +26,15 @@ export default function LoginForm() {
   }) => {
     try {
       const response = await login({ email, password });
-      if (response.status == 200) {
-        setAuth({
-          token: response.data.data.token,
-          id: response.data.data.id,
-          fullName: response.data.data.full_name,
-          role: response.data.data.role,
-        });
+      setAuth({
+        token: response.data.data.token,
+        id: response.data.data.id,
+        fullName: response.data.data.full_name,
+        role: response.data.data.role,
+      });
 
-        toast.info(response.data.message);
-        if (response.data.data.role != "CUSTOMER") {
-          return router.push("/admin");
-        } else {
-          return router.push("/");
-        }
-      } else {
-        toast.error(response.data.data.message);
-      }
+      toast.info(response.data.message);
+      router.push(decodeURIComponent(callbackUrl));
     } catch (error: unknown) {
       const err = error as AxiosError<ErrorResponse>;
       if (err.response) {
@@ -60,7 +54,6 @@ export default function LoginForm() {
     },
   });
 
-  const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const error = searchParams.get("error");
 
@@ -68,20 +61,21 @@ export default function LoginForm() {
     try {
       const response = await sessionLogin({ token });
 
-      if (response.status == 200) {
-        setAuth({
-          token: token,
-          id: response.data.data.id,
-          fullName: response.data.data.full_name,
-          role: response.data.data.role,
-        });
+      setAuth({
+        token: token,
+        id: response.data.data.id,
+        fullName: response.data.data.full_name,
+        role: response.data.data.role,
+      });
 
-        toast.info(response.data.message);
-        router.push("/");
-      } else {
-        toast.error(response.data.message);
+      toast.info(response.data.message);
+      router.push(decodeURIComponent(callbackUrl));
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
       }
-    } catch {}
+    }
   };
 
   useEffect(() => {
@@ -90,11 +84,13 @@ export default function LoginForm() {
         "Your account was registered using email and password. Please sign in with your email and password."
       );
     }
+  }, [error]);
 
+  useEffect(() => {
     if (token) {
       onLoginSocialMedia({ token });
     }
-  }, [error, token]);
+  }, [token]);
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-15">
