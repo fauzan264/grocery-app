@@ -8,6 +8,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     { label: "Dashboard", href: "/admin" },
     { label: "Store", href: "/admin/store" },
     { label: "Product", href: "/admin/products" },
+    {label : "Orders", href : "/admin/orders"}
   ];
 
   return (
