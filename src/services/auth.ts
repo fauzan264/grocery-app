@@ -108,3 +108,63 @@ export const changePassword = ({
     }
   );
 };
+
+export const resendVerificationEmail = ({ token }: { token: string }) => {
+  return axiosInstance.post(
+    "/auth/email/resend-verification",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const resendVerificationRegister = ({ email }: { email: string }) => {
+  return axiosInstance.post("/auth/register/resend-verification", { email });
+};
+
+export const validateToken = ({ token }: { token: string }) => {
+  return axiosInstance.post(
+    "/auth/validate",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const changeEmail = ({
+  newEmail,
+  password,
+  token,
+}: {
+  newEmail: string;
+  password: string;
+  token: string;
+}) => {
+  return axiosInstance.post(
+    "/auth/email/change",
+    snakecaseKeys({ newEmail, password }),
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const verifyChangeEmail = ({ token }: { token: string }) => {
+  return axiosInstance.post(
+    "/auth/email/verify-email",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

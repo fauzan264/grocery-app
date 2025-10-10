@@ -14,17 +14,15 @@ export const myProfile = ({ token }: { token: string }) => {
 export const updateProfile = ({
   fullName,
   dateOfBirth,
-  email,
   phoneNumber,
   photoProfile,
   token,
-}: IUser & {
+}: Pick<IUser, "fullName" | "dateOfBirth" | "phoneNumber" | "photoProfile"> & {
   token: string;
 }) => {
   const formData = new FormData();
   formData.append("full_name", String(fullName));
   formData.append("date_of_birth", String(dateOfBirth));
-  formData.append("email", String(email));
   formData.append("phone_number", String(phoneNumber));
   if (photoProfile) {
     formData.append("photo_profile", photoProfile);

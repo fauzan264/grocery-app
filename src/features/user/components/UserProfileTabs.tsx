@@ -1,10 +1,13 @@
 import { formatDateWithTime } from "@/utils/formatDate";
-import AddressComponent from "../address/components/AddressComponent";
-import { IUser } from "../type";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaTimesCircle } from "react-icons/fa";
+import { resendVerificationEmail } from "@/services/auth";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { IUser } from "../type";
+import AddressTable from "../address/components/AddressTable";
 
 export default function UserProfileTabs({
   profile,
@@ -19,6 +22,22 @@ export default function UserProfileTabs({
     return <div>No profile data available.</div>;
   }
 
+  const onResendVerificationEmail = async ({ token }: { token: string }) => {
+    try {
+      const response = await resendVerificationEmail({ token });
+
+      toast.success(response.data.message);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const message =
+          error?.response?.data.message || "Something went wrong!";
+        toast.error(message);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    }
+  };
+
   return (
     <div className="tabs tabs-box bg-slate-50 my-5 shadow-md rounded-md h-10/12">
       <input
@@ -31,6 +50,15 @@ export default function UserProfileTabs({
       <div className="tab-content bg-slate-100 p-6">
         <div className="flex my-2 justify-center md:justify-end">
           <div className="flex flex-col md:flex-row gap-2 w-4/5 md:w-auto">
+            {!profile.verified && (
+              <button
+                type="button"
+                className="btn btn-sm bg-amber-400 hover:bg-amber-500 text-white rounded-md border-0 transition duration-300"
+                onClick={() => onResendVerificationEmail({ token })}
+              >
+                Resend Verify Email
+              </button>
+            )}
             <Link
               href={`/admin/profile/change-password`}
               className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
@@ -38,10 +66,16 @@ export default function UserProfileTabs({
               Change Password
             </Link>
             <Link
-              href={`/admin/profile/edit`}
-              className="btn btn-sm bg-amber-400 hover:bg-amber-500 text-white rounded-md border-0 transition duration-300"
+              href={`/admin/profile/change-email`}
+              className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
             >
-              Edit
+              Change Email
+            </Link>
+            <Link
+              href={`/admin/profile/edit`}
+              className="btn btn-sm bg-slate-600 hover:bg-slate-700 text-white rounded-md border-0 transition duration-300"
+            >
+              Edit Profile
             </Link>
           </div>
         </div>
@@ -123,7 +157,7 @@ export default function UserProfileTabs({
             </Link>
           </div>
         </div>
-        <AddressComponent token={token} userId={userId} />
+        <AddressTable token={token} userId={userId} />
       </div>
     </div>
   );

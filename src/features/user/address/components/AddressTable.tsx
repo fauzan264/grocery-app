@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { IAddress } from "../types";
 
-export default function AddressComponent({
+export default function AddressTable({
   token,
   userId,
 }: {

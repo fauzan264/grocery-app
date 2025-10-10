@@ -31,7 +31,6 @@ export default function EditProfilePage() {
   const onEditProfile = async ({
     fullName,
     dateOfBirth,
-    email,
     phoneNumber,
     photoProfile,
     token,
@@ -42,7 +41,6 @@ export default function EditProfilePage() {
       const res = await updateProfile({
         fullName,
         dateOfBirth,
-        email,
         phoneNumber,
         photoProfile,
         token,
@@ -138,12 +136,6 @@ export default function EditProfilePage() {
               </fieldset>
             </div>
             <FormInput formik={formik} name="fullName" label="Full Name" />
-            <FormInput
-              formik={formik}
-              name="email"
-              label="Email"
-              type="email"
-            />
             <fieldset className="fieldset w-full">
               <legend className="fieldset-legend text-slate-800">
                 Date Of Birth
