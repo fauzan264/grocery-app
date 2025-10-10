@@ -23,7 +23,7 @@ export default function FormInput<T>({
           id={String(name)}
           name={String(name)}
           onChange={formik.handleChange}
-          value={formik.values[name] as string}
+          value={(formik.values[name] as string) ?? ""}
           readOnly={readOnly}
         />
       </label>
