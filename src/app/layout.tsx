@@ -6,6 +6,7 @@ import AuthProvider from "@/providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import LocationProvider from "@/providers/LocationProvider";
 import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
 
             <Navbar />
             {children}
+            <Footer />
           </AuthProvider>
         </LocationProvider>
       </body>
