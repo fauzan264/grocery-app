@@ -13,7 +13,8 @@ interface PaymentProofModalProps {
     alt?: string;
     paymentMethod?: PaymentMethod;
     orderId: string;
-    status: OrderStatus; // ⬅️ tambah status props
+    status: OrderStatus;
+    onAction?: (action: "approve" | "decline") => void;
 }
 
 export default function PaymentProofModal({
@@ -22,8 +23,10 @@ export default function PaymentProofModal({
     paymentMethod,
     orderId,
     status,
+    onAction
 }: PaymentProofModalProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState<
         null | "approve" | "decline"
     >(null);
@@ -37,7 +40,8 @@ export default function PaymentProofModal({
         try {
             const res = await approvePayment(orderId, token);
             toast.success("Payment Approved Successfully");
-            console.log("Approve response:", res);
+            setConfirmOpen(null);
+            onAction?.("approve");
         } catch (error) {
             toast.error("Fail to Approve Payment");
             console.log(error);
@@ -48,7 +52,8 @@ export default function PaymentProofModal({
         try {
             const res = await declinePayment(orderId, token);
             toast.success("Payment Declined Successfully");
-            console.log("Decline response:", res);
+            setConfirmOpen(null);
+            onAction?.("decline")
         } catch (error) {
             toast.error("Fail to Decline Payment");
             console.log(error);

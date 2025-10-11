@@ -7,7 +7,7 @@ interface ConfirmModalProps {
     title?: string;
     confirmText?: string;
     cancelText?: string;
-    variant?: "approve" | "decline";
+    variant?: "approve" | "decline" | "delivered" | "cancel";
 }
 
 export default function ConfirmModal({
@@ -22,7 +22,9 @@ export default function ConfirmModal({
     if (!isOpen) return null;
 
     const confirmBtnClass =
-        variant === "approve" ? "btn btn-success" : "btn btn-error";
+        variant === "approve" || variant === "delivered"
+            ? "btn btn-success"
+            : "btn btn-error";
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-white/30 backdrop-blur-sm z-50">

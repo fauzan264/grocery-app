@@ -12,10 +12,14 @@ import { formatPrice } from "@/utils/formatPrice";
 import { OrderStatus } from "@/features/orders/type";
 import { getPaymentStatus } from "@/utils/PaymentStatusAdmin";
 import PaymentProof from "./PaymentProof";
+import OrderActionBar from "./OrderAction";
 
 export default function OrderDetail({ orderId }: { orderId: string }) {
     const { token } = useAuthStore();
     const [order, setOrder] = useState<IOrderAdminResponse | null>(null);
+    const [actionTriggered, setActionTriggered] = useState<
+        "cancel" | "deliver" | "approve" | "decline" | null
+    >(null);
     const [loading, setLoading] = useState(true);
     const paymentStatus = getPaymentStatus(
         order?.status ?? OrderStatus.WAITING_FOR_PAYMENT
@@ -36,6 +40,25 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
         };
         onGetOrderDetail();
     }, [orderId, token]);
+
+    useEffect(() => {
+        if (!actionTriggered) return;
+
+        const refreshOrder = async () => {
+            setLoading(true);
+            try {
+                const response = await getOrderDetailAdmin(orderId, token);
+                setOrder(response);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+                setActionTriggered(null);
+            }
+        };
+
+        refreshOrder();
+    }, [actionTriggered, orderId, token]);
 
     if (loading) {
         return (
@@ -62,15 +85,17 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                     </p>
                     <span>
                         <OrderStatusBadge
-                            status={normalizeOrderStatus(
-                                order?.status ?? "pending"
-                            )}
+                            status={normalizeOrderStatus(order?.status ?? "-")}
                         />
                     </span>
                 </div>
                 <p className="text-sm text-gray-500">
                     {formatDateWithTime(order?.createdAt ?? "-")}
                 </p>
+                <OrderActionBar
+                    orderId={orderId}
+                    onAction={(action) => setActionTriggered(action)}
+                />
             </div>
 
             {/* 2. Products and Summary Section */}
@@ -88,7 +113,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                         className="flex items-center space-x-4 mb-4 pb-4 border-gray-100 last:border-b-0 last:mb-0 last:pb-0"
                     >
                         <Image
-                            src={item.imageUrl || "/placeholder.png"} // fallback jika image kosong
+                            src={item.imageUrl || "/placeholder.png"}
                             alt={item.name}
                             width={64}
                             height={64}
@@ -174,6 +199,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                             paymentMethod={order?.paymentMethod}
                             orderId={orderId}
                             status={normalizeOrderStatus(order?.status ?? "")}
+                            onAction={(action) => setActionTriggered(action)}
                         />
                     </div>
                 </div>
