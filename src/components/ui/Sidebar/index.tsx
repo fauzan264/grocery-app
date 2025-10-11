@@ -45,7 +45,7 @@ export default function Sidebar({ children }: SidebarProps) {
   );
 
   return (
-    <div className="flex flex-1 pt-16 min-h-screen">
+    <div className="flex flex-1 min-h-screen">
       <div className="drawer lg:drawer-open">
         <input type="checkbox" id="my-drawer" className="drawer-toggle" />
 
