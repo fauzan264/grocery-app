@@ -24,11 +24,11 @@ export default function UserDropdown() {
   );
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-center lg:dropdown-end w-full lg:w-auto">
       <div
         tabIndex={0}
         role="button"
-        className="btn btn-ghost btn-md avatar flex"
+        className="btn btn-ghost btn-md avatar flex w-full lg:w-auto justify-start lg:justify-center"
       >
         <div className="w-7 rounded-full">
           <FaUserCircle className="w-full h-full" />
@@ -38,7 +38,7 @@ export default function UserDropdown() {
 
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content bg-emerald-700 rounded-box z-1 mt-3 w-52 p-2 shadow text-slate-200"
+        className="menu menu-sm dropdown-content bg-emerald-700 rounded-box z-1 mt-3 w-full lg:w-52 p-2 shadow text-slate-200"
       >
         {filteredMenus.map((menu) => (
           <li key={menu.href}>
