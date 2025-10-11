@@ -1,6 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { IStore } from "../types";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import _ from "lodash";
+import camelcaseKeys from "camelcase-keys";
+import { IPagination } from "@/app/types/pagination";
+import { getStoreAdmins } from "@/services/store";
 
 export default function StoreTabs({
   store,
@@ -11,12 +17,48 @@ export default function StoreTabs({
   token: string;
   userId: string;
 }) {
+  const [storeAdmins, setStoreAdmins] = useState<
+    { user: { full_name: string } }[]
+  >([]);
+  const [pagination, setPagination] = useState<IPagination | null>();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const debounceFetch = useMemo(
+    () =>
+      _.debounce(async (searchValue: string, pageValue: number) => {
+        if (!store?.id) return;
+        try {
+          const response = await getStoreAdmins({
+            id: store?.id,
+            name: searchValue || "",
+            page: pageValue,
+            limit: 10,
+            token,
+          });
+
+          if (response.data.success) {
+            setStoreAdmins(response.data.data.store_admins);
+            setPagination(camelcaseKeys(response.data.data.pagination));
+          }
+        } catch (error: unknown) {
+          toast.error(String(error));
+        }
+      }, 1000),
+    [store?.id, token]
+  );
+
+  useEffect(() => {
+    if (!store?.id) return;
+    debounceFetch(search, page);
+  }, [search, page, debounceFetch]);
+
   if (!store) {
     return <div>No Store data available.</div>;
   }
 
   return (
-    <div className="tabs tabs-box bg-slate-50 py-5 shadow-md rounded-md h-10/12">
+    <div className="tabs tabs-box bg-slate-50 py-5 shadow-md rounded-md h-full">
       <input
         type="radio"
         name="my_tabs_6"
@@ -95,17 +137,83 @@ export default function StoreTabs({
         className="tab"
         aria-label="Store Admin"
       />
-      <div className="tab-content bg-slate-100 p-6">
-        <div className="flex py-2 justify-center md:justify-end">
-          <div className="flex flex-col md:flex-row gap-2 w-4/5 md:w-auto">
-            <Link
-              href={`/admin/profile/address/create`}
-              className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
-            >
-              Add Store Admin
-            </Link>
-          </div>
+      <div className="tab-content bg-slate-100 p-6 flex flex-col min-h-screen">
+        <div className="flex flex-col md:flex-row gap-4 py-2 justify-center md:justify-between items-start md:items-center">
+          <Link
+            href={`/admin/profile/address/create`}
+            className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0"
+          >
+            Add Store Admin
+          </Link>
+
+          <input
+            type="text"
+            placeholder="Search name..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            className="input input-bordered w-full md:w-48"
+          />
         </div>
+
+        <div className="overflow-x-auto flex-1 pt-4">
+          <table className="table border-gray-100">
+            <thead className="text-slate-900">
+              <tr>
+                <th>Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-slate-900">
+              {storeAdmins?.length > 0 ? (
+                storeAdmins?.map((admin, i) => (
+                  <tr key={i}>
+                    <td>{admin.user.full_name}</td>
+                    <td>
+                      <Link
+                        href="#"
+                        className="btn btn-sm bg-red-500 text-white hover:bg-red-600"
+                      >
+                        Delete
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={2} className="text-center">
+                    No store admin found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* pagination */}
+        {pagination && (
+          <div className="flex bottom-0 gap-2 justify-center py-4 border-t border-slate-200 mt-auto">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="btn btn-sm"
+            >
+              Prev
+            </button>
+            <span className="flex items-center">
+              Page {pagination.currentPage} of {pagination.totalPage}
+            </span>
+            <button
+              disabled={page === pagination.totalPage}
+              onClick={() => setPage((p) => p + 1)}
+              className="btn btn-sm"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
