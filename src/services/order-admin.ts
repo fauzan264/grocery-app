@@ -17,3 +17,19 @@ export const getOrderDetailAdmin = async (orderId: string, token : string) => {
   });
   return res?.data.data
 }
+
+export const approvePayment = async (orderId : string, token:string) => {
+  const res = await axiosInstance.patch(`${ORDER_URL}/confirmPayment/${orderId}`,
+    {},
+    {headers: { Authorization: `Bearer ${token}` }}
+  );
+  return res?.data.data
+
+}
+export const declinePayment = async (orderId : string, token:string) => {
+  const res = await axiosInstance.patch(`${ORDER_URL}/declinePayment/${orderId}`,
+    {},
+    {headers: { Authorization: `Bearer ${token}` }}
+  );
+  return res?.data.data
+}
