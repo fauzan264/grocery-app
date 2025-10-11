@@ -16,8 +16,6 @@ import PaymentProof from "./PaymentProof";
 export default function OrderDetail({ orderId }: { orderId: string }) {
     const { token } = useAuthStore();
     const [order, setOrder] = useState<IOrderAdminResponse | null>(null);
-    const [isPaymentProofOpen, setIsPaymentProofOpen] = useState(false);
-
     const [loading, setLoading] = useState(true);
     const paymentStatus = getPaymentStatus(
         order?.status ?? OrderStatus.WAITING_FOR_PAYMENT
@@ -174,6 +172,8 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                         <PaymentProof
                             src={order?.paymentProof}
                             paymentMethod={order?.paymentMethod}
+                            orderId={orderId}
+                            status={normalizeOrderStatus(order?.status ?? "")}
                         />
                     </div>
                 </div>
