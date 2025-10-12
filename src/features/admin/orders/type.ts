@@ -45,3 +45,13 @@ export interface IOrderAdminResponse {
   items: IOrderItem[];
   store: IOrderStore | null;
 }
+
+export interface IStatusLogs {
+  id: string;
+  orderId : string;
+  oldStatus: string;
+  newStatus: string;
+  note: string ;
+  changedBy: string 
+  createdAt: string;
+}

@@ -101,7 +101,8 @@ function OrderDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 mx-auto mt-15 p-6 max-w-3xl">
+    <div className="bg-slate-200 min-h-screen">
+      <div className=" mx-auto p-6 max-w-3xl">
       <h1 className="font-bold text-xl mb-4">Order Detail</h1>
 
       <div className="grid grid-cols-1 gap-4">
@@ -214,6 +215,7 @@ function OrderDetail() {
           ) : null}
         </Section>
       </div>
+    </div>
     </div>
   );
 }
