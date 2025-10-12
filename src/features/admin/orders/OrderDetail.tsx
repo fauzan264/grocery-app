@@ -10,75 +10,24 @@ import { formatDateWithTime } from "@/utils/formatDate";
 import toast from "react-hot-toast";
 import { formatPrice } from "@/utils/formatPrice";
 import { OrderStatus } from "@/features/orders/type";
-import { getPaymentStatus } from "@/utils/PaymentStatusAdmin";
 import PaymentProof from "./PaymentProof";
 import OrderActionBar from "./OrderAction";
 
-export default function OrderDetail({ orderId }: { orderId: string }) {
-    const { token } = useAuthStore();
-    const [order, setOrder] = useState<IOrderAdminResponse | null>(null);
+export default function OrderDetail({
+    order,
+    refreshOrder,
+}: {
+    order: IOrderAdminResponse;
+    refreshOrder: () => Promise<void>;
+}) {
     const [actionTriggered, setActionTriggered] = useState<
         "cancel" | "deliver" | "approve" | "decline" | null
     >(null);
-    const [loading, setLoading] = useState(true);
-    const paymentStatus = getPaymentStatus(
-        order?.status ?? OrderStatus.WAITING_FOR_PAYMENT
-    );
-
-    useEffect(() => {
-        const onGetOrderDetail = async () => {
-            if (!orderId && !token) return;
-            try {
-                const response = await getOrderDetailAdmin(orderId, token);
-                setOrder(response);
-            } catch (error) {
-                console.error("Failed to fetch order detail:", error);
-                toast.error("Failed to get order. Please Try Again.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        onGetOrderDetail();
-    }, [orderId, token]);
-
-    useEffect(() => {
-        if (!actionTriggered) return;
-
-        const refreshOrder = async () => {
-            setLoading(true);
-            try {
-                const response = await getOrderDetailAdmin(orderId, token);
-                setOrder(response);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-                setActionTriggered(null);
-            }
-        };
-
-        refreshOrder();
-    }, [actionTriggered, orderId, token]);
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <LoadingThreeDotsPulse />
-            </div>
-        );
-    }
-    if (!order && !loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <p className="text-gray-500">Order not found.</p>
-            </div>
-        );
-    }
 
     return (
         <>
             {/* 1. Order ID & Status Section */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 gap-3">
                 <div className="flex justify-between items-center mb-1">
                     <p className="font-bold text-lg text-gray-800">
                         Order ID {order?.orderId}
@@ -93,8 +42,12 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                     {formatDateWithTime(order?.createdAt ?? "-")}
                 </p>
                 <OrderActionBar
-                    orderId={orderId}
-                    onAction={(action) => setActionTriggered(action)}
+                    orderId={order.orderId}
+                    onAction={async (action) => {
+                        setActionTriggered(action);
+                        await refreshOrder();
+                        setActionTriggered(null);
+                    }}
                 />
             </div>
 
@@ -189,17 +142,31 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                     </div>
                     <div>
                         <span className="text-gray-500">Status</span>:{" "}
-                        <span className="text-green-600 font-medium">
-                            {paymentStatus.label}
+                        <span
+                            className={`font-medium ${
+                                order.status ===
+                                OrderStatus.WAITING_CONFIRMATION_PAYMENT
+                                    ? "text-red-600"
+                                    : "text-green-600"
+                            }`}
+                        >
+                            {order.status ===
+                            OrderStatus.WAITING_CONFIRMATION_PAYMENT
+                                ? "Unpaid"
+                                : "Paid"}
                         </span>
                     </div>
                     <div>
                         <PaymentProof
                             src={order?.paymentProof}
                             paymentMethod={order?.paymentMethod}
-                            orderId={orderId}
+                            orderId={order.orderId}
                             status={normalizeOrderStatus(order?.status ?? "")}
-                            onAction={(action) => setActionTriggered(action)}
+                            onAction={async (action) => {
+                                setActionTriggered(action);
+                                await refreshOrder();
+                                setActionTriggered(null);
+                            }}
                         />
                     </div>
                 </div>

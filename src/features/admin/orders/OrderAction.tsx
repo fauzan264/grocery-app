@@ -37,7 +37,7 @@ export default function OrderActionBar({
     return (
         <div className="flex items-center justify-between gap-4">
             {/* Reminder Box */}
-            <div className="flex items-center text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-md px-3 py-2 flex-1">
+            <div className="flex items-center text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-md px-3 py-2 mt-3">
                 <AlertCircle className="w-4 h-4 mr-2 text-yellow-600" />
                 Make sure you have prepared all items before delivering the order
             </div>

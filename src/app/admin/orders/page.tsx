@@ -57,7 +57,7 @@ export default function OrderManagement() {
         </header>
 
         {/* Main Content */}
-        <section className="bg-white shadow rounded-lg p-6">
+        <section>
           <OrderListTable />
         </section>
       </div>

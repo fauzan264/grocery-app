@@ -41,3 +41,10 @@ export const cancelOrderAdmin = async (orderId : string, token:string) => {
   );
   return res?.data.data
 }
+
+export const getStatusLogs = async (orderId : string, token:string) => {
+  const res = await axiosInstance.get(`${ORDER_URL}/${orderId}/statusLog`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res?.data.data
+}
