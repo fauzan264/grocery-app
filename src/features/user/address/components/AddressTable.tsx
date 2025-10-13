@@ -4,13 +4,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { IAddress } from "../types";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/components/error/types";
+import { toast } from "react-toastify";
 
 export default function AddressTable({
   token,
   userId,
+  role,
 }: {
   token: string;
   userId: string;
+  role: string;
 }) {
   const [addresses, setAddresses] = useState<IAddress[] | null>(null);
 
@@ -24,7 +29,12 @@ export default function AddressTable({
     try {
       const response = await getAddresses({ token, userId });
       setAddresses(camelcaseKeys(response.data.data));
-    } catch {}
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
+    }
   };
 
   useEffect(() => {
@@ -51,7 +61,11 @@ export default function AddressTable({
                 <td>{address.isDefault && <FaCheck />}</td>
                 <td>
                   <Link
-                    href={`/admin/profile/address/edit/${address.id}`}
+                    href={
+                      role == "CUSTOMER"
+                        ? `/profile/address/edit/${address.id}`
+                        : `/admin/profile/address/edit/${address.id}`
+                    }
                     className="btn btn-sm bg-amber-400 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
                   >
                     Edit

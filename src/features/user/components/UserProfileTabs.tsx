@@ -60,19 +60,31 @@ export default function UserProfileTabs({
               </button>
             )}
             <Link
-              href={`/admin/profile/change-password`}
+              href={
+                profile.userRole == "CUSTOMER"
+                  ? "/profile/change-password"
+                  : "/admin/profile/change-password"
+              }
               className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
             >
               Change Password
             </Link>
             <Link
-              href={`/admin/profile/change-email`}
+              href={
+                profile.userRole == "CUSTOMER"
+                  ? "/profile/change-email"
+                  : "/admin/profile/change-email"
+              }
               className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
             >
               Change Email
             </Link>
             <Link
-              href={`/admin/profile/edit`}
+              href={
+                profile.userRole == "CUSTOMER"
+                  ? "/profile/edit"
+                  : "/admin/profile/edit"
+              }
               className="btn btn-sm bg-slate-600 hover:bg-slate-700 text-white rounded-md border-0 transition duration-300"
             >
               Edit Profile
@@ -150,14 +162,18 @@ export default function UserProfileTabs({
         <div className="flex my-2 justify-center md:justify-end">
           <div className="flex flex-col md:flex-row gap-2 w-4/5 md:w-auto">
             <Link
-              href={`/admin/profile/address/create`}
+              href={
+                profile.userRole == "CUSTOMER"
+                  ? "/profile/address/create"
+                  : "/admin/profile/address/create"
+              }
               className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
             >
               Create Address
             </Link>
           </div>
         </div>
-        <AddressTable token={token} userId={userId} />
+        <AddressTable token={token} userId={userId} role={profile.userRole!} />
       </div>
     </div>
   );
