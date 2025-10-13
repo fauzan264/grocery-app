@@ -8,7 +8,6 @@ interface ICartStoreState {
   cartItems: ICartItems[];
 }
 
-
 interface ICartStore extends ICartStoreState {
   setCartItems: (items: ICartItems[]) => void;
   addItem: (item: ICartItems) => void;
@@ -46,6 +45,7 @@ const useCartStore = create<ICartStore>()(
     {
       name: "cart-storage", 
       partialize: (state) => ({ cartItems: state.cartItems }),
+      skipHydration: true
     }
   )
 );

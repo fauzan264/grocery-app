@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import Image from "next/image";
@@ -20,11 +20,15 @@ import ShippingPopup from "./ShippingPopUp";
 import { ShippingSection } from "./ShippingInfo";
 import { PaymentSelector } from "./PaymentMethod";
 import { toast } from "react-toastify";
+import useLocationStore from "@/store/useLocationStore";
 
 export default function OrderCard() {
     const router = useRouter();
     const { token } = useAuthStore();
     const { cartItems } = useCartStore();
+    const {selectedStore} = useLocationStore()
+    const {currentOrder} = useOrderStore()
+    
     const setCurrentOrder = useOrderStore((state) => state.setCurrentOrder);
     const currentShipping = useOrderStore((state) => state.currentShipping);
     const setCurrentShipping = useOrderStore(
@@ -104,7 +108,7 @@ export default function OrderCard() {
     const handleAddressSelect = (addr: IAddress) => {
         setCurrentAddress(addr);
         onGetShipping({
-            origin: "554", // location store nya belom di set dari order
+            origin: String(selectedStore?.districtId), // location store nya belom di set dari order
             destination: addr.district.id, //location user
             weight: totalWeight_g.toString(), // weight nya belom di set dari order
             courier,
@@ -116,12 +120,17 @@ export default function OrderCard() {
 
     const handleShippingSelect = (shipping: RajaOngkirDataResponse) => {
         console.log("Selected shipping:", shipping);
+        
         setCurrentShipping(shipping);
         setShowShippingPopup(false);
     };
 
     const handleCreateOrder = async () => {
         console.log("🚀 handleCreateOrder triggered");
+        console.log(selectedStore)
+        console.log(currentOrder)
+        console.log(currentShipping)
+        console.log(currentAddress)
         if (!token)
             return toast.error("User not authenticated", {
                 className: "toast-order-error",
@@ -138,8 +147,10 @@ export default function OrderCard() {
         try {
             setLoading(true);
 
+            if (!selectedStore?.id) return
+
             const payload = {
-                storeId: "c47f42fb-4620-4eb4-bf4e-8136610eff71",
+                storeId: selectedStore.id,
                 couponCodes: [],
                 paymentMethod: selected,
             };
@@ -176,9 +187,9 @@ export default function OrderCard() {
         console.log("Trigger onGetShipping for", currentAddress, courier);
         if (currentAddress && courier) {
             onGetShipping({
-                origin: "554", // location store nya belom di set dari order
-                destination: currentAddress.district.id, //location user
-                weight: totalWeight_g.toString(), // weight nya belom di set dari order
+                origin: String(selectedStore?.districtId),
+                destination: currentAddress.district.id, 
+                weight: totalWeight_g.toString(), 
                 courier,
             });
         }

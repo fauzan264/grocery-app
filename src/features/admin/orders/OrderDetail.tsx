@@ -1,13 +1,9 @@
-import useAuthStore from "@/store/useAuthStore";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IOrderAdminResponse } from "./type";
-import { getOrderDetailAdmin } from "@/services/order-admin";
-import LoadingThreeDotsPulse from "@/components/ui/loading";
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";
 import { formatDateWithTime } from "@/utils/formatDate";
-import toast from "react-hot-toast";
 import { formatPrice } from "@/utils/formatPrice";
 import { OrderStatus } from "@/features/orders/type";
 import PaymentProof from "./PaymentProof";
