@@ -11,12 +11,15 @@ interface IOrderStore {
 
     orders: IOrderResponse[];
     setOrders: (orders: IOrderResponse[]) => void;
+    clearOrders: () => void
 
     currentShipping: RajaOngkirDataResponse | null;
     setCurrentShipping: (shipping: RajaOngkirDataResponse | null) => void;
+    clearCurrentShipping: () => void
 
     currentAddress: IAddress | null;                
     setCurrentAddress: (address: IAddress | null) => void; 
+    clearCurrentAddress : () => void 
 }
 
 export const useOrderStore = create<IOrderStore>()(
@@ -29,9 +32,15 @@ export const useOrderStore = create<IOrderStore>()(
 
             setCurrentOrder: (order) => set({ currentOrder: order }),
             clearCurrentOrder: () => set({ currentOrder: null }),
+
             setOrders: (orders) => set({ orders }),
+            clearOrders: () => set({orders: []}),
+
             setCurrentShipping: (shipping) => set({ currentShipping: shipping }),
+            clearCurrentShipping: () => set({currentShipping : null}),
+
             setCurrentAddress: (address) => set({ currentAddress: address }),
+            clearCurrentAddress: () => set({currentAddress : null})
         }),
         { name: "order-store" }
     )
