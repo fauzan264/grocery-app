@@ -1,14 +1,24 @@
 "use client";
 import { USER_DROPDOWN_MENUS } from "@/constants/menu";
 import useAuthStore from "@/store/useAuthStore";
+import useCartStore from "@/store/useCartStore";
+import { useOrderStore } from "@/store/userOrderStore";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 
 export default function UserDropdown() {
   const { fullName, role, logout } = useAuthStore();
   const router = useRouter();
+  const {clearCart} = useCartStore()
+  const {clearCurrentOrder, clearCurrentAddress, clearCurrentShipping, clearOrders} = useOrderStore()
+
 
   const handleLogout = () => {
+    clearCart()
+    clearCurrentOrder()
+    clearOrders()
+    clearCurrentAddress()
+    clearCurrentShipping()
     logout();
     router.push("/");
   };
