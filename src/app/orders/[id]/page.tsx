@@ -128,9 +128,9 @@ function OrderDetail() {
             <span>:</span>
             <span>{currentShipping?.name}</span>
 
-            <span>Tracking Number</span>
+            <span>Service</span>
             <span>:</span>
-            <span>-</span>
+            <span>{currentShipping?.service}</span>
 
             <span>Address</span>
             <span>:</span>
