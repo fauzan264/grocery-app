@@ -167,3 +167,23 @@ export const deleteAddress = ({
     },
   });
 };
+
+export const getUsers = ({
+  q,
+  role,
+  token,
+}: {
+  q: string;
+  role: string;
+  token: string;
+}) => {
+  return axiosInstance.get(`/users`, {
+    params: {
+      q,
+      role,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
