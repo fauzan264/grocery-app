@@ -8,6 +8,21 @@ export const getCartItems = async (token: string): Promise<ICartItems[]> => {
   return res.data.data.items;
 };
 
+export const addToCart = async (
+  token: string,
+  productId: string,
+  quantity: number = 1 
+) => {
+  const res = await axiosInstance.post(
+    "/cart/add",
+    { productId, quantity },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return res.data;
+};
+
 
 export const updateCartItemQty = async (
   id: string,

@@ -19,7 +19,7 @@ function Cart() {
     const { token } = useAuthStore();
     const router = useRouter();
 
-    const { cartItems, setCartItems } = useCartStore();
+    const { cartItems, addItem, setCartItems } = useCartStore();
     const [loadingIds, setLoadingIds] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,6 +29,8 @@ function Cart() {
             setLoading(true);
             const items = await getCartItems(token);
             setCartItems(items);
+            console.log(cartItems)
+            console.log(items)
         } catch (err) {
             console.error(err);
         } finally {
