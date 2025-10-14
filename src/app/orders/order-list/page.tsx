@@ -7,7 +7,7 @@ import useAuthStore from "@/store/useAuthStore";
 import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import Pagination from "@/features/orders/Pagination";
-import AuthGuard from "@/hoc/AuthGuard";
+
 
 function OrderListPage() {
   const { token } = useAuthStore();
@@ -75,4 +75,3 @@ function OrderListPage() {
   );
 }
 
-export default AuthGuard(OrderListPage, ["CUSTOMER"]);

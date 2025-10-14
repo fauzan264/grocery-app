@@ -18,6 +18,7 @@ import { ShippingSection } from "./ShippingInfo";
 import { PaymentSelector } from "./PaymentMethod";
 import { toast } from "react-toastify";
 import useLocationStore from "@/store/useLocationStore";
+import LoadingThreeDotsPulse from "@/components/ui/loading";
 
 export default function OrderCard() {
   const router = useRouter();
@@ -181,7 +182,11 @@ export default function OrderCard() {
   }, [currentAddress, courier, selectedStore]);
 
   if (loading && !profile)
-    return <div className="p-4 text-center">Loading profile...</div>;
+     return (
+      <div className="flex justify-center items-center min-h-screen">
+        <LoadingThreeDotsPulse />
+      </div>
+    );
 
   return (
     <div className="bg-white p-4 rounded-lg shadow relative">

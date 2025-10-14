@@ -15,18 +15,17 @@ export default function Pagination({
         } else {
             pages.push(1);
 
-            // Jika terlalu jauh dari awal, tambahkan "..."
+
             if (currentPage > 4) pages.push("...");
 
-            // Halaman di sekitar currentPage
+
             const start = Math.max(2, currentPage - 1);
             const end = Math.min(totalPages - 1, currentPage + 1);
             for (let i = start; i <= end; i++) pages.push(i);
 
-            // Tambahkan "..." jika jauh dari akhir
+ 
             if (currentPage < totalPages - 3) pages.push("...");
 
-            // Selalu tampilkan halaman terakhir
             pages.push(totalPages);
         }
 

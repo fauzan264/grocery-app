@@ -4,11 +4,14 @@ const ORDER_URL = "/admin/orders";
 
 export const getStoreOrderList = async (token: string, filters?: {
   storeId?: string;
+  page?: number;
+  limit?: number;
 }) => {
   const res = await axiosInstance.get(`${ORDER_URL}`, {
     headers: { Authorization: `Bearer ${token}` },
+    params : filters
   });
-  return res?.data.data;
+  return res?.data;
 };
 
 export const getOrderDetailAdmin = async (orderId: string, token : string) => {

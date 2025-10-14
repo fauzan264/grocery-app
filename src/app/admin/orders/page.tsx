@@ -58,7 +58,7 @@ export default function OrderManagement() {
 
         {/* Main Content */}
         <section>
-          <OrderListTable />
+          <OrderListTable storeId={selectedStore} />
         </section>
       </div>
     </div>
