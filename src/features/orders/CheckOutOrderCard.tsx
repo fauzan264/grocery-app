@@ -24,8 +24,6 @@ export default function OrderCard() {
   const { token } = useAuthStore();
   const { cartItems } = useCartStore();
   const { selectedStore } = useLocationStore();
-  const { currentOrder } = useOrderStore();
-
   const setCurrentOrder = useOrderStore((state) => state.setCurrentOrder);
   const currentShipping = useOrderStore((state) => state.currentShipping);
   const setCurrentShipping = useOrderStore((state) => state.setCurrentShipping);
@@ -80,8 +78,7 @@ export default function OrderCard() {
   ];
 
   useEffect(() => {
-    if (!token) return;
-
+    if (!token && !cartItems) return;
     (async () => {
       try {
         setLoading(true);
@@ -94,7 +91,7 @@ export default function OrderCard() {
         setLoading(false);
       }
     })();
-  }, [token]);
+  }, [token, cartItems]);
 
   const totalWeight_g = cartItems.reduce((acc, item) => {
     return acc + item.quantity * item.product.weight_g;
@@ -104,9 +101,9 @@ export default function OrderCard() {
     if (!selectedStore) return;
     setCurrentAddress(addr);
     onGetShipping({
-      origin: String(selectedStore.district?.id), // location store nya belom di set dari order
-      destination: addr.district.id, //location user
-      weight: totalWeight_g.toString(), // weight nya belom di set dari order
+      origin: String(selectedStore.district?.id), 
+      destination: addr.district.id, 
+      weight: totalWeight_g.toString(), 
       courier,
     });
 
@@ -115,18 +112,11 @@ export default function OrderCard() {
   };
 
   const handleShippingSelect = (shipping: RajaOngkirDataResponse) => {
-    console.log("Selected shipping:", shipping);
-
     setCurrentShipping(shipping);
     setShowShippingPopup(false);
   };
 
   const handleCreateOrder = async () => {
-    console.log("🚀 handleCreateOrder triggered");
-    console.log(selectedStore);
-    console.log(currentOrder);
-    console.log(currentShipping);
-    console.log(currentAddress);
     if (!token)
       return toast.error("User not authenticated", {
         className: "toast-order-error",
@@ -165,10 +155,7 @@ export default function OrderCard() {
       });
 
       if (selected === PaymentMethod.SNAP) {
-        // 2. Generate Snap transaction
         const { redirect_url } = await createGatewayPayment(order.id, token);
-
-        // 3. Redirect user langsung ke Snap GoPay page
         window.location.href = redirect_url;
       } else {
         // BANK_TRANSFER → ke order detail
@@ -183,7 +170,6 @@ export default function OrderCard() {
   };
 
   useEffect(() => {
-    console.log("Trigger onGetShipping for", currentAddress, courier);
     if (currentAddress && courier && selectedStore) {
       onGetShipping({
         origin: String(selectedStore.district?.id),

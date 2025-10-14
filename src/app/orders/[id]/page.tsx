@@ -30,7 +30,6 @@ function OrderDetail() {
     const fetchOrder = async () => {
       setLoading(true);
       const order = await getOrderDetail(id as string, token);
-      console.log("🔍 Fetched Order:", order);
       setCurrentOrder(order);
       setLoading(false);
       console.log(order);
