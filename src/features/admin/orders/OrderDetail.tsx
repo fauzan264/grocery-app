@@ -75,10 +75,23 @@ export default function OrderDetail({
                             <p className="text-sm text-gray-500">
                                 Quantity: {item.quantity}
                             </p>
+                            <p className="text-sm text-gray-500">
+                                Available Stock: {item.stock}
+                            </p>
                         </div>
-                        <p className="font-semibold text-gray-700">
-                            {formatPrice(item?.subTotal ?? "0")}
-                        </p>
+                        <div className="flex flex-col justify-between">
+                            <p className="font-semibold text-gray-700">
+                                {formatPrice(item?.subTotal ?? "0")}
+                            </p>
+                            {item.needGlobalStockRequest && (
+                                <button
+                                    className="mt-2 px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                                    onClick={() => {}}
+                                >
+                                    Request Stock
+                                </button>
+                            )}
+                        </div>
                     </div>
                 ))}
 
@@ -95,7 +108,7 @@ export default function OrderDetail({
                     <div className="flex justify-between text-gray-600">
                         <span>Shipment cost</span>
                         <span className="text-green-600">
-                            {formatPrice(order?.discount ?? 0)}
+                            {formatPrice(order?.shipment ?? 0)}
                         </span>
                     </div>
                     <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-200 text-gray-800">

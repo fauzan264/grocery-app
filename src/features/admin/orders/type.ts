@@ -11,7 +11,8 @@ export interface IOrderItem {
   name: string;
   price: number;
   quantity: number;
-  stock: number
+  stock: number;
+  needGlobalStockRequest : boolean;
   imageUrl: string;
   subTotal: number;
 }
@@ -37,6 +38,7 @@ export interface IOrderAdminResponse {
   status: OrderStatus;
   totalPrice: number;
   discount: number;
+  shipment : number;
   finalPrice: number;
   paymentMethod: PaymentMethod;
   paymentProof: string;
