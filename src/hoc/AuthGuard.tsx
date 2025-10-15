@@ -15,10 +15,8 @@ function AuthGuard<P extends object>(
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-      // Wait until Zustand is finished hydrating
       if (!auth._hasHydrated) return;
 
-      // User not logged in - redirect to login
       if (!auth.role) {
         const search = searchParams.toString();
         const callbackUrl = search ? `${pathname}?${search}` : pathname;
@@ -26,8 +24,7 @@ function AuthGuard<P extends object>(
         return;
       }
 
-      // User role does not match - redirect
-      if (!allowedRoles.includes(auth.role)) {
+      if (auth.role && !allowedRoles.includes(auth.role)) {
         if (auth.role === "CUSTOMER") {
           router.replace("/");
         } else {
@@ -36,23 +33,13 @@ function AuthGuard<P extends object>(
         return;
       }
 
-      // ✅ Authorized - show component
       setIsReady(true);
-    }, [
-      auth._hasHydrated,
-      auth.role,
-      pathname,
-      searchParams,
-      router,
-      allowedRoles,
-    ]);
+    }, [auth._hasHydrated, auth.role, pathname, searchParams, router]);
 
-    // Render nothing during hydration to avoid flash
     if (!auth._hasHydrated) {
       return null;
     }
 
-    // Loading screen saat checking auth
     if (!isReady) {
       return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -64,7 +51,6 @@ function AuthGuard<P extends object>(
       );
     }
 
-    // Loading screen when checking auth
     return <WrappedComponent {...props} />;
   };
 

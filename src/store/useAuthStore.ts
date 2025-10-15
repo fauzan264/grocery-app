@@ -1,3 +1,4 @@
+import { decodeToken } from "@/utils/decodeToken";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -48,6 +49,12 @@ const useAuthStore = create<IUseAuthStore>()(
       name: "authToken",
       partialize: (state) => ({ token: state.token }),
       onRehydrateStorage: () => (state) => {
+        if (state?.token) {
+          const decoded = decodeToken(state.token);
+          if (decoded) {
+            state.role = decoded.role || "";
+          }
+        }
         state?.setHasHydrated(true);
       },
     }
