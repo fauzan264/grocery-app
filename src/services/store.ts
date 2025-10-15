@@ -1,8 +1,6 @@
 import { IStore } from "@/features/admin/store/types";
 import { axiosInstance } from "@/lib/axiosInstances";
-import { headers } from "next/headers";
 import snakecaseKeys from "snakecase-keys";
-import { number } from "yup";
 
 const STORES_URL = "/stores";
 
@@ -148,6 +146,22 @@ export const getStoreAdmins = ({
 }) => {
   return axiosInstance.get(`/stores/${id}/assign-user`, {
     params: { name, page, limit },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteStoreAdmin = ({
+  id,
+  userId,
+  token,
+}: {
+  id: string;
+  userId: string;
+  token: string;
+}) => {
+  return axiosInstance.delete(`${STORES_URL}/${id}/assign-user/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

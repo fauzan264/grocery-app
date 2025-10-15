@@ -35,7 +35,7 @@ export default function DetailStorePage() {
     <>
       <div className="mx-auto py-10 w-11/12 min-h-full">
         <h1 className="text-2xl text-gray-700">Store Management</h1>
-        <StoreTabs store={store} token={token} userId={id} />
+        <StoreTabs store={store} token={token} />
       </div>
     </>
   );

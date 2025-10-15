@@ -1,13 +1,15 @@
 "use client";
 import { IPagination } from "@/app/types/pagination";
-import { getStoreAdmins } from "@/services/store";
+import { deleteStoreAdmin, getStoreAdmins } from "@/services/store";
 import camelcaseKeys from "camelcase-keys";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { IStore } from "../../types";
 import _ from "lodash";
 import AddStoreAdminModal from "./AddStoreAdminModal";
+import DeleteModal from "@/components/modals/DeleteModal";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/components/error/types";
 
 export default function StoreAdminManagement({
   store,
@@ -23,6 +25,12 @@ export default function StoreAdminManagement({
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<{
+    id: string;
+    full_name: string;
+  } | null>(null);
 
   const fetchAdmins = useMemo(
     () =>
@@ -50,6 +58,46 @@ export default function StoreAdminManagement({
       }, 1000),
     [store?.id, token]
   );
+
+  const handleDeleteClick = ({
+    user,
+  }: {
+    user: { id: string; full_name: string };
+  }) => {
+    setSelectedItem(user);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (!selectedItem) return;
+      setIsDeleting(true);
+      const response = await deleteStoreAdmin({
+        id: store.id!,
+        userId: selectedItem.id,
+        token,
+      });
+
+      toast.success(response.data.message);
+      await fetchAdmins(search, page);
+
+      setIsDeleting(false);
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (!isDeleting) {
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    }
+  };
 
   useEffect(() => {
     fetchAdmins(search, page);
@@ -91,7 +139,7 @@ export default function StoreAdminManagement({
           </thead>
           <tbody className="text-slate-900">
             {isLoading ? (
-              <tr>
+              <tr key={0}>
                 <td colSpan={2} className="text-center py-8">
                   <span className="loading loading-spinner"></span>
                 </td>
@@ -101,17 +149,19 @@ export default function StoreAdminManagement({
                 <tr key={admin.user.id}>
                   <td>{admin.user.full_name}</td>
                   <td>
-                    <Link
-                      href="#"
-                      className="btn btn-sm bg-red-500 text-white hover:bg-red-600"
+                    <button
+                      className="btn btn-sm bg-red-500 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
+                      onClick={() => {
+                        handleDeleteClick({ user: admin.user });
+                      }}
                     >
                       Delete
-                    </Link>
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
-              <tr>
+              <tr key={0}>
                 <td colSpan={2} className="text-center">
                   No store admin found
                 </td>
@@ -142,6 +192,14 @@ export default function StoreAdminManagement({
           </button>
         </div>
       )}
+
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        itemName={selectedItem?.full_name}
+        isLoading={isDeleting}
+      />
     </>
   );
 }

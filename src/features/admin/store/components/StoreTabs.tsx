@@ -5,11 +5,9 @@ import StoreDetail from "./StoreDetail";
 export default function StoreTabs({
   store,
   token,
-  userId,
 }: {
   store?: IStore;
   token: string;
-  userId: string;
 }) {
   if (!store) {
     return <div>No Store data available.</div>;
