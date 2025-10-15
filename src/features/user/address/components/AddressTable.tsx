@@ -1,4 +1,4 @@
-import { getAddresses } from "@/services/user";
+import { deleteAddress, getAddresses } from "@/services/user";
 import camelcaseKeys from "camelcase-keys";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { IAddress } from "../types";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/components/error/types";
 import { toast } from "react-toastify";
+import DeleteModal from "@/components/modals/DeleteModal";
 
 export default function AddressTable({
   token,
@@ -18,6 +19,45 @@ export default function AddressTable({
   role: string;
 }) {
   const [addresses, setAddresses] = useState<IAddress[] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<IAddress | null>(null);
+
+  const handleDeleteClick = (address: IAddress) => {
+    setSelectedItem(address);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (!selectedItem?.id) return false;
+      setIsLoading(true);
+      const response = await deleteAddress({
+        token,
+        userId,
+        addressId: selectedItem.id,
+      });
+
+      toast.success(response.data.message);
+      await onGetAddresses({ token, userId });
+
+      setIsLoading(false);
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    } catch (error: unknown) {
+      const err = error as AxiosError<ErrorResponse>;
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    if (!isLoading) {
+      setIsModalOpen(false);
+      setSelectedItem(null);
+    }
+  };
 
   const onGetAddresses = async ({
     token,
@@ -70,11 +110,27 @@ export default function AddressTable({
                   >
                     Edit
                   </Link>
+                  <button
+                    className="btn btn-sm bg-red-500 text-white hover:shadow-md m-1 px-3 py-1 text-sm rounded-md"
+                    onClick={() => {
+                      handleDeleteClick(address);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
         </tbody>
       </table>
+
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        itemName={selectedItem?.district.name || selectedItem?.address}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
