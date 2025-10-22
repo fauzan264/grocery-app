@@ -6,9 +6,9 @@ const fileFormatAccepted = ["image/jpeg", "image/png", "image/gif"];
 export const updateStoreSchema = yup.object().shape({
   name: yup.string(),
   description: yup.string(),
-  province: yup.string(),
-  city: yup.string(),
-  subdistrict: yup.string(),
+  province_id: yup.string(),
+  city_id: yup.string(),
+  district_id: yup.string(),
   address: yup.string(),
   latitude: yup.string(),
   longitude: yup.string(),
