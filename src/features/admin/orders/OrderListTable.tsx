@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 import { getStoreOrderList } from "@/services/order-admin";
 import useAuthStore from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { IOrderAdminResponse } from "./type";
 import { formatPrice } from "@/utils/formatPrice";
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
@@ -14,27 +14,45 @@ import Pagination from "@/features/orders/Pagination";
 
 export default function OrderListTable({ storeId }: { storeId: string }) {
     const router = useRouter();
-    const [orders, setOrders] = useState<IOrderAdminResponse[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [totalPages, setTotalPages] = useState<number>(1);
+    const searchParams = useSearchParams();
     const { token } = useAuthStore();
+
+    const [orders, setOrders] = useState<IOrderAdminResponse[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalOrders, setTotalOrders] = useState(0);
+
+    const currentPage = Number(searchParams.get("page")) || 1;
+    const storeNameParam = searchParams.get("store");
+
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", String(page));
+        if (storeNameParam) {
+            params.set("store", storeNameParam);
+        } else {
+            params.delete("store");
+        }
+
+        router.push(`?${params.toString()}`);
+    };
 
     useEffect(() => {
         const fetchOrders = async () => {
             if (!token) return;
+            setLoading(true);
             try {
                 const res = await getStoreOrderList(token, {
                     page: currentPage,
                     limit: 10,
                     storeId: storeId === "all" ? undefined : storeId,
                 });
-                setOrders(res.data); 
                 setOrders(res.data || []);
                 setTotalPages(res.meta?.totalPages || 1);
+                setTotalOrders(res.meta?.total || 0);
             } catch (error) {
                 console.error("Error fetching orders:", error);
-                toast.error("Fail to load orders");
+                toast.error("Failed to load orders");
             } finally {
                 setLoading(false);
             }
@@ -53,19 +71,22 @@ export default function OrderListTable({ storeId }: { storeId: string }) {
 
     if (orders.length === 0) {
         return (
-            <div className="p-6 text-gray-500 text-center">No order found</div>
+            <div className="p-6 text-gray-500 text-center">No orders found</div>
         );
     }
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Orders</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                Orders Found : {totalOrders}
+            </h2>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                     <thead className="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
                         <tr>
                             <th className="px-4 py-3 text-left">Order ID</th>
+                            <th className="px-4 py-3 text-left">Store</th>
                             <th className="px-4 py-3 text-left">Customer</th>
                             <th className="px-4 py-3 text-left">Created At</th>
                             <th className="px-4 py-3 text-left">
@@ -83,6 +104,9 @@ export default function OrderListTable({ storeId }: { storeId: string }) {
                                 className="border-t hover:bg-gray-50 transition"
                             >
                                 <td className="px-4 py-3">#{order.orderId}</td>
+                                <td className="px-4 py-3">
+                                    {order.store?.name}
+                                </td>
                                 <td className="px-4 py-3">
                                     {order?.customer?.fullName || "-"}
                                 </td>
@@ -121,10 +145,12 @@ export default function OrderListTable({ storeId }: { storeId: string }) {
                     </tbody>
                 </table>
             </div>
+
+            {/* 🔹 Pagination */}
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
+                onPageChange={handlePageChange}
             />
         </div>
     );
