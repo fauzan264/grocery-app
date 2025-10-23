@@ -1,4 +1,7 @@
 import { axiosInstance } from "@/lib/axiosInstances";
+import camelcaseKeys from "camelcase-keys";
+import { snakeCase } from "lodash";
+import snakecaseKeys from "snakecase-keys";
 
 interface IGetStoreNearbyParams {
   latitude: number;
@@ -22,4 +25,22 @@ export const getPublicStoreNearby = async ({
 
 export const getPublicStoreById = ({ id }: { id: string }) => {
   return axiosInstance.get(`/public/stores/${id}`);
+};
+
+export const getPublicProducts = async ({
+  storeId,
+  page,
+  limit,
+}: {
+  storeId?: string;
+  page?: string;
+  limit?: string;
+}) => {
+  return await axiosInstance.get("/public/products", {
+    params: snakecaseKeys({
+      storeId,
+      page,
+      limit,
+    }),
+  });
 };

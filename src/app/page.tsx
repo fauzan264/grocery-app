@@ -1,4 +1,6 @@
 "use client";
+import { getPublicProducts } from "@/services/public";
+import useLocationStore from "@/store/useLocationStore";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -18,6 +20,7 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [banners, setBanners] = useState<IPromo[]>([]);
+  const { selectedStore } = useLocationStore();
 
   const mockBanners: IPromo[] = [
     {
@@ -34,58 +37,25 @@ export default function Home() {
     },
   ];
 
-  const mockProducts: IProduct[] = [
-    {
-      id: 1,
-      name: "Orange",
-      price: 20000,
-      image:
-        "https://images.unsplash.com/photo-1572898170625-b4344fa56d22?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 2,
-      name: "Apple",
-      price: 20000,
-      image:
-        "https://images.unsplash.com/photo-1623780494339-f7ed013ebbc4?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 3,
-      name: "Mango",
-      price: 20000,
-      image:
-        "https://plus.unsplash.com/premium_photo-1724255862358-b58750ad31a8?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 4,
-      name: "Banana",
-      price: 20000,
-      image:
-        "https://plus.unsplash.com/premium_photo-1724250081102-cab0e5cb314c?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 5,
-      name: "Milk",
-      price: 20000,
-      image:
-        "https://images.unsplash.com/photo-1588710929895-6ee7a0a4d155?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 6,
-      name: "Coffee",
-      price: 20000,
-      image:
-        "https://plus.unsplash.com/premium_photo-1675237625862-d982e7f44696?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
+  const onGetProducts = async ({
+    storeId,
+    page,
+    limit,
+  }: {
+    storeId?: string;
+    page?: string;
+    limit?: string;
+  }) => {
+    const response = await getPublicProducts({ storeId, page, limit });
+    setProducts(response.data.data.products);
+  };
 
   useEffect(() => {
     setBanners(mockBanners);
-    setProducts(mockProducts);
-    // Nanti ganti dengan:
-    // fetchBanners();
-    // fetchProducts();
-  }, []);
+    if (selectedStore) {
+      onGetProducts({ storeId: selectedStore.id });
+    }
+  }, [selectedStore]);
 
   // Auto slide carousel
   useEffect(() => {
@@ -171,7 +141,9 @@ export default function Home() {
                     />
                   </figure>
                   <div className="card-body p-4">
-                    <h2 className="card-title text-base">{product.name}</h2>
+                    <h2 className="card-title text-base truncate">
+                      {product.name}
+                    </h2>
                     <p className="text-lg font-semibold text-amber-600">
                       {formatPrice(product.price)}
                     </p>
