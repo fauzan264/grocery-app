@@ -29,7 +29,12 @@ export default function AddStoreAdminModal({
       const fetchAdmins = async () => {
         try {
           setLoading(true);
-          const res = await getUsers({ q: "", role: "ADMIN_STORE", token });
+          const res = await getUsers({
+            q: "",
+            role: "ADMIN_STORE",
+            token,
+            isAvailable: true,
+          });
           setAdminOptions(res.data.data.data);
         } catch (error) {
           const err = error as AxiosError<ErrorResponse>;
