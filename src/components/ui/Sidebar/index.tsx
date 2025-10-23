@@ -21,7 +21,7 @@ function SidebarMenuItem({ href, label, isActive }: SidebarMenuItemProps) {
   return (
     <li
       className={`
-        text-md text-slate-200 font-semibold
+        text-md text-slate-200 font-semibold tracking-widest
         ${isActive ? "bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-md" : ""}
       `}
     >
