@@ -8,7 +8,7 @@ export interface MenuItem {
 
 export const ADMIN_SIDEBAR_MENUS: MenuItem[] = [
   {
-    label: "Dashboard",
+    label: "Home",
     href: "/admin",
     roles: ["SUPER_ADMIN", "ADMIN_STORE"],
   },
