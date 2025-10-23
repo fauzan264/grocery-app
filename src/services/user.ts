@@ -172,16 +172,27 @@ export const getUsers = ({
   q,
   role,
   token,
+  isAvailable = false,
 }: {
   q: string;
   role: string;
   token: string;
+  isAvailable?: boolean;
 }) => {
   return axiosInstance.get(`/users`, {
-    params: {
+    params: snakecaseKeys({
       q,
       role,
+      isAvailable,
+    }),
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
+  });
+};
+
+export const getMyStore = ({ token }: { token: string }) => {
+  return axiosInstance.get(`/users/me/store`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
