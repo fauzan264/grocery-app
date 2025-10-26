@@ -23,14 +23,12 @@ function Cart() {
     const [loadingIds, setLoadingIds] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // GET cart items
+
     const onGetCartItems = async () => {
         try {
             setLoading(true);
             const items = await getCartItems(token);
             setCartItems(items);
-            console.log(cartItems)
-            console.log(items)
         } catch (err) {
             console.error(err);
         } finally {

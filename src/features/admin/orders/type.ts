@@ -13,6 +13,7 @@ export interface IOrderItem {
   quantity: number;
   stock: number;
   needGlobalStockRequest : boolean;
+  hasPendingStockRequest : boolean;
   imageUrl: string;
   subTotal: number;
 }

@@ -8,6 +8,8 @@ import { formatPrice } from "@/utils/formatPrice";
 import { OrderStatus } from "@/features/orders/type";
 import PaymentProof from "./PaymentProof";
 import OrderActionBar from "./OrderAction";
+import StockRequestModal from "./StockRequest";
+import toast from "react-hot-toast";
 
 export default function OrderDetail({
     order,
@@ -19,6 +21,12 @@ export default function OrderDetail({
     const [actionTriggered, setActionTriggered] = useState<
         "cancel" | "deliver" | "approve" | "decline" | null
     >(null);
+
+    const [selectedProduct, setSelectedProduct] = useState<{
+        productId: string;
+        storeId: string;
+        orderId?: string;
+    } | null>(null);
 
     return (
         <>
@@ -85,10 +93,25 @@ export default function OrderDetail({
                             </p>
                             {item.needGlobalStockRequest && (
                                 <button
-                                    className="mt-2 px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                                    onClick={() => {}}
+                                    disabled={item.hasPendingStockRequest}
+                                    className={`mt-2 px-3 py-1 text-sm rounded-md transition-colors
+            ${
+                item.hasPendingStockRequest
+                    ? "bg-gray-400 text-gray-100 cursor-not-allowed"
+                    : "bg-yellow-500 hover:bg-yellow-600 text-white"
+            }`}
+                                    onClick={() => {
+                                        if (item.hasPendingStockRequest) return;
+                                        setSelectedProduct({
+                                            productId: item.productId,
+                                            storeId: order.store!.id,
+                                            orderId: order.orderId,
+                                        });
+                                    }}
                                 >
-                                    Request Stock
+                                    {item.hasPendingStockRequest
+                                        ? "Waiting for stock mutation"
+                                        : "Request Stock"}
                                 </button>
                             )}
                         </div>
@@ -153,14 +176,12 @@ export default function OrderDetail({
                         <span className="text-gray-500">Status</span>:{" "}
                         <span
                             className={`font-medium ${
-                                order.status ===
-                                OrderStatus.WAITING_CONFIRMATION_PAYMENT
+                                order.status === OrderStatus.WAITING_FOR_PAYMENT
                                     ? "text-red-600"
                                     : "text-green-600"
                             }`}
                         >
-                            {order.status ===
-                            OrderStatus.WAITING_CONFIRMATION_PAYMENT
+                            {order.status === OrderStatus.WAITING_FOR_PAYMENT
                                 ? "Unpaid"
                                 : "Paid"}
                         </span>
@@ -179,6 +200,15 @@ export default function OrderDetail({
                         />
                     </div>
                 </div>
+                {selectedProduct && (
+                    <StockRequestModal
+                        productId={selectedProduct.productId}
+                        storeId={selectedProduct.storeId}
+                        orderId={selectedProduct.orderId!}
+                        onClose={() => setSelectedProduct(null)}
+                        onSuccess={refreshOrder}
+                    />
+                )}
             </div>
         </>
     );

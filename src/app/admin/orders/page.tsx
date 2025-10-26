@@ -15,7 +15,7 @@ interface Store {
 export default function OrderManagement() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { token } = useAuthStore();
+    const { token, role } = useAuthStore();
 
     const [stores, setStores] = useState<Store[]>([]);
     const [loading, setLoading] = useState(true);
@@ -23,6 +23,7 @@ export default function OrderManagement() {
     const storeNameParam = searchParams.get("store") || "all";
 
     useEffect(() => {
+        if (!token || role !== "SUPER_ADMIN") return;
         const fetchStores = async () => {
             try {
                 setLoading(true);
@@ -54,7 +55,7 @@ export default function OrderManagement() {
         };
 
         if (token) fetchStores();
-    }, [token]);
+    }, [token, role]);
 
     const getStoreIdFromName = (storeName: string): string => {
         if (storeName === "all" || storeName === "All Stores") return "all";
@@ -96,35 +97,42 @@ export default function OrderManagement() {
                     </div>
 
                     {/* 🔹 Filter by Store */}
-                    <div className="flex items-center gap-3">
-                        <label
-                            htmlFor="storeFilter"
-                            className="text-sm font-medium text-gray-700"
-                        >
-                            Filter by Store:
-                        </label>
-
-                        {loading ? (
-                            <p className="text-sm text-gray-500">Loading...</p>
-                        ) : (
-                            <select
-                                id="storeFilter"
-                                className="select select-bordered select-sm w-full max-w-xs"
-                                value={
-                                    storeNameParam === "all"
-                                        ? "All Stores"
-                                        : storeNameParam
-                                }
-                                onChange={handleStoreChange}
+                    {role === "SUPER_ADMIN" && (
+                        <div className="flex items-center gap-3">
+                            <label
+                                htmlFor="storeFilter"
+                                className="text-sm font-medium text-gray-700"
                             >
-                                {stores.map((store) => (
-                                    <option key={store.id} value={store.name}>
-                                        {store.name}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                    </div>
+                                Filter by Store:
+                            </label>
+
+                            {loading ? (
+                                <p className="text-sm text-gray-500">
+                                    Loading...
+                                </p>
+                            ) : (
+                                <select
+                                    id="storeFilter"
+                                    className="select select-bordered select-sm w-full max-w-xs"
+                                    value={
+                                        storeNameParam === "all"
+                                            ? "All Stores"
+                                            : storeNameParam
+                                    }
+                                    onChange={handleStoreChange}
+                                >
+                                    {stores.map((store) => (
+                                        <option
+                                            key={store.id}
+                                            value={store.name}
+                                        >
+                                            {store.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
+                    )}
                 </header>
 
                 {/* 🔹 Main Content */}
