@@ -26,6 +26,7 @@ export default function OrderDetailPage() {
                 orderId as string,
                 token
             );
+            console.log("✅ Order detail response:", response);
             setOrder(response);
 
             const logsData = await getStatusLogs(orderId as string, token);
