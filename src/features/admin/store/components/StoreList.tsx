@@ -179,8 +179,10 @@ export default function StoreListTable() {
         </table>
       </div>
       <Pagination
-        currentPage={Number(pagination?.currentPage)}
-        totalPages={Number(pagination?.totalPage)}
+        currentPage={
+          pagination?.currentPage ? Number(pagination?.currentPage) : 1
+        }
+        totalPages={pagination?.totalPage ? Number(pagination?.totalPage) : 1}
         onPageChange={(page) => {
           setPage(page);
           const params = new URLSearchParams(searchParams);
