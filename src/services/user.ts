@@ -37,16 +37,30 @@ export const updateProfile = ({
 };
 
 export const getAddresses = ({
+  search,
+  provinceId,
+  page,
+  limit,
   token,
   userId,
 }: {
+  search?: string;
+  provinceId?: number;
   token: string;
   userId: string;
+  page: number;
+  limit: number;
 }) => {
   return axiosInstance.get(`/users/${userId}/addresses`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params: snakecaseKeys({
+      search,
+      provinceId,
+      page,
+      limit,
+    }),
   });
 };
 
