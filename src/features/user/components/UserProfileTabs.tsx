@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { IUser } from "../type";
 import AddressTable from "../address/components/AddressTable";
 import MyStore from "./MyStore";
+import { Suspense } from "react";
 
 export default function UserProfileTabs({
   profile,
@@ -162,21 +163,13 @@ export default function UserProfileTabs({
             aria-label="Address"
           />
           <div className="tab-content bg-slate-100 p-6">
-            <div className="flex my-2 justify-center md:justify-end">
-              <div className="flex flex-col md:flex-row gap-2 w-4/5 md:w-auto">
-                <Link
-                  href={"/profile/address/create"}
-                  className="btn btn-sm bg-emerald-500 hover:bg-emerald-600 text-white rounded-md border-0 transition duration-300"
-                >
-                  Create Address
-                </Link>
-              </div>
-            </div>
-            <AddressTable
-              token={token}
-              userId={userId}
-              role={profile.userRole!}
-            />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AddressTable
+                token={token}
+                userId={userId}
+                role={profile.userRole!}
+              />
+            </Suspense>
           </div>
         </>
       )}

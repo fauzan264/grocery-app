@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
 import { useDeleteUser } from "@/app/hooks/useUsers";
@@ -193,19 +193,21 @@ export default function UserListPage() {
                     : ""
                 } ${isFetching && slideDir === "right" ? "translate-x-6 opacity-80" : ""}`}
               >
-                <UserTable
-                  users={data?.data ?? []}
-                  // hanya pass handler kalau SUPER_ADMIN, dan beri flag canManage
-                  onEdit={
-                    role === "SUPER_ADMIN" ? (u) => setEditing(u) : undefined
-                  }
-                  onDelete={
-                    role === "SUPER_ADMIN"
-                      ? (u) => setConfirmDelete(u)
-                      : undefined
-                  }
-                  canManage={role === "SUPER_ADMIN"}
-                />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <UserTable
+                    users={data?.data ?? []}
+                    // hanya pass handler kalau SUPER_ADMIN, dan beri flag canManage
+                    onEdit={
+                      role === "SUPER_ADMIN" ? (u) => setEditing(u) : undefined
+                    }
+                    onDelete={
+                      role === "SUPER_ADMIN"
+                        ? (u) => setConfirmDelete(u)
+                        : undefined
+                    }
+                    canManage={role === "SUPER_ADMIN"}
+                  />
+                </Suspense>
               </div>
 
               <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-3">

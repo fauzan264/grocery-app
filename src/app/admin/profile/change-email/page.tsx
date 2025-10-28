@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/ui/button";
 import FormInput from "@/components/form/FormInput";
-import { changeEmail, changePassword } from "@/services/auth";
+import { changeEmail } from "@/services/auth";
 import useAuthStore from "@/store/useAuthStore";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";

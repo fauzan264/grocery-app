@@ -4,7 +4,7 @@ import { IStoreProvince } from "@/features/admin/store/types";
 import AuthGuard from "@/hoc/AuthGuard";
 import { getProvinces } from "@/services/shipping";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 function StorePage() {
   const [provinces, setProvinces] = useState<IStoreProvince[]>([]);
@@ -98,7 +98,9 @@ function StorePage() {
 
         {/* Main Content */}
         <section>
-          <StoreListTable />
+          <Suspense fallback={<div>Loading...</div>}>
+            <StoreListTable />
+          </Suspense>
         </section>
       </div>
     </div>
