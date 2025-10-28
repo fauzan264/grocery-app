@@ -46,7 +46,7 @@ export default function StoreListTable() {
               name: searchValue || "",
               provinceId: Number(provinceId) || 0,
               page: pageValue,
-              limit: 8,
+              limit: 10,
               token,
             });
 
