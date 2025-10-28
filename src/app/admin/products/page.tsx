@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useProducts } from "@/app/hooks/useProducts";
@@ -264,12 +264,14 @@ function ProductsInner() {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <ProductTable
-                  products={data?.items ?? []}
-                  onDelete={deleteSingle}
-                  onBulkDelete={deleteBulk}
-                  // catatan: tidak meneruskan onEdit lagi — edit di-handle lewat halaman terpisah
-                />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ProductTable
+                    products={data?.items ?? []}
+                    onDelete={deleteSingle}
+                    onBulkDelete={deleteBulk}
+                    // catatan: tidak meneruskan onEdit lagi — edit di-handle lewat halaman terpisah
+                  />
+                </Suspense>
               </div>
 
               {/* Pagination */}

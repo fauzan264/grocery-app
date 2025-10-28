@@ -1,6 +1,7 @@
 import { IStore } from "../types";
 import StoreAdminManagement from "../admin/component/StoreAdminManagement";
 import StoreDetail from "./StoreDetail";
+import { Suspense } from "react";
 
 export default function StoreTabs({
   store,
@@ -33,7 +34,9 @@ export default function StoreTabs({
         aria-label="Store Admin"
       />
       <div className="tab-content bg-slate-100 p-6 flex flex-col min-h-screen">
-        <StoreAdminManagement store={store} token={token} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <StoreAdminManagement store={store} token={token} />
+        </Suspense>
       </div>
     </div>
   );
