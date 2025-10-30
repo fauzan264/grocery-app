@@ -16,9 +16,10 @@ import AddressPopup from "./AddressPopUp";
 import ShippingPopup from "./ShippingPopUp";
 import { ShippingSection } from "./ShippingInfo";
 import { PaymentSelector } from "./PaymentMethod";
-import { toast } from "react-toastify";
+
 import useLocationStore from "@/store/useLocationStore";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
+import toast from "react-hot-toast";
 
 export default function OrderCard() {
     const router = useRouter();
@@ -87,7 +88,9 @@ export default function OrderCard() {
                 setLoading(true);
                 const data = await getUserProfileWithAddress(token);
                 setProfile(data);
-                if (data.UserAddress[0]) setCurrentAddress(data.UserAddress[0]);
+                if (data.UserAddress && data.UserAddress[0]) {
+                    setCurrentAddress(data.UserAddress[0]);
+                }
             } catch (err) {
                 console.error("Failed to fetch user", err);
             } finally {
@@ -120,27 +123,24 @@ export default function OrderCard() {
     };
 
     const handleCreateOrder = async () => {
-        if (!token)
-            return toast.error("User not authenticated", {
-                className: "toast-order-error",
-            });
+        if (!token) return toast.error("User not authenticated", {position : "top-right"});
         if (!currentAddress)
-            return toast.error("Please select a shipping address", {
-                className: "toast-order-error",
-            });
+            return toast.error("Please select a shipping address", {position : "top-right"});
         if (!currentShipping)
-            return toast.error("Please select a shipping method", {
-                className: "toast-order-error",
-            });
+            return toast.error("Please select a shipping method", {position : "top-right"});
+
+        console.log("🔍 Current Address:", currentAddress);
+        console.log("🔍 Current Shipping:", currentShipping);
+        console.log("🔍 Selected Store:", selectedStore);
 
         try {
             setLoading(true);
 
             if (!selectedStore?.id) return;
 
-            const etdNumber = currentShipping.etd
-                ? parseInt(currentShipping.etd.split("-")[0])
-                : 0;
+            const shippingDays = currentShipping.etd
+                ? currentShipping.etd.split("-")[0]
+                : "0";
 
             const payload = {
                 storeId: selectedStore.id,
@@ -150,20 +150,19 @@ export default function OrderCard() {
                     courier: currentShipping.name,
                     service: currentShipping.service,
                     shipping_cost: currentShipping.cost,
-                    shipping_days: isNaN(etdNumber) ? 0 : etdNumber,
+                    shipping_days: shippingDays,
+                    address: currentAddress.address ?? "",
+                    province_name: currentAddress.province.name ?? "",
+                    city_name: currentAddress.city.name ?? "",
+                    district_name: currentAddress.district.name ?? "",
                 },
             };
 
-            console.log("Order Payload:", {
-                ...payload,
-                shipment: {
-                    ...payload.shipment,
-                    shipping_days: Number(payload.shipment.shipping_days),
-                },
-            });
+            console.log("Order Payload:", payload);
 
             // 1. Create order
             const order = await createOrders(payload, token);
+            console.log("Order Payload:", payload);
             setCurrentOrder(order);
             toast.success("Order created successfully!", {
                 className: "toast-order-success",
@@ -176,7 +175,6 @@ export default function OrderCard() {
                 );
                 window.location.href = redirect_url;
             } else {
-                // BANK_TRANSFER → ke order detail
                 router.push(`/orders/${order.id}`);
             }
         } catch (err) {
@@ -197,13 +195,6 @@ export default function OrderCard() {
             });
         }
     }, [currentAddress, courier, selectedStore]);
-
-    if (loading && !profile)
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <LoadingThreeDotsPulse />
-            </div>
-        );
 
     return (
         <div className="bg-white p-4 rounded-lg shadow relative">
@@ -252,14 +243,30 @@ export default function OrderCard() {
             </div>
 
             {/* Address Popup */}
-            {showAddressPopup && profile?.UserAddress.length ? (
-                <AddressPopup
-                    addresses={profile.UserAddress}
-                    currentAddress={currentAddress}
-                    onSelect={handleAddressSelect}
-                    onClose={() => setShowAddressPopup(false)}
-                />
-            ) : null}
+            {showAddressPopup &&
+                (profile?.UserAddress && profile.UserAddress.length > 0 ? (
+                    <AddressPopup
+                        addresses={profile.UserAddress}
+                        currentAddress={currentAddress}
+                        onSelect={handleAddressSelect}
+                        onClose={() => setShowAddressPopup(false)}
+                    />
+                ) : (
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+                            <p className="text-gray-700 mb-4">
+                                No address found. Please add an address in your
+                                profile first.
+                            </p>
+                            <button
+                                onClick={() => setShowAddressPopup(false)}
+                                className="w-full bg-amber-400 text-white py-2 rounded-lg font-semibold hover:bg-amber-500"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                ))}
 
             {/* Shipping Popup */}
             {showShippingPopup && shipping && (
