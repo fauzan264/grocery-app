@@ -81,7 +81,7 @@ export default function CartIcon() {
                             onClick={goToCart}
                             className="w-full bg-emerald-700 text-white py-2 rounded-md hover:bg-emerald-800 transition"
                         >
-                            Lihat Keranjang
+                            Go to Cart
                         </button>
                     </div>
                 </div>
