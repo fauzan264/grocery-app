@@ -45,7 +45,6 @@ const useCartStore = create<ICartStore>()(
     {
       name: "cart-storage", 
       partialize: (state) => ({ cartItems: state.cartItems }),
-      skipHydration: true
     }
   )
 );

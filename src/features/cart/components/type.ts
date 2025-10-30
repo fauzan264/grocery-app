@@ -1,3 +1,12 @@
+interface IStock {
+  id: string;
+  productId: string;
+  storeId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ICartItems {
   id: string
   cartId : string
@@ -8,7 +17,7 @@ export interface ICartItems {
   product: {
     name: string
     price: number
-    stock : number
+    stocks : IStock[]
     weight_g : number
     images?: {
       url: string
