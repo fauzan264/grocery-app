@@ -1,7 +1,10 @@
+import { IShipping } from "../shipping/types";
+
 export interface ICreateOrderPayload {
   storeId: string;
   couponCodes: string[];
   paymentMethod: PaymentMethod;
+  shipment : IShipping
 }
 
 
@@ -37,6 +40,7 @@ export interface IOrderResponse {
     receiverPhone: string;
     shippingAddress: string;
   };
+  shipment : IShipping
 }
 
 export enum OrderStatus {

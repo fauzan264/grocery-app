@@ -25,7 +25,8 @@ export const getUserAddresses = async (token: string): Promise<IAddress[]> => {
   const res = await axiosInstance.get(`${USER_URL}/me/addresses`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.data.data;
+
+  return res.data.data.addresses;
 };
 
 export const getUserProfileWithAddress = async (

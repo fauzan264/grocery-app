@@ -125,18 +125,18 @@ function OrderDetail() {
           <div className="grid grid-cols-[120px_20px_1fr] gap-y-2">
             <span>Courier</span>
             <span>:</span>
-            <span>{currentShipping?.name}</span>
+            <span>{currentOrder?.shipment.courier}</span>
 
             <span>Service</span>
             <span>:</span>
-            <span>{currentShipping?.service}</span>
+            <span>{currentOrder?.shipment.service}</span>
 
             <span>Address</span>
             <span>:</span>
             <div className="flex flex-col">
               <span>{currentOrder?.user?.receiverName}</span>
               <span>{currentOrder?.user?.receiverPhone}</span>
-              <span>{currentAddress?.address}</span>
+              <span>{currentOrder?.shipment.address}</span>
             </div>
           </div>
         </Section>

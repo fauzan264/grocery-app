@@ -36,7 +36,7 @@ export function ShippingSection({
                     <FaMapMarkerAlt size={20} />
                     {currentAddress
                         ? `${currentAddress.address}, ${currentAddress.district.name}, ${currentAddress.city.name}, ${currentAddress.province.name}`
-                        : "No address found"}
+                        : "Select Shipping Address "}
                 </div>
                 <button
                     onClick={onChangeAddress}
@@ -70,7 +70,7 @@ export function ShippingSection({
                     <MdLocalShipping size={20} />
                     {currentShipping
                         ? `${currentShipping.name}, ${currentShipping.description}, Estimated: ${currentShipping.etd}, Price: ${currentShipping.cost}`
-                        : "No shipping found"}
+                        : "Select Shipping"}
                 </div>
                 <button
                     onClick={onChangeShipping}
