@@ -1,6 +1,7 @@
 "use client";
 import UserProfileTabs from "@/features/user/components/UserProfileTabs";
 import { IUser } from "@/features/user/type";
+import AuthGuard from "@/hoc/AuthGuard";
 import { myProfile } from "@/services/user";
 import useAuthStore from "@/store/useAuthStore";
 import camelcaseKeys from "camelcase-keys";
@@ -8,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function ProfileAdminPage() {
+function ProfileAdminPage() {
   const { _hasHydrated, token, id } = useAuthStore();
   const router = useRouter();
   const [profile, setProfile] = useState<IUser | undefined>(undefined);
@@ -46,3 +47,5 @@ export default function ProfileAdminPage() {
     </div>
   );
 }
+
+export default AuthGuard(ProfileAdminPage, ["CUSTOMER"]);
