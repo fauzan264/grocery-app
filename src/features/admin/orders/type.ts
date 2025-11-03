@@ -32,6 +32,10 @@ export interface IOrderStore {
   name: string;
 }
 
+export interface IShippingAdmin {
+  shipping_cost: number;
+  address : string;
+}
 
 export interface IOrderAdminResponse {
   orderId: string;
@@ -39,13 +43,13 @@ export interface IOrderAdminResponse {
   status: OrderStatus;
   totalPrice: number;
   discount: number;
-  shipment : number;
   finalPrice: number;
   paymentMethod: PaymentMethod;
   paymentProof: string;
   createdAt: string;
   customer: IOrderUser;
   items: IOrderItem[];
+  shipment : IShippingAdmin
   store: IOrderStore | null;
 }
 

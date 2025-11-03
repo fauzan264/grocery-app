@@ -28,6 +28,20 @@ export default function OrderDetail({
         orderId?: string;
     } | null>(null);
 
+    const handleAction = async (
+        action: "cancel" | "deliver" | "approve" | "decline"
+    ) => {
+        try {
+            setActionTriggered(action);
+            await refreshOrder();
+        } catch (error) {
+            console.error("Error during action:", error);
+            toast.error("Failed to refresh order data");
+        } finally {
+            setActionTriggered(null);
+        }
+    };
+
     return (
         <>
             {/* 1. Order ID & Status Section */}
@@ -48,11 +62,7 @@ export default function OrderDetail({
                 <OrderActionBar
                     orderId={order.orderId}
                     status={normalizeOrderStatus(order?.status ?? "")}
-                    onAction={async (action) => {
-                        setActionTriggered(action);
-                        await refreshOrder();
-                        setActionTriggered(null);
-                    }}
+                    onAction={handleAction}
                 />
             </div>
 
@@ -132,7 +142,7 @@ export default function OrderDetail({
                     <div className="flex justify-between text-gray-600">
                         <span>Shipment cost</span>
                         <span className="text-green-600">
-                            {formatPrice(order?.shipment ?? 0)}
+                            {formatPrice(order?.shipment.shipping_cost ?? 0)}
                         </span>
                     </div>
                     <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-200 text-gray-800">
@@ -167,7 +177,8 @@ export default function OrderDetail({
                         {order?.customer.email}
                     </div>
                     <div>
-                        <span className="text-gray-500">Address</span>: -
+                        <span className="text-gray-500">Address</span>:{" "}
+                        {order.shipment.address}
                     </div>
                     <div>
                         <span className="text-gray-500">Payment</span>:{" "}
@@ -177,12 +188,18 @@ export default function OrderDetail({
                         <span className="text-gray-500">Status</span>:{" "}
                         <span
                             className={`font-medium ${
-                                order.status === OrderStatus.WAITING_FOR_PAYMENT
+                                order.status ==
+                                Object.values(OrderStatus)[
+                                    OrderStatus.WAITING_FOR_PAYMENT
+                                ]
                                     ? "text-red-600"
                                     : "text-green-600"
                             }`}
                         >
-                            {order.status === OrderStatus.WAITING_FOR_PAYMENT
+                            {order.status ==
+                            Object.values(OrderStatus)[
+                                OrderStatus.WAITING_FOR_PAYMENT
+                            ]
                                 ? "Unpaid"
                                 : "Paid"}
                         </span>
@@ -193,11 +210,7 @@ export default function OrderDetail({
                             paymentMethod={order?.paymentMethod}
                             orderId={order.orderId}
                             status={normalizeOrderStatus(order?.status ?? "")}
-                            onAction={async (action) => {
-                                setActionTriggered(action);
-                                await refreshOrder();
-                                setActionTriggered(null);
-                            }}
+                            onAction={handleAction}
                         />
                     </div>
                 </div>
