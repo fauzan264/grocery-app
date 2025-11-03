@@ -6,6 +6,7 @@ import OrderListTable from "@/features/admin/orders/OrderListTable";
 import useAuthStore from "@/store/useAuthStore";
 import { getStores } from "@/services/store";
 import toast from "react-hot-toast";
+import Breadcrumbs from "@/features/admin/orders/BreadCrumbs";
 
 interface Store {
     id: string;
@@ -88,6 +89,7 @@ export default function OrderManagement() {
                 {/* Header Section */}
                 <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
+                        <Breadcrumbs/>
                         <h1 className="text-2xl font-semibold text-gray-800">
                             Orders Management
                         </h1>
