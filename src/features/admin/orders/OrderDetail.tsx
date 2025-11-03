@@ -47,6 +47,7 @@ export default function OrderDetail({
                 </p>
                 <OrderActionBar
                     orderId={order.orderId}
+                    status={normalizeOrderStatus(order?.status ?? "")}
                     onAction={async (action) => {
                         setActionTriggered(action);
                         await refreshOrder();

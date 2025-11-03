@@ -1,5 +1,6 @@
 "use client";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
+import Breadcrumbs from "@/features/admin/orders/BreadCrumbs";
 import OrderActivitySidebar from "@/features/admin/orders/OrderActivities";
 import OrderDetail from "@/features/admin/orders/OrderDetail";
 import { IOrderAdminResponse, IStatusLogs } from "@/features/admin/orders/type";
@@ -61,8 +62,14 @@ export default function OrderDetailPage() {
 
     return (
         <>
-            <div className="bg-slate-200 min-h-screen">
-                <div className="max-w-8xl mx-auto p-6 grid grid-cols-1 md:grid-cols-4 gap-6 bg-gray-50 min-h-screen">
+            <div className=" min-h-screen max-w-8xl mx-auto p-6">
+                <div className="mb-8">
+                    <Breadcrumbs/>
+                    <h1 className="text-2xl font-semibold text-gray-800">
+                        Orders Detail
+                    </h1>
+                </div>
+                <div className=" grid grid-cols-1 md:grid-cols-4 gap-6 bg-gray-50 min-h-screen">
                     <div className="md:col-span-3 space-y-6">
                         <OrderDetail
                             order={order}
