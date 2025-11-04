@@ -1,41 +1,19 @@
 "use client";
+import { mockBanners } from "@/features/home/data/banners";
+import { categories } from "@/features/home/data/categories";
+import { IProduct, IPromo } from "@/features/home/types";
 import { getPublicProducts } from "@/services/public";
 import useLocationStore from "@/store/useLocationStore";
+import { formatPrice } from "@/utils/formatPrice";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-
-interface IPromo {
-  id: number;
-  image: string;
-}
-
-interface IProduct {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [banners, setBanners] = useState<IPromo[]>([]);
   const { selectedStore } = useLocationStore();
-
-  const mockBanners: IPromo[] = [
-    {
-      id: 1,
-      image: "/images/banner/image1.png",
-    },
-    {
-      id: 2,
-      image: "/images/banner/image2.png",
-    },
-    {
-      id: 3,
-      image: "/images/banner/image3.png",
-    },
-  ];
 
   const onGetProducts = async ({
     storeId,
@@ -70,56 +48,74 @@ export default function Home() {
   const prevSlide = () =>
     setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
   return (
-    <div className="bg-slate-200 min-h-screen flex flex-col pt-20">
+    <div className="bg-slate-200 min-h-screen flex flex-col">
       <main className="flex-1">
-        {/* Carousel */}
-        <div className="flex justify-center py-8">
-          <div className="w-full max-w-7xl px-4 md:px-0">
-            <div className="relative w-full h-80 md:h-96 bg-gray-300 rounded-lg overflow-hidden shadow-lg">
-              {banners.length > 0 && (
-                <>
-                  <img
-                    src={banners[currentSlide]?.image}
-                    alt="Banner"
-                    className="w-full h-full object-cover transition-opacity duration-500"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-between px-4">
+        {/* Carousel - Full Width */}
+        <div className="w-full">
+          <div className="relative w-full h-80 md:h-96 bg-gray-300 overflow-hidden">
+            {banners.length > 0 && (
+              <>
+                <Image
+                  src={banners[currentSlide]?.image}
+                  alt="Banner"
+                  fill
+                  className="object-cover transition-opacity duration-500"
+                  priority
+                />
+                <div className="absolute inset-0 flex items-center justify-between px-4">
+                  <button
+                    onClick={prevSlide}
+                    className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
+                  >
+                    ❮
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
+                  >
+                    ❯
+                  </button>
+                </div>
+                {/* Dots */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {banners.map((_, idx) => (
                     <button
-                      onClick={prevSlide}
-                      className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
-                    >
-                      ❮
-                    </button>
-                    <button
-                      onClick={nextSlide}
-                      className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
-                    >
-                      ❯
-                    </button>
+                      key={idx}
+                      onClick={() => setCurrentSlide(idx)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        idx === currentSlide ? "bg-white w-6" : "bg-white/50"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="bg-gradient-to-b from-slate-50 via-slate-200 to-slate-300">
+          <div className="w-full max-w-7xl mx-auto px-4 py-8">
+            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  className="flex flex-col items-center gap-2 cursor-pointer group"
+                >
+                  <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white shadow-md group-hover:shadow-lg transition-shadow">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  {/* Dots */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {banners.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentSlide(idx)}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          idx === currentSlide ? "bg-white w-6" : "bg-white/50"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
+                  <span className="text-xs md:text-sm text-center font-medium text-slate-700">
+                    {category.name}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -133,11 +129,12 @@ export default function Home() {
             {products.map((product) => (
               <Link key={product.id} href={`/product/${product.id}`}>
                 <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
-                  <figure className="h-40 overflow-hidden bg-gray-200">
-                    <img
+                  <figure className="relative h-40 overflow-hidden bg-gray-200">
+                    <Image
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                      fill
+                      className="object-cover hover:scale-110 transition-transform duration-300"
                     />
                   </figure>
                   <div className="card-body p-4">
