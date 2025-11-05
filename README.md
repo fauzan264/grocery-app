@@ -1,6 +1,6 @@
-# E-Commerce Frontend Application
+# Grocery Frontend Application
 
-Frontend application for an e-commerce platform built with Next.js 15, TypeScript, React 19, and Tailwind CSS.
+Frontend application for an Grocery platform built with Next.js 15, TypeScript, React 19, and Tailwind CSS.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ Frontend application for an e-commerce platform built with Next.js 15, TypeScrip
 - Password reset functionality
 - Protected routes with authentication guards
 
-**E-Commerce Core**
+**Grocery Core**
 
 - Product browsing with filters and search
 - Product detail pages
