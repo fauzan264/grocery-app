@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { changeEmailSchema } from "@/features/auth/change-email/schemas/changeEmailSchema";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function ChangeEmailPage() {
   const router = useRouter();
@@ -58,6 +59,7 @@ export default function ChangeEmailPage() {
 
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Change Email</h1>
       <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">

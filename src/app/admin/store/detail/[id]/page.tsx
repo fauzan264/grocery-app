@@ -1,5 +1,6 @@
 "use client";
 import { ErrorResponse } from "@/components/error/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import StoreTabs from "@/features/admin/store/components/StoreTabs";
 import { IStore } from "@/features/admin/store/types";
 import { getStoreById } from "@/services/store";
@@ -34,6 +35,7 @@ export default function DetailStorePage() {
   return (
     <>
       <div className="mx-auto py-10 w-11/12 min-h-full">
+        <Breadcrumbs />
         <h1 className="text-2xl text-gray-700">Store Management</h1>
         <StoreTabs store={store} token={token} />
       </div>

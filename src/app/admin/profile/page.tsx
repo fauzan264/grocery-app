@@ -7,6 +7,7 @@ import camelcaseKeys from "camelcase-keys";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function ProfileAdminPage() {
   const { _hasHydrated, token, id } = useAuthStore();
@@ -41,6 +42,7 @@ export default function ProfileAdminPage() {
   }, [_hasHydrated, token]);
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Profile Management</h1>
       <UserProfileTabs profile={profile} token={token} userId={id} />
     </div>

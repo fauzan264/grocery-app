@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import UserProfileTabs from "@/features/user/components/UserProfileTabs";
 import { IUser } from "@/features/user/type";
 import AuthGuard from "@/hoc/AuthGuard";
@@ -42,6 +43,7 @@ function ProfileAdminPage() {
   }, [_hasHydrated, token]);
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Profile Management</h1>
       <UserProfileTabs profile={profile} token={token} userId={id} />
     </div>
