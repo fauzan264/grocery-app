@@ -53,7 +53,7 @@ export default function Home() {
       <main className="flex-1">
         {/* Carousel - Full Width */}
         <div className="w-full">
-          <div className="relative w-full h-80 md:h-96 bg-gray-300 overflow-hidden">
+          <div className="relative w-full h-[200px] sm:h-[250px] md:h-[350px] lg:h-[450px] bg-gray-300 overflow-hidden">
             {banners.length > 0 && (
               <>
                 <Image
@@ -63,29 +63,31 @@ export default function Home() {
                   className="object-cover transition-opacity duration-500"
                   priority
                 />
-                <div className="absolute inset-0 flex items-center justify-between px-4">
+                <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-4 md:px-6">
                   <button
                     onClick={prevSlide}
-                    className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
+                    className="btn btn-circle btn-xs sm:btn-sm md:btn-md bg-white/80 hover:bg-white border-0 shadow-lg"
                   >
                     ❮
                   </button>
                   <button
                     onClick={nextSlide}
-                    className="btn btn-circle btn-sm md:btn-md bg-white/80 hover:bg-white border-0"
+                    className="btn btn-circle btn-xs sm:btn-sm md:btn-md bg-white/80 hover:bg-white border-0 shadow-lg"
                   >
                     ❯
                   </button>
                 </div>
-                {/* Dots */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-3 sm:bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
                   {banners.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setCurrentSlide(idx)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        idx === currentSlide ? "bg-white w-6" : "bg-white/50"
+                      className={`h-2 sm:h-2.5 rounded-full transition-all ${
+                        idx === currentSlide
+                          ? "bg-white w-6 sm:w-8"
+                          : "bg-white/50 w-2 sm:w-2.5"
                       }`}
+                      aria-label={`Go to slide ${idx + 1}`}
                     />
                   ))}
                 </div>
