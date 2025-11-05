@@ -1,5 +1,6 @@
 "use client";
 import { ErrorResponse } from "@/components/error/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import UserAddressForm from "@/features/user/address/components/UserAddressForm";
 import { updateUserAddressSchema } from "@/features/user/address/schemas/updateUserAddressSchema";
 import { IAddress } from "@/features/user/address/types";
@@ -155,6 +156,7 @@ export default function EditProfileAddressPage() {
 
   return (
     <div className="mx-auto py-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Edit Address</h1>
       <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">

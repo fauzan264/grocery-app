@@ -1,4 +1,5 @@
 "use client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import StoreListTable from "@/features/admin/store/components/StoreList";
 import { IStoreProvince } from "@/features/admin/store/types";
 import AuthGuard from "@/hoc/AuthGuard";
@@ -56,6 +57,7 @@ function StorePage() {
         {/* Header Section */}
         <header className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
+            <Breadcrumbs />
             <h1 className="text-2xl font-semibold text-gray-800">
               Store Management
             </h1>

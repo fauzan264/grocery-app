@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import StoreForm from "@/features/admin/store/components/StoreForm";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/components/error/types";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function CreateStorePage() {
   const router = useRouter();
@@ -91,6 +92,7 @@ export default function CreateStorePage() {
 
   return (
     <div className="mx-auto py-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Create Store</h1>
       <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">

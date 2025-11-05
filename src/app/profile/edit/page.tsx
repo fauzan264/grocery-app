@@ -1,5 +1,6 @@
 "use client";
 import FormInput from "@/components/form/FormInput";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import Button from "@/components/ui/button";
 import { updateUserSchema } from "@/features/user/schemas/userSchema";
 import { IUser } from "@/features/user/type";
@@ -100,6 +101,7 @@ export default function EditProfilePage() {
 
   return (
     <div className="mx-auto my-10 w-11/12 min-h-full">
+      <Breadcrumbs />
       <h1 className="text-2xl text-gray-700">Edit Profile</h1>
       <div className="card bg-slate-50 my-5 shadow-md rounded-md rounded-t-4xl h-10/12">
         <div className="card-body w-11/12 md:w-3/5 mx-auto">
