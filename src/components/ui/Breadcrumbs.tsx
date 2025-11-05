@@ -14,10 +14,21 @@ export default function Breadcrumbs() {
 
   if (visibleSegments.length === 0) return null;
 
+  const isUUID = (str: string) => {
+    // check uuid
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(str);
+  };
+
   const formatLabel = (segment: string) => {
+    if (isUUID(segment)) {
+      return segment;
+    }
+
     return segment
       .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize setiap kata
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 
