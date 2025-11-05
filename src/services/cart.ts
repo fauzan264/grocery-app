@@ -14,7 +14,7 @@ export const addToCart = async (
   quantity: number = 1 
 ) => {
   const res = await axiosInstance.post(
-    "/cart/add",
+    "/cart/items",
     { productId, quantity },
     {
       headers: { Authorization: `Bearer ${token}` },

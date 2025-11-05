@@ -1,5 +1,5 @@
+// @/utils/swal.ts
 import Swal from "sweetalert2";
-
 
 export const confirmCancelOrder = async () => {
   const result = await Swal.fire({
@@ -53,3 +53,22 @@ export const confirmReceiveOrder = async () => {
   return false;
 };
 
+export const showSuccessToast = async (title: string, text: string) => {
+  await Swal.fire({
+    title,
+    text,
+    icon: "success",
+    timer: 1500,
+    showConfirmButton: false,
+  });
+};
+
+export const showErrorToast = async (title: string, text: string) => {
+  await Swal.fire({
+    title,
+    text,
+    icon: "error",
+    timer: 1500,
+    showConfirmButton: false,
+  });
+};
