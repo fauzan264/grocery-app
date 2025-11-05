@@ -11,6 +11,7 @@ import { useOrderStore } from "@/store/userOrderStore";
 import { formatDateWithTime } from "@/utils/formatDate";
 import { formatPrice } from "@/utils/formatPrice";
 import { normalizeOrderStatus } from "@/utils/normalizeOrderStatus";
+import { confirmCancelOrder, confirmReceiveOrder } from "@/utils/swal";
 import {
     CheckBadgeIcon,
     CreditCardIcon,
@@ -72,9 +73,7 @@ function OrderDetail() {
     const handleCancelOrder = async () => {
         if (!token) return;
 
-        const confirmCancel = confirm(
-            "Are you sure you want to cancel this order?"
-        );
+        const confirmCancel = await confirmCancelOrder()
         if (!confirmCancel) return;
 
         try {
@@ -90,9 +89,7 @@ function OrderDetail() {
     const handleConfirmOrder = async () => {
         if (!token) return;
 
-        const confirmReceive = confirm(
-            "Are you sure you have received your order?"
-        );
+        const confirmReceive = confirmReceiveOrder()
         if (!confirmReceive) return;
 
         try {

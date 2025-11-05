@@ -21,7 +21,12 @@ import useLocationStore from "@/store/useLocationStore";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import toast from "react-hot-toast";
 
-export default function OrderCard() {
+interface OrderCardProps {
+    selectedPayment: PaymentMethod;
+    setSelectedPayment: (method: PaymentMethod) => void;
+}
+
+export default function OrderCard({selectedPayment, setSelectedPayment }: OrderCardProps) {
     const router = useRouter();
     const { token } = useAuthStore();
     const { cartItems } = useCartStore();
@@ -34,9 +39,6 @@ export default function OrderCard() {
     const currentAddress = useOrderStore((state) => state.currentAddress);
     const setCurrentAddress = useOrderStore((state) => state.setCurrentAddress);
 
-    const [selected, setSelected] = useState<PaymentMethod>(
-        PaymentMethod.BANK_TRANSFER
-    );
     const [loading, setLoading] = useState(false);
     const [profile, setProfile] = useState<IUserProfile | null>(null);
     const [showAddressPopup, setShowAddressPopup] = useState(false);
@@ -122,64 +124,6 @@ export default function OrderCard() {
         setShowShippingPopup(false);
     };
 
-    const handleCreateOrder = async () => {
-        if (!token) return toast.error("User not authenticated", {position : "top-right"});
-        if (!currentAddress)
-            return toast.error("Please select a shipping address", {position : "top-right"});
-        if (!currentShipping)
-            return toast.error("Please select a shipping method", {position : "top-right"});
-
-        try {
-            setLoading(true);
-
-            if (!selectedStore?.id) return;
-
-            const shippingDays = currentShipping.etd
-                ? currentShipping.etd.split("-")[0]
-                : "0";
-
-            const payload = {
-                storeId: selectedStore.id,
-                couponCodes: [],
-                paymentMethod: selected,
-                shipment: {
-                    courier: currentShipping.name,
-                    service: currentShipping.service,
-                    shipping_cost: currentShipping.cost,
-                    shipping_days: shippingDays,
-                    address: currentAddress.address ?? "",
-                    province_name: currentAddress.province.name ?? "",
-                    city_name: currentAddress.city.name ?? "",
-                    district_name: currentAddress.district.name ?? "",
-                },
-            };
-
-            console.log("Order Payload:", payload);
-
-            const order = await createOrders(payload, token);
-            console.log("Order Payload:", payload);
-            setCurrentOrder(order);
-            toast.success("Order created successfully!", {
-                className: "toast-order-success",
-            });
-
-            if (selected === PaymentMethod.SNAP) {
-                const { redirect_url } = await createGatewayPayment(
-                    order.id,
-                    token
-                );
-                window.location.href = redirect_url;
-            } else {
-                router.push(`/orders/${order.id}`);
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Failed to create order");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         if (currentAddress && courier && selectedStore) {
             onGetShipping({
@@ -221,20 +165,11 @@ export default function OrderCard() {
                 {/* Payment Method selector */}
                 <div className="flex flex-col items-start gap-2">
                     <PaymentSelector
-                        selected={selected}
-                        onSelect={setSelected}
+                        selected={selectedPayment}
+                        onSelect={setSelectedPayment}
                         methods={methods}
                     />
                 </div>
-
-                {/* Create Order button */}
-                <button
-                    onClick={handleCreateOrder}
-                    disabled={loading || !cartItems.length}
-                    className="w-full bg-amber-400 text-white text-sm py-2 rounded-lg font-semibold hover:bg-green-600 disabled:opacity-50"
-                >
-                    {loading ? "Creating..." : "Create Order"}
-                </button>
             </div>
 
             {/* Address Popup */}

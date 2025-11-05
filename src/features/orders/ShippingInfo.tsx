@@ -31,19 +31,31 @@ export function ShippingSection({
             </span>
 
             {/* Address */}
-            <div className="flex justify-between items-center gap-2 mt-1 w-full">
-                <div className="flex items-center border border-gray-300 text-sm text-gray-500 rounded p-3 gap-3 flex-1">
-                    <FaMapMarkerAlt size={20} />
-                    {currentAddress
-                        ? `${currentAddress.address}, ${currentAddress.district.name}, ${currentAddress.city.name}, ${currentAddress.province.name}`
-                        : "Select Shipping Address "}
+            {/* Address */}
+            <div className="mt-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50 hover:border-gray-300 transition-colors">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="mt-0.5 text-gray-400">
+                            <FaMapMarkerAlt size={18} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-gray-500 mb-1">
+                                Shipping Address
+                            </p>
+                            <p className="text-sm text-gray-700 leading-relaxed">
+                                {currentAddress
+                                    ? `${currentAddress.address}, ${currentAddress.district.name}, ${currentAddress.city.name}, ${currentAddress.province.name}`
+                                    : "No address selected"}
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={onChangeAddress}
+                        className="self-start sm:self-center px-4 py-2 text-sm font-medium text-emerald-700 border border-emerald-700 rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap"
+                    >
+                        {currentAddress ? "Change" : "Select"}
+                    </button>
                 </div>
-                <button
-                    onClick={onChangeAddress}
-                    className="border text-xs px-3 py-1 rounded hover:bg-gray-100"
-                >
-                    Change
-                </button>
             </div>
 
             {/* Courier */}
@@ -65,19 +77,53 @@ export function ShippingSection({
             </select>
 
             {/* Shipping Cost */}
-            <div className="flex justify-between items-center gap-2 mt-1 w-full">
-                <div className="flex items-center border text-sm text-gray-500 rounded p-3 gap-3 flex-1">
-                    <MdLocalShipping size={20} />
-                    {currentShipping
-                        ? `${currentShipping.name}, ${currentShipping.description}, Estimated: ${currentShipping.etd}, Price: ${currentShipping.cost}`
-                        : "Select Shipping"}
+            <div className="mt-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50 hover:border-gray-300 transition-colors">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="mt-0.5 text-gray-400">
+                            <MdLocalShipping size={18} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-gray-500 mb-1">
+                                Shipping Method
+                            </p>
+                            {currentShipping ? (
+                                <div className="space-y-1">
+                                    <p className="text-sm font-medium text-gray-700">
+                                        {currentShipping.name}
+                                    </p>
+                                    <p className="text-xs text-gray-600">
+                                        {currentShipping.description}
+                                    </p>
+                                    <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 mt-1.5">
+                                        <span className="flex items-center gap-1">
+                                            <span className="font-medium">
+                                                Estimated:
+                                            </span>{" "}
+                                            {currentShipping.etd}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                            <span className="font-medium">
+                                                Price:
+                                            </span>{" "}
+                                            {currentShipping.cost}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-gray-700">
+                                    No shipping method selected
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                    <button
+                        onClick={onChangeShipping}
+                        className="self-start sm:self-center px-4 py-2 text-sm font-medium text-emerald-700 border border-emerald-700 rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap"
+                    >
+                        {currentShipping ? "Change" : "Select"}
+                    </button>
                 </div>
-                <button
-                    onClick={onChangeShipping}
-                    className="border text-xs px-3 py-1 rounded hover:bg-gray-100"
-                >
-                    Change
-                </button>
             </div>
         </div>
     );
