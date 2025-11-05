@@ -25,6 +25,7 @@ export default function StoreListTable() {
   const searchParams = useSearchParams();
   const provinceId = searchParams.get("province_id");
   const search = searchParams.get("search");
+  const sort = searchParams.get("sort");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{
@@ -38,6 +39,7 @@ export default function StoreListTable() {
         async (
           searchValue: string | null,
           provinceId: string | null,
+          sort: string | null,
           pageValue: number,
           token: string
         ) => {
@@ -45,6 +47,7 @@ export default function StoreListTable() {
             const response = await getStores({
               name: searchValue || "",
               provinceId: Number(provinceId) || 0,
+              sort: sort || "",
               page: pageValue,
               limit: 10,
               token,
@@ -82,7 +85,7 @@ export default function StoreListTable() {
       });
 
       toast.success(response.data.message);
-      await debounceFetch(search, provinceId, page, auth.token);
+      await debounceFetch(search, provinceId, sort, page, auth.token);
 
       setIsDeleting(false);
       setIsModalOpen(false);
@@ -109,11 +112,11 @@ export default function StoreListTable() {
 
   useEffect(() => {
     if (auth.token) {
-      debounceFetch(search, provinceId, page, auth.token);
+      debounceFetch(search, provinceId, sort, page, auth.token);
 
       return () => debounceFetch.cancel();
     }
-  }, [search, provinceId, page, debounceFetch, auth.token]);
+  }, [search, provinceId, sort, page, debounceFetch, auth.token]);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-lg font-semibold text-gray-800 mb-4">Stores</h2>

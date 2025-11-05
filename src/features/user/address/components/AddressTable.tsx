@@ -14,6 +14,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import _ from "lodash";
 import { IStoreProvince } from "@/features/admin/store/types";
 import { getProvinces } from "@/services/shipping";
+import { ADDRESS_SORT_OPTIONS } from "../../constants";
 
 export default function AddressTable({
   token,
@@ -31,7 +32,9 @@ export default function AddressTable({
   const [page, setPage] = useState(1);
   const searchParams = useSearchParams();
   const [selectedProvince, setSelectedProvince] = useState("");
+  const [addressesSort, setAddressesSort] = useState("");
   const provinceId = searchParams.get("province_id");
+  const sort = searchParams.get("sort");
   const search = searchParams.get("search");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +61,7 @@ export default function AddressTable({
       });
 
       toast.success(response.data.message);
-      await debounceFetch(search, provinceId, page, token);
+      await debounceFetch(search, provinceId, sort, page, token);
 
       setIsLoading(false);
       setIsModalOpen(false);
@@ -91,6 +94,19 @@ export default function AddressTable({
     router.push(`?${params.toString()}`);
   };
 
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setAddressesSort(value);
+
+    const params = new URLSearchParams(searchParams.toString() ?? "");
+    if (value) {
+      params.set("sort", value);
+    } else {
+      params.delete("sort");
+    }
+    router.push(`?${params.toString()}`);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const params = new URLSearchParams(searchParams.toString() ?? "");
@@ -109,6 +125,7 @@ export default function AddressTable({
         async (
           searchValue: string | null,
           provinceId: string | null,
+          sort: string | null,
           pageValue: number,
           token: string
         ) => {
@@ -116,6 +133,7 @@ export default function AddressTable({
             const response = await getAddresses({
               search: searchValue || "",
               provinceId: Number(provinceId),
+              sort: sort || "",
               page: pageValue,
               limit: 10,
               token,
@@ -142,11 +160,11 @@ export default function AddressTable({
 
   useEffect(() => {
     if (userId && token) {
-      debounceFetch(search, provinceId, page, token);
+      debounceFetch(search, provinceId, sort, page, token);
 
       return () => debounceFetch.cancel();
     }
-  }, [search, provinceId, page, debounceFetch, userId, token]);
+  }, [search, provinceId, sort, page, debounceFetch, userId, token]);
 
   useEffect(() => {
     onGetProvince();
@@ -165,7 +183,7 @@ export default function AddressTable({
             className="w-full sm:w-64 border border-gray-300 rounded-lg text-sm px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
           />
           <select
-            id="storeFilter"
+            id="addressFilter"
             value={selectedProvince}
             onChange={handleProvinceChange}
             className="w-full sm:w-48 border border-gray-300 rounded-lg text-sm px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
@@ -174,6 +192,19 @@ export default function AddressTable({
             {provinces.map((province) => (
               <option key={province.id} value={province.id}>
                 {province.name}
+              </option>
+            ))}
+          </select>
+          <select
+            id="addressSort"
+            value={addressesSort}
+            onChange={handleSortChange}
+            className="w-full sm:w-48 border border-gray-300 rounded-lg text-sm px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+          >
+            <option value="">Sort Addresses</option>
+            {ADDRESS_SORT_OPTIONS.map((sort) => (
+              <option key={sort.value} value={sort.value}>
+                {sort.label}
               </option>
             ))}
           </select>
