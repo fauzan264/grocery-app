@@ -7,14 +7,18 @@ const STORES_URL = "/stores";
 export const getStores = ({
   name,
   provinceId,
+  sort,
   page,
   limit,
   token,
 }: Pick<IStore, "name" | "provinceId"> & {
+  sort?: string;
   page: number;
   limit: number;
   token: string;
 }) => {
+  const sortBy = sort?.split("-")[0];
+  const sortOrder = sort?.split("-")[1];
   return axiosInstance.get(STORES_URL, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -22,6 +26,8 @@ export const getStores = ({
     params: snakecaseKeys({
       name,
       provinceId,
+      sortBy,
+      sortOrder,
       page,
       limit,
     }),

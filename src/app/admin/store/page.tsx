@@ -1,6 +1,7 @@
 "use client";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import StoreListTable from "@/features/admin/store/components/StoreList";
+import { STORE_SORT_OPTIONS } from "@/features/admin/store/constants";
 import { IStoreProvince } from "@/features/admin/store/types";
 import AuthGuard from "@/hoc/AuthGuard";
 import { getProvinces } from "@/services/shipping";
@@ -16,6 +17,7 @@ function StorePage() {
     const response = await getProvinces();
     setProvinces(response.data.data);
   };
+  const [storesSort, setStoresSort] = useState("");
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -26,6 +28,19 @@ function StorePage() {
       params.set("province_id", value);
     } else {
       params.delete("province_id");
+    }
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setStoresSort(value);
+
+    const params = new URLSearchParams(searchParams.toString() ?? "");
+    if (value) {
+      params.set("sort", value);
+    } else {
+      params.delete("sort");
     }
     router.push(`?${params.toString()}`);
   };
@@ -83,6 +98,19 @@ function StorePage() {
                 {provinces.map((province) => (
                   <option key={province.id} value={province.id}>
                     {province.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                id="storeSort"
+                value={storesSort}
+                onChange={handleSortChange}
+                className="w-full sm:w-48 border border-gray-300 rounded-lg text-sm px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+              >
+                <option value="">Sort Store</option>
+                {STORE_SORT_OPTIONS.map((sort) => (
+                  <option key={sort.value} value={sort.value}>
+                    {sort.label}
                   </option>
                 ))}
               </select>
