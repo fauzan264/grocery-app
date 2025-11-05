@@ -13,6 +13,6 @@ export const STORE_SORT_OPTIONS = [
   },
   {
     label: "Created At DESC",
-    value: "created_at-asc",
+    value: "created_at-desc",
   },
 ];
