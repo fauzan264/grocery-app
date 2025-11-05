@@ -45,6 +45,6 @@ export const getPublicProducts = async ({
   });
 };
 
-export const getPublicProductById = async ({ id }: { id: string }) => {
-  return await axiosInstance.get(`/public/products/${id}`);
+export const getPublicProductById = async ({ productId, storeId }: {productId: string, storeId: string }) => {
+  return await axiosInstance.get(`/public/stores/${storeId}/product/${productId}`);
 };

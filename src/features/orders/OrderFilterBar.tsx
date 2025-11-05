@@ -3,7 +3,7 @@ import { useState } from "react";
 import useDebounce from "@/app/hooks/useDebounce";
 
 export interface FilterValues {
-    orderId?: string;
+    number?: string;
     startDate?: string;
     endDate?: string;
 }
@@ -13,22 +13,22 @@ interface Props {
 }
 
 export default function OrderFilterBar({ onApply }: Props) {
-    const [orderId, setOrderId] = useState("");
+    const [orderNumber, setOrderNumber] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
-    const debouncedOrderId = useDebounce(orderId, 400);
+    const debouncedOrderId = useDebounce(orderNumber, 400);
 
     const handleApply = () => {
         onApply({
-            orderId: debouncedOrderId || undefined,
+            number: debouncedOrderId || undefined,
             startDate: startDate || undefined,
             endDate: endDate || undefined,
         });
     };
 
     const handleReset = () => {
-        setOrderId("");
+        setOrderNumber("");
         setStartDate("");
         setEndDate("");
         onApply({});
@@ -39,10 +39,10 @@ export default function OrderFilterBar({ onApply }: Props) {
             <div className="flex gap-4">
                 <input
                     type="text"
-                    placeholder="Filter by Order ID"
+                    placeholder="Filter by Order Number"
                     className="input input-bordered w-full"
-                    value={orderId}
-                    onChange={(e) => setOrderId(e.target.value)}
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value.trim())}
                 />
                 <input
                     type="date"

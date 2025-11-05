@@ -86,7 +86,7 @@ export default function OrderActionBar({
                 <button
                     onClick={() => {
                         if (isDisabled) return 
-                        setConfirmOpen("cancel");
+                        setConfirmOpen("delivered");
                     }}
                     className={`px-4 py-2 rounded-md transition-colors
     ${

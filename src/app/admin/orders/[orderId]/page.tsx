@@ -1,6 +1,6 @@
 "use client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
-import Breadcrumbs from "@/features/admin/orders/BreadCrumbs";
 import OrderActivitySidebar from "@/features/admin/orders/OrderActivities";
 import OrderDetail from "@/features/admin/orders/OrderDetail";
 import { IOrderAdminResponse, IStatusLogs } from "@/features/admin/orders/type";

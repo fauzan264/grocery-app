@@ -30,7 +30,7 @@ export default function OrderListCard({ order }: OrderListCardProps) {
                     </div>
                     <OrderStatusBadge status={normalizedStatus} />
                 </div>
-                <div>Order Id : {order.id}</div>
+                <div>Order Number : {order.order_number}</div>
 
                 {/* Product */}
                 <div className="flex justify-between items-center gap-3">

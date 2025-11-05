@@ -25,6 +25,7 @@ export interface IOrderItem {
 
 export interface IOrderResponse {
   id: string;
+  order_number : string;
   storeId: string;
   status: OrderStatus; 
   sub_total: number 
