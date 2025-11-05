@@ -11,7 +11,7 @@ export default function Breadcrumbs() {
         let label = segment;
 
         if (segment === "admin") label = "Home";
-        if (segment === "orders") label = "Orders";
+        if (segment === "orders/order-list") label = "Orders List";
         else if (index === segments.length - 1) label = "Order Detail";
 
         const href = "/" + segments.slice(0, index + 1).join("/");

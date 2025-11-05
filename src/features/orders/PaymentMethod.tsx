@@ -57,7 +57,7 @@ export function PaymentSelector({ selected, onSelect }: PaymentPopupProps) {
                             Account Number: <strong>1234567890</strong>
                         </li>
                         <li>
-                            Account Holder: <strong>PT Sample Store</strong>
+                            Account Holder: <strong>PT My Grocery Store</strong>
                         </li>
                     </ul>
                     <p className="mt-1">

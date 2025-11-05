@@ -129,10 +129,6 @@ export default function OrderCard() {
         if (!currentShipping)
             return toast.error("Please select a shipping method", {position : "top-right"});
 
-        console.log("🔍 Current Address:", currentAddress);
-        console.log("🔍 Current Shipping:", currentShipping);
-        console.log("🔍 Selected Store:", selectedStore);
-
         try {
             setLoading(true);
 
@@ -160,7 +156,6 @@ export default function OrderCard() {
 
             console.log("Order Payload:", payload);
 
-            // 1. Create order
             const order = await createOrders(payload, token);
             console.log("Order Payload:", payload);
             setCurrentOrder(order);

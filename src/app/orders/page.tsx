@@ -40,7 +40,7 @@ function Order() {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex justify-between text-gray-600 border-b w-full py-2"
+                  className="flex justify-between text-gray-600 w-full py-2"
                 >
                   <div className="flex items-start gap-2">
                     <span>{item.quantity}x</span>
@@ -52,7 +52,7 @@ function Order() {
                 </div>
               ))}
               <div className="flex flex-col text-gray-600">
-                <div className="flex justify-between py-2">
+                <div className="flex justify-between py-2 border-t">
                   <span>Delivery</span>
                   <span>{formatPrice(delivery)}</span>
                 </div>
