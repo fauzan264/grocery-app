@@ -6,7 +6,8 @@ import OrderListTable from "@/features/admin/orders/OrderListTable";
 import useAuthStore from "@/store/useAuthStore";
 import { getStores } from "@/services/store";
 import toast from "react-hot-toast";
-import Breadcrumbs from "@/features/admin/orders/BreadCrumbs";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+
 
 interface Store {
     id: string;
