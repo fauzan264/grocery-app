@@ -37,8 +37,8 @@ export default function OrderListCard({ order }: OrderListCardProps) {
                     {/* Kiri: Gambar + Info Produk */}
                     <div className="flex items-center gap-3">
                         <Image
-                            src="/grocery.jpg"
-                            alt="Sample Product"
+                            src={order.items?.[0]?.product?.imageUrl || "/grocery.jpg"}
+                            alt={order.items?.[0].product.name}
                             width={64}
                             height={64}
                             className="w-16 h-16 rounded-lg object-cover"

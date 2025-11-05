@@ -8,6 +8,7 @@ import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import Pagination from "@/features/orders/Pagination";
 import AuthGuard from "@/hoc/AuthGuard";
+import Breadcrumbs from "@/features/orders/BreadCrumbs";
 
 function OrderListPage() {
   const { token } = useAuthStore();
@@ -59,6 +60,7 @@ function OrderListPage() {
 
   return (
     <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
+      <Breadcrumbs/>
       <h1 className="text-2xl font-bold mb-4">Order List</h1>
       <OrderFilterBar onApply={handleApplyFilter} />
       {orders.length === 0 ? (
