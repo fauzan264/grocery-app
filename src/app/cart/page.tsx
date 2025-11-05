@@ -16,7 +16,6 @@ import AuthGuard from "@/hoc/AuthGuard";
 import toast from "react-hot-toast";
 import { BsCartX } from "react-icons/bs";
 
-
 function Cart() {
     const { token } = useAuthStore();
     const router = useRouter();
@@ -41,7 +40,7 @@ function Cart() {
                                   (action === "increment"
                                       ? item.quantity + 1
                                       : item.quantity - 1) * item.price,
-                                      product: item.product,
+                              product: item.product,
                           }
                         : item
                 )
@@ -62,7 +61,13 @@ function Cart() {
                 } else {
                     setCartItems(
                         cartItems.map((item) =>
-                            item.id === id ? { ...item, ...updatedItem, product: item.product } : item
+                            item.id === id
+                                ? {
+                                      ...item,
+                                      ...updatedItem,
+                                      product: item.product,
+                                  }
+                                : item
                         )
                     );
                 }
@@ -73,7 +78,7 @@ function Cart() {
                 setLoadingIds((prev) => prev.filter((lid) => lid !== id));
             }
         },
-        [cartItems,setCartItems, token]
+        [cartItems, setCartItems, token]
     );
 
     const onRemoveItem = useCallback(
@@ -162,7 +167,7 @@ function Cart() {
                                 </p>
                                 <button
                                     onClick={goToShopping}
-                                    className="flex btn bg-green-600 text-white py-2 rounded-lg font-semibold"
+                                    className="flex btn bg-emerald-700 text-white py-2 rounded-lg font-semibold"
                                 >
                                     <FaArrowLeft />
                                     Go to Shopping
@@ -186,7 +191,13 @@ function Cart() {
                         </div>
                         <button
                             onClick={() => router.push("/orders")}
-                            className="w-full bg-amber-400 text-white py-2 rounded-lg font-semibold hover:bg-green-600"
+                            disabled={cartItems.length === 0}
+                            className={`w-full text-white py-2 rounded-lg font-semibold transition 
+        ${
+            cartItems.length === 0
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-amber-400 hover:bg-emerald-700"
+        }`}
                         >
                             Checkout
                         </button>
