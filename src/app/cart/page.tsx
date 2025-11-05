@@ -96,12 +96,12 @@ function Cart() {
         [setCartItems, token]
     );
 
-    const onGetCartItems = async () => {
-        console.log("items:", cartItems);
+    const onGetCartItems = async ({token}:{token:string}) => {
         try {
             setLoading(true);
             const items = await getCartItems(token);
             setCartItems(items);
+            console.log ("Items" , items)
         } catch (err) {
             console.error(err);
         } finally {
@@ -111,7 +111,7 @@ function Cart() {
 
     useEffect(() => {
         if (!token) return;
-        onGetCartItems();
+        onGetCartItems({token});
     }, [token]);
 
     if (loading) {

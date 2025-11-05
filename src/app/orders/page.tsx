@@ -14,6 +14,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { MdDiscount } from "react-icons/md";
+import { showErrorToast, showSuccessToast } from "@/utils/swal";
 
 function Order() {
     const { token } = useAuthStore();
@@ -75,12 +76,13 @@ function Order() {
                 },
             };
 
-            console.log("Order Payload:", payload);
-
             const order = await createOrders(payload, token);
-            console.log("Order Payload:", payload);
+
             setCurrentOrder(order);
-            toast.success("Order created successfully!");
+            await showSuccessToast(
+                "Order Created ✅",
+                "Your order has been placed successfully!"
+            );
 
             if (selected === PaymentMethod.SNAP) {
                 const { redirect_url } = await createGatewayPayment(
@@ -93,7 +95,10 @@ function Order() {
             }
         } catch (err) {
             console.error(err);
-            alert("Failed to create order");
+            await showErrorToast(
+                "Failed to Create Order",
+                "Something went wrong while creating your order."
+            );
         } finally {
             setLoading(false);
         }

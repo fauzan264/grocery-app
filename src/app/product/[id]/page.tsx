@@ -6,11 +6,12 @@ import { FaMinus, FaPlus, FaShoppingCart } from "react-icons/fa";
 import Swal from "sweetalert2";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import { getPublicProductById } from "@/services/public";
-import { addToCart } from "@/services/cart"; 
+import { addToCart } from "@/services/cart";
 import { useParams } from "next/navigation";
 import { formatPrice } from "@/utils/formatPrice";
 import useAuthStore from "@/store/useAuthStore";
 import { showErrorToast, showSuccessToast } from "@/utils/swal";
+import useLocationStore from "@/store/useLocationStore";
 
 export interface PublicProduct {
     id: string;
@@ -30,6 +31,7 @@ interface AddToCartResponse {
 
 export default function ProductDetail() {
     const { id } = useParams();
+    const { selectedStore } = useLocationStore();
     const [product, setProduct] = useState<PublicProduct | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
@@ -38,20 +40,24 @@ export default function ProductDetail() {
 
     useEffect(() => {
         if (!id) return;
-
-        const fetchProduct = async () => {
-            try {
-                const res = await getPublicProductById({ id: id as string });
-                setProduct(res.data.data);
-            } catch (error) {
-                console.error("Failed to fetch product:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProduct();
-    }, [id]);
+        if (selectedStore?.id) {
+            const fetchProduct = async () => {
+                try {
+                    const res = await getPublicProductById({
+                        productId: id as string,
+                        storeId: selectedStore?.id || "",
+                    });
+                    setProduct(res.data.data);
+                } catch (error) {
+                    console.error("Failed to fetch product:", error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchProduct();
+        }
+    }, [id, selectedStore?.id]);
+    console.log(product);
 
     if (loading)
         return (
@@ -83,7 +89,7 @@ export default function ProductDetail() {
             return;
         }
 
-        setIsAdding(true); 
+        setIsAdding(true);
 
         try {
             await addToCart(token, product.id, quantity);
@@ -98,7 +104,7 @@ export default function ProductDetail() {
                 "An error occurred while adding the product to the cart."
             );
         } finally {
-            setIsAdding(false); 
+            setIsAdding(false);
         }
     };
 
@@ -139,7 +145,7 @@ export default function ProductDetail() {
                         {/* Quantity */}
                         <div className="border-t border-gray-200 pt-5">
                             <h3 className="text-lg font-medium text-gray-800 mb-3">
-                                Jumlah
+                                Amount
                             </h3>
 
                             <div className="flex items-center gap-4">
@@ -179,7 +185,7 @@ export default function ProductDetail() {
                                 </div>
 
                                 <span className="text-sm text-gray-600">
-                                    Stock tersisa:{" "}
+                                    Remaining Stock:{" "}
                                     <b className="text-gray-900">
                                         {product.stock}
                                     </b>
@@ -192,11 +198,18 @@ export default function ProductDetail() {
                     <div className="mt-10">
                         <button
                             onClick={handleAddToCart}
-                            disabled={isAdding}
-                            className="w-full py-3 bg-emerald-700 text-white font-semibold rounded-xl hover:bg-emerald-800 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-60"
+                            disabled={isAdding || product.stock === 0}
+                            className={`w-full py-3 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm
+    ${
+        product.stock === 0
+            ? "bg-gray-400 text-gray-100 cursor-not-allowed"
+            : "bg-emerald-700 text-white hover:bg-emerald-800 disabled:opacity-60"
+    }`}
                         >
                             {isAdding ? (
                                 <LoadingThreeDotsPulse />
+                            ) : product.stock === 0 ? (
+                                "Out of Stock"
                             ) : (
                                 <>
                                     <FaShoppingCart /> Add to Cart

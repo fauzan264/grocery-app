@@ -21,13 +21,13 @@ export default function StockRequestModal({
   onClose,
   onSuccess,
 }: StockRequestModalProps) {
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(10);
   const [loading, setLoading] = useState(false);
   const { token } = useAuthStore();
 
   const handleSubmit = async () => {
-    if (!quantity || quantity <= 0) {
-      toast.error("Quantity must be greater than 0");
+    if (!quantity || quantity <= 10) {
+      toast.error("You can only request at least 10 Pcs");
       return;
     }
 
@@ -64,7 +64,7 @@ export default function StockRequestModal({
         </label>
         <input
           type="number"
-          min={1}
+          min={10}
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
           className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"

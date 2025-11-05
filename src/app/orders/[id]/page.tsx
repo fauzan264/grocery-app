@@ -1,6 +1,6 @@
 "use client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
-import Breadcrumbs from "@/features/orders/BreadCrumbs";
 import OrderStatusBadge from "@/features/orders/OrderStatusBedge";
 import { OrderStatus } from "@/features/orders/type";
 import UploadPayment from "@/features/orders/UploadPayment";
@@ -115,8 +115,8 @@ function OrderDetail() {
                             <OrderStatusBadge status={normalizedStatus} />
                         </div>
                         <div className="flex justify-between">
-                            <span>Order ID</span>
-                            <span>{currentOrder?.id}</span>
+                            <span>Order Number</span>
+                            <span>{currentOrder?.order_number}</span>
                         </div>
                         <div className="flex justify-between">
                             <span>Order Date</span>

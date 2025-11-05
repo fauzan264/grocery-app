@@ -8,7 +8,8 @@ import OrderFilterBar, { FilterValues } from "@/features/orders/OrderFilterBar";
 import LoadingThreeDotsPulse from "@/components/ui/loading";
 import Pagination from "@/features/orders/Pagination";
 import AuthGuard from "@/hoc/AuthGuard";
-import Breadcrumbs from "@/features/orders/BreadCrumbs";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+
 
 function OrderListPage() {
   const { token } = useAuthStore();
@@ -17,10 +18,10 @@ function OrderListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Filter state diterapkan ke API
+
   const [appliedFilters, setAppliedFilters] = useState<FilterValues>({});
 
-  // Tangani filter dari child
+
   const handleApplyFilter = useCallback((filters: FilterValues) => {
     setAppliedFilters(filters);
     setCurrentPage(1);
@@ -59,7 +60,7 @@ function OrderListPage() {
     );
 
   return (
-    <div className="flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
+    <div className="min-h-screen flex flex-col gap-4 mt-15 w-full max-w-4xl mx-auto p-4">
       <Breadcrumbs/>
       <h1 className="text-2xl font-bold mb-4">Order List</h1>
       <OrderFilterBar onApply={handleApplyFilter} />
