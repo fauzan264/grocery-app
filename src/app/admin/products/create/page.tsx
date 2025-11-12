@@ -61,7 +61,6 @@ export default function CreateProductPage() {
 
       const res = await api.post("/api/products", fd, { headers });
 
-      console.log("Product created:", res.data);
       alert("Product berhasil dibuat!");
       router.push("/admin/products");
     } catch (err) {
@@ -124,4 +123,3 @@ export default function CreateProductPage() {
     </div>
   );
 }
-

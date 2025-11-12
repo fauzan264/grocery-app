@@ -5,7 +5,6 @@ import { RajaOngkirErrorResponse } from "@/features/shipping/types";
 const BASE_URL = `${process.env.RAJAONGKIR_URL}/calculate/domestic-cost`;
 
 export async function POST(req: NextRequest) {
-  console.log(BASE_URL);
   try {
     const body = await req.json();
     const { origin, destination, weight, courier } = body;

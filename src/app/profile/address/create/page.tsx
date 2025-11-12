@@ -91,15 +91,6 @@ export default function EditProfileAddressPage() {
       longitude,
       isDefault,
     }) => {
-      console.log(
-        provinceId,
-        cityId,
-        districtId,
-        address,
-        latitude,
-        longitude,
-        isDefault
-      );
       onCreateAddress({
         token,
         userId: id,
